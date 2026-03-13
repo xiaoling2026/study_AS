@@ -1,0 +1,1723 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>A-Level CIE Study Master v30</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // 核心功能 - 必须在页面加载前定义
+        function showSection(id, btn) {
+            document.querySelectorAll("#app section").forEach(function(s) { s.classList.add("hidden"); });
+            var el = document.getElementById(id);
+            if (el) el.classList.remove("hidden");
+            document.querySelectorAll(".nav-item").forEach(function(n) { n.classList.remove("active"); });
+            if (btn) btn.classList.add("active");
+            
+            // 切换到练习页面时生成习题
+            if (id === 'practice') {
+                generatePracticeQuestions();
+            }
+            
+            // 切换到每日课程时默认显示数学
+            if (id === 'lesson') {
+                selectSubject('math');
+            }
+        }
+        
+        // 知识点数据
+        const topicData = {
+            // Mathematics (9709)
+            'math-quadratics': {
+                name: 'Quadratics 二次方程',
+                subject: 'math',
+                content: `<h3 class="text-xl font-bold text-gray-800 mb-4">Quadratics 二次方程</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-gray-700 mb-2">📖 概念讲解</h4>
+                            <p class="text-gray-600 text-sm leading-relaxed mb-4">二次方程的一般形式：<br><br><strong class="text-blue-600">ax² + bx + c = 0</strong><br><br>求根公式：<br><strong class="text-blue-600">x = (-b ± √(b²-4ac)) / 2a</strong></p>
+                            <h4 class="font-semibold text-gray-700 mb-2">⚠️ 易错点</h4>
+                            <ul class="text-gray-600 text-sm space-y-1"><li>• 判别式 b²-4ac 要先算</li><li>• 根的分类：>0两个不等根，=0两个相等根，<0无实根</li></ul>
+                        </div>
+                        <div class="bg-gray-50 rounded-xl p-4">
+                            <h4 class="font-semibold text-gray-700 mb-2">📝 例题</h4>
+                            <p class="text-gray-600 text-sm">解方程：x² - 5x + 6 = 0</p>
+                            <p class="text-blue-600 text-sm mt-2">解：a=1, b=-5, c=6<br>Δ = 25 - 24 = 1<br>x = (5 ± 1)/2 = 3 或 2</p>
+                        </div>
+                    </div>`
+            },
+            'math-functions': {
+                name: 'Functions 函数',
+                subject: 'math',
+                content: `<h3 class="text-xl font-bold text-gray-800 mb-4">Functions 函数</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-gray-700 mb-2">📖 概念讲解</h4>
+                            <p class="text-gray-600 text-sm leading-relaxed mb-4">函数表示一种映射关系：<br><br><strong class="text-blue-600">f: A → B</strong><br><br>定义域、值域、反函数</p>
+                            <h4 class="font-semibold text-gray-700 mb-2">⚠️ 易错点</h4>
+                            <ul class="text-gray-600 text-sm space-y-1"><li>• 反函数存在条件：一一对应</li><li>• f⁻¹(x) 不是 1/f(x)</li></ul>
+                        </div>
+                        <div class="bg-gray-50 rounded-xl p-4">
+                            <h4 class="font-semibold text-gray-700 mb-2">📝 例题</h4>
+                            <p class="text-gray-600 text-sm">若 f(x) = 2x+1，求 f⁻¹(x)</p>
+                            <p class="text-blue-600 text-sm mt-2">解：y = 2x+1<br>x = (y-1)/2<br>f⁻¹(x) = (x-1)/2</p>
+                        </div>
+                    </div>`
+            },
+            'math-coordinate': {
+                name: 'Coordinate Geometry 坐标几何',
+                subject: 'math',
+                content: `<h3 class="text-xl font-bold text-gray-800 mb-4">Coordinate Geometry 坐标几何</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-gray-700 mb-2">📖 概念讲解</h4>
+                            <p class="text-gray-600 text-sm leading-relaxed mb-4">直线方程：<br><br><strong class="text-blue-600">y = mx + c</strong><br>m为斜率，c为截距<br><br>两点距离公式：<br><strong class="text-blue-600">d = √[(x₂-x₁)²+(y₂-y₁)²]</strong></p>
+                            <h4 class="font-semibold text-gray-700 mb-2">⚠️ 易错点</h4>
+                            <ul class="text-gray-600 text-sm space-y-1"><li>• 平行线斜率相等</li><li>• 垂直线斜率乘积为-1</li></ul>
+                        </div>
+                        <div class="bg-gray-50 rounded-xl p-4">
+                            <h4 class="font-semibold text-gray-700 mb-2">📝 例题</h4>
+                            <p class="text-gray-600 text-sm">求点(1,2)到点(4,6)的距离</p>
+                            <p class="text-blue-600 text-sm mt-2">解：d = √[(4-1)²+(6-2)²]<br>= √(9+16) = √25 = 5</p>
+                        </div>
+                    </div>`
+            },
+            'math-trigonometry': {
+                name: 'Trigonometry 三角函数',
+                subject: 'math',
+                content: `<h3 class="text-xl font-bold text-gray-800 mb-4">Trigonometry 三角函数</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-gray-700 mb-2">📖 概念讲解</h4>
+                            <p class="text-gray-600 text-sm leading-relaxed mb-4">三角恒等式：<br><br><strong class="text-blue-600">sin²θ + cos²θ = 1</strong><br><strong class="text-blue-600">tanθ = sinθ/cosθ</strong><br><br>重要公式：sin(90°-θ) = cosθ</p>
+                            <h4 class="font-semibold text-gray-700 mb-2">⚠️ 易错点</h4>
+                            <ul class="text-gray-600 text-sm space-y-1"><li>• 角度制与弧度制转换</li><li>• sin和cos的定义域</li></ul>
+                        </div>
+                        <div class="bg-gray-50 rounded-xl p-4">
+                            <h4 class="font-semibold text-gray-700 mb-2">📝 例题</h4>
+                            <p class="text-gray-600 text-sm">证明：sin²θ = 1 - cos²θ</p>
+                            <p class="text-blue-600 text-sm mt-2">证明：由 sin²θ + cos²θ = 1<br>得 sin²θ = 1 - cos²θ ✓</p>
+                        </div>
+                    </div>`
+            },
+            'math-sequences': {
+                name: 'Sequences 数列',
+                subject: 'math',
+                content: `<h3 class="text-xl font-bold text-gray-800 mb-4">Sequences 数列</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-gray-700 mb-2">📖 概念讲解</h4>
+                            <p class="text-gray-600 text-sm leading-relaxed mb-4">等差数列：<br><br><strong class="text-blue-600">aₙ = a₁ + (n-1)d</strong><br><br>等比数列：<br><strong class="text-blue-600">aₙ = a₁ × r^(n-1)</strong></p>
+                            <h4 class="font-semibold text-gray-700 mb-2">⚠️ 易错点</h4>
+                            <ul class="text-gray-600 text-sm space-y-1"><li>• 等比数列公比|r|<1才能求无穷和</li><li>• 等差数列求和公式</li></ul>
+                        </div>
+                        <div class="bg-gray-50 rounded-xl p-4">
+                            <h4 class="font-semibold text-gray-700 mb-2">📝 例题</h4>
+                            <p class="text-gray-600 text-sm">等差数列 2,5,8,... 求第10项</p>
+                            <p class="text-blue-600 text-sm mt-2">解：a₁=2, d=3<br>a₁₀ = 2 + 9×3 = 29</p>
+                        </div>
+                    </div>`
+            },
+            'math-differentiation': {
+                name: 'Differentiation 微分',
+                subject: 'math',
+                content: `<h3 class="text-xl font-bold text-gray-800 mb-4">Differentiation 微分</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-gray-700 mb-2">📖 概念讲解</h4>
+                            <p class="text-gray-600 text-sm leading-relaxed mb-4">导数定义：<br><br><strong class="text-blue-600">dy/dx = lim(Δx→0) [f(x+Δx)-f(x)]/Δx</strong><br><br>求导法则：<br>• (axⁿ)' = anxⁿ⁻¹<br>• (u+v)' = u'+v'<br>• (uv)' = u'v+uv'</p>
+                            <h4 class="font-semibold text-gray-700 mb-2">⚠️ 易错点</h4>
+                            <ul class="text-gray-600 text-sm space-y-1"><li>• 链式法则常忘记乘内层导数</li><li>• 商的求导公式</li></ul>
+                        </div>
+                        <div class="bg-gray-50 rounded-xl p-4">
+                            <h4 class="font-semibold text-gray-700 mb-2">📝 例题</h4>
+                            <p class="text-gray-600 text-sm">求 y = x³ + 2x 的导数</p>
+                            <p class="text-blue-600 text-sm mt-2">解：dy/dx = 3x² + 2</p>
+                        </div>
+                    </div>`
+            },
+            'math-integration': {
+                name: 'Integration 积分',
+                subject: 'math',
+                content: `<h3 class="text-xl font-bold text-gray-800 mb-4">Integration 积分</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-gray-700 mb-2">📖 概念讲解</h4>
+                            <p class="text-gray-600 text-sm leading-relaxed mb-4">积分是微分的逆运算：<br><br><strong class="text-blue-600">∫xⁿ dx = xⁿ⁺¹/(n+1) + C</strong><br><br>基本公式：<br>• ∫k dx = kx + C<br>• ∫eˣ dx = eˣ + C</p>
+                            <h4 class="font-semibold text-gray-700 mb-2">⚠️ 易错点</h4>
+                            <ul class="text-gray-600 text-sm space-y-1"><li>• 忘记加常数 C</li><li>• 不定积分和定积分的区别</li></ul>
+                        </div>
+                        <div class="bg-gray-50 rounded-xl p-4">
+                            <h4 class="font-semibold text-gray-700 mb-2">📝 例题</h4>
+                            <p class="text-gray-600 text-sm">求 ∫(3x² + 2x)dx</p>
+                            <p class="text-blue-600 text-sm mt-2">解：= x³ + x² + C</p>
+                        </div>
+                    </div>`
+            },
+            'math-circular': {
+                name: 'Circular Motion 圆周运动',
+                subject: 'math',
+                content: `<h3 class="text-xl font-bold text-gray-800 mb-4">Circular Motion 圆周运动</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-gray-700 mb-2">📖 概念讲解</h4>
+                            <p class="text-gray-600 text-sm leading-relaxed mb-4">圆周运动（力学内容，数学中涉及参数方程）：<br><br><strong class="text-blue-600">x = rcosθ, y = rsinθ</strong><br><br>角速度：<strong class="text-blue-600">ω = dθ/dt</strong></p>
+                            <h4 class="font-semibold text-gray-700 mb-2">⚠️ 易错点</h4>
+                            <ul class="text-gray-600 text-sm space-y-1"><li>• 弧度制使用</li><li>• 角速度和线速度关系 v=rω</li></ul>
+                        </div>
+                        <div class="bg-gray-50 rounded-xl p-4">
+                            <h4 class="font-semibold text-gray-700 mb-2">📝 例题</h4>
+                            <p class="text-gray-600 text-sm">半径2m，角速度3rad/s，求线速度</p>
+                            <p class="text-blue-600 text-sm mt-2">解：v = rω = 2×3 = 6 m/s</p>
+                        </div>
+                    </div>`
+            },
+            // Physics (9702)
+            'physics-quantities': {
+                name: 'Physical Quantities 物理量',
+                subject: 'physics',
+                content: `<h3 class="text-xl font-bold text-gray-800 mb-4">Physical Quantities 物理量</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-gray-700 mb-2">📖 概念讲解</h4>
+                            <p class="text-gray-600 text-sm leading-relaxed mb-4">物理量分为：<br><br><strong class="text-purple-600">基本量</strong>：长度、质量、时间、电流、热力学温度、物质的量、发光强度<br><br><strong class="text-purple-600">导出量</strong>：由基本量组合而成</p>
+                            <h4 class="font-semibold text-gray-700 mb-2">⚠️ 易错点</h4>
+                            <ul class="text-gray-600 text-sm space-y-1"><li>• 单位换算要精确</li><li>• 科学计数法表示</li></ul>
+                        </div>
+                        <div class="bg-gray-50 rounded-xl p-4">
+                            <h4 class="font-semibold text-gray-700 mb-2">📝 例题</h4>
+                            <p class="text-gray-600 text-sm">力的单位是什么？</p>
+                            <p class="text-purple-600 text-sm mt-2">解：N = kg·m/s²<br>是导出单位</p>
+                        </div>
+                    </div>`
+            },
+            'physics-kinematics': {
+                name: 'Kinematics 运动学',
+                subject: 'physics',
+                content: `<h3 class="text-xl font-bold text-gray-800 mb-4">Kinematics 运动学</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-gray-700 mb-2">📖 概念讲解</h4>
+                            <p class="text-gray-600 text-sm leading-relaxed mb-4">基本公式：<br><br><strong class="text-purple-600">v = u + at</strong><br><strong class="text-purple-600">s = ut + ½at²</strong><br><strong class="text-purple-600">v² = u² + 2as</strong></p>
+                            <h4 class="font-semibold text-gray-700 mb-2">⚠️ 易错点</h4>
+                            <ul class="text-gray-600 text-sm space-y-1"><li>• 匀加速直线运动公式</li><li>• 加速度方向与速度方向</li></ul>
+                        </div>
+                        <div class="bg-gray-50 rounded-xl p-4">
+                            <h4 class="font-semibold text-gray-700 mb-2">📝 例题</h4>
+                            <p class="text-gray-600 text-sm">汽车从静止匀加速，a=2m/s²，5秒后速度？</p>
+                            <p class="text-purple-600 text-sm mt-2">解：v = u + at = 0 + 2×5 = 10m/s</p>
+                        </div>
+                    </div>`
+            },
+            'physics-dynamics': {
+                name: 'Dynamics 动力学',
+                subject: 'physics',
+                content: `<h3 class="text-xl font-bold text-gray-800 mb-4">Dynamics 动力学</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-gray-700 mb-2">📖 概念讲解</h4>
+                            <p class="text-gray-600 text-sm leading-relaxed mb-4">牛顿定律：<br><br><strong class="text-purple-600">F = ma</strong><br>力等于质量乘加速度<br><br>动量：<strong class="text-purple-600">p = mv</strong></p>
+                            <h4 class="font-semibold text-gray-700 mb-2">⚠️ 易错点</h4>
+                            <ul class="text-gray-600 text-sm space-y-1"><li>• 作用力和反作用力</li><li>• 合外力才产生加速度</li></ul>
+                        </div>
+                        <div class="bg-gray-50 rounded-xl p-4">
+                            <h4 class="font-semibold text-gray-700 mb-2">📝 例题</h4>
+                            <p class="text-gray-600 text-sm">质量5kg的物体受10N力，求加速度</p>
+                            <p class="text-purple-600 text-sm mt-2">解：a = F/m = 10/5 = 2 m/s²</p>
+                        </div>
+                    </div>`
+            },
+            'physics-forces': {
+                name: 'Forces 力',
+                subject: 'physics',
+                content: `<h3 class="text-xl font-bold text-gray-800 mb-4">Forces 力</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-gray-700 mb-2">📖 概念讲解</h4>
+                            <p class="text-gray-600 text-sm leading-relaxed mb-4">力的合成与分解：<br><br><strong class="text-purple-600">平行四边形法则</strong><br><br>力的平衡：合外力为零</p>
+                            <h4 class="font-semibold text-gray-700 mb-2">⚠️ 易错点</h4>
+                            <ul class="text-gray-600 text-sm space-y-1"><li>• 力的方向要明确</li><li>• 分力与合力的关系</li></ul>
+                        </div>
+                        <div class="bg-gray-50 rounded-xl p-4">
+                            <h4 class="font-semibold text-gray-700 mb-2">📝 例题</h4>
+                            <p class="text-gray-600 text-sm">两力垂直：3N和4N，合力大小？</p>
+                            <p class="text-purple-600 text-sm mt-2">解：R = √(3²+4²) = 5N</p>
+                        </div>
+                    </div>`
+            },
+            'physics-energy': {
+                name: 'Energy 能量',
+                subject: 'physics',
+                content: `<h3 class="text-xl font-bold text-gray-800 mb-4">Energy 能量</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-gray-700 mb-2">📖 概念讲解</h4>
+                            <p class="text-gray-600 text-sm leading-relaxed mb-4">能量守恒定律：<br><br><strong class="text-purple-600">E总 = 常数</strong><br><br>动能：<strong class="text-purple-600">Ek = ½mv²</strong><br>势能：<strong class="text-purple-600">Ep = mgh</strong></p>
+                            <h4 class="font-semibold text-gray-700 mb-2">⚠️ 易错点</h4>
+                            <ul class="text-gray-600 text-sm space-y-1"><li>• 机械能守恒条件</li><li>• 功和能的区别</li></ul>
+                        </div>
+                        <div class="bg-gray-50 rounded-xl p-4">
+                            <h4 class="font-semibold text-gray-700 mb-2">📝 例题</h4>
+                            <p class="text-gray-600 text-sm">质量2kg，速度10m/s，动能？</p>
+                            <p class="text-purple-600 text-sm mt-2">解：Ek = ½×2×10² = 100J</p>
+                        </div>
+                    </div>`
+            },
+            'physics-waves': {
+                name: 'Waves 波',
+                subject: 'physics',
+                content: `<h3 class="text-xl font-bold text-gray-800 mb-4">Waves 波</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-gray-700 mb-2">📖 概念讲解</h4>
+                            <p class="text-gray-600 text-sm leading-relaxed mb-4">波动公式：<br><br><strong class="text-purple-600">v = fλ</strong><br>v: 波速, f: 频率, λ: 波长<br><br>波的类型：横波、纵波</p>
+                            <h4 class="font-semibold text-gray-700 mb-2">⚠️ 易错点</h4>
+                            <ul class="text-gray-600 text-sm space-y-1"><li>• 波长、频率、波速的关系</li><li>• 波的反射和折射</li></ul>
+                        </div>
+                        <div class="bg-gray-50 rounded-xl p-4">
+                            <h4 class="font-semibold text-gray-700 mb-2">📝 例题</h4>
+                            <p class="text-gray-600 text-sm">f=50Hz，λ=2m，波速？</p>
+                            <p class="text-purple-600 text-sm mt-2">解：v = fλ = 50×2 = 100m/s</p>
+                        </div>
+                    </div>`
+            },
+            'physics-optics': {
+                name: 'Optics 光学',
+                subject: 'physics',
+                content: `<h3 class="text-xl font-bold text-gray-800 mb-4">Optics 光学</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-gray-700 mb-2">📖 概念讲解</h4>
+                            <p class="text-gray-600 text-sm leading-relaxed mb-4">折射定律：<br><br><strong class="text-purple-600">n = c/v</strong><br>n: 折射率<br><br><strong class="text-purple-600">n₁sinθ₁ = n₂sinθ₂</strong></p>
+                            <h4 class="font-semibold text-gray-700 mb-2">⚠️ 易错点</h4>
+                            <ul class="text-gray-600 text-sm space-y-1"><li>• 全反射条件</li><li>• 凸透镜和凹透镜区别</li></ul>
+                        </div>
+                        <div class="bg-gray-50 rounded-xl p-4">
+                            <h4 class="font-semibold text-gray-700 mb-2">📝 例题</h4>
+                            <p class="text-gray-600 text-sm">光速c=3×10⁸m/s，在玻璃n=1.5，v?</p>
+                            <p class="text-purple-600 text-sm mt-2">解：v = c/n = 3×10⁸/1.5 = 2×10⁸m/s</p>
+                        </div>
+                    </div>`
+            },
+            'physics-electricity': {
+                name: 'Electric Currents 电流',
+                subject: 'physics',
+                content: `<h3 class="text-xl font-bold text-gray-800 mb-4">Electric Currents 电流</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-gray-700 mb-2">📖 概念讲解</h4>
+                            <p class="text-gray-600 text-sm leading-relaxed mb-4">欧姆定律：<br><br><strong class="text-purple-600">V = IR</strong><br><br>功率：<strong class="text-purple-600">P = IV = I²R = V²/R</strong></p>
+                            <h4 class="font-semibold text-gray-700 mb-2">⚠️ 易错点</h4>
+                            <ul class="text-gray-600 text-sm space-y-1"><li>• 串联和并联电路</li><li>• 电阻与温度关系</li></ul>
+                        </div>
+                        <div class="bg-gray-50 rounded-xl p-4">
+                            <h4 class="font-semibold text-gray-700 mb-2">📝 例题</h4>
+                            <p class="text-gray-600 text-sm">V=12V，I=3A，电阻？</p>
+                            <p class="text-purple-600 text-sm mt-2">解：R = V/I = 12/3 = 4Ω</p>
+                        </div>
+                    </div>`
+            }
+        };
+
+        let currentTopicId = null;
+
+        function goToTopic(section, topicId) {
+            currentTopicId = topicId;
+            showSection(section);
+            if (topicId && topicData[topicId]) {
+                const topic = topicData[topicId];
+                selectSubject(topic.subject);
+                document.getElementById('topicContent').innerHTML = topic.content;
+            }
+        }
+        
+        function logout() {
+            localStorage.removeItem("isLoggedIn");
+            document.getElementById("app").classList.add("hidden");
+            document.getElementById("loginPage").classList.remove("hidden");
+            document.getElementById("username").value = "";
+            document.getElementById("password").value = "";
+        }
+        
+        function handleLogin(event) {
+            event.preventDefault();
+            var u = document.getElementById("username").value;
+            var p = document.getElementById("password").value;
+            if (u === "admin" && p === "12346789") {
+                localStorage.setItem("isLoggedIn", "true");
+                document.getElementById("loginPage").classList.add("hidden");
+                document.getElementById("app").classList.remove("hidden");
+            } else {
+                var err = document.getElementById("loginError");
+                if (err) err.classList.remove("hidden");
+            }
+            return false;
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        .card { background: rgba(255,255,255,0.85); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 4px 30px rgba(0,0,0,0.08); }
+        .btn-primary { background: linear-gradient(135deg,#007AFF 0%,#5856D6 100%); border-radius: 12px; transition: all 0.3s; }
+        .btn-primary:hover { transform: scale(1.02); box-shadow: 0 8px 25px rgba(0,122,255,0.3); }
+        .tag { padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+        .tag:hover { transform: scale(1.05); }
+        .section-title { font-size: 24px; font-weight: 700; background: linear-gradient(135deg,#007AFF 0%,#5856D6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        body { background: linear-gradient(135deg,#F5F7FA 0%,#E4E8EC 100%); min-height: 100vh; cursor: default; }
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .login-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg,#667eea 0%,#764ba2 100%); }
+        .login-card { background: rgba(255,255,255,0.95); border-radius: 24px; padding: 48px; width: 100%; max-width: 400px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
+        .input-field { width: 100%; padding: 14px 16px; border: 1px solid #E5E7EB; border-radius: 12px; font-size: 16px; outline: none; }
+        .input-field:focus { border-color: #007AFF; box-shadow: 0 0 0 3px rgba(0,122,255,0.1); }
+        .subject-active { background: #007AFF !important; color: white !important; }
+        .topic-card { transition: all 0.2s; cursor: pointer; }
+        .topic-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+    <!-- 登录页 -->
+    <div id="loginPage" class="login-container">
+        <div class="login-card fade-in">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center"><span class="text-3xl">📚</span></div>
+                <h1 class="text-2xl font-bold text-gray-800">A-Level Study</h1>
+                <p class="text-gray-500 text-sm mt-1">请登录后继续</p>
+            </div>
+            <form id="loginForm" onsubmit="return handleLogin(event)">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-medium mb-2">用户名</label>
+                    <input type="text" id="username" class="input-field" placeholder="请输入用户名" required>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-medium mb-2">密码</label>
+                    <input type="password" id="password" class="input-field" placeholder="请输入密码" required>
+                </div>
+                <div id="loginError" class="mb-4 p-3 bg-red-50 text-red-600 rounded-xl text-sm hidden">用户名或密码错误</div>
+                <button type="submit" class="btn-primary w-full py-4 text-white font-semibold rounded-xl">登录</button>
+            </form>
+            <p class="text-center text-gray-400 text-xs mt-6">默认账户: admin / 12346789</p>
+        </div>
+    </div>
+    
+    <!-- 主应用 -->
+    <div id="app" class="hidden p-4 md:p-8">
+        <div class="max-w-4xl mx-auto">
+            <header class="card p-6 mb-6 flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">A-Level CIE Study Master</h1>
+                    <p class="text-gray-500 text-sm mt-1">每日一课 · 智能练习 · 个性化学习</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-sm text-gray-500">Day 12</span>
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-semibold">A</div>
+                    <button onclick="logout()" class="ml-2 text-gray-400 hover:text-gray-600 text-sm">退出</button>
+                </div>
+            </header>
+            
+            <nav class="flex gap-2 mb-6 p-1 bg-white/50 rounded-2xl">
+                <button onclick="showSection('topics', this)" class="nav-item active flex-1 py-3 px-4 rounded-xl text-sm font-medium text-gray-600 transition">📋 知识点</button>
+                <button onclick="showSection('lesson', this)" class="nav-item flex-1 py-3 px-4 rounded-xl text-sm font-medium text-gray-600 transition">📚 每日一课</button>
+                <button onclick="showSection('practice', this)" class="nav-item flex-1 py-3 px-4 rounded-xl text-sm font-medium text-gray-600 transition">✍️ 练习</button>
+                <button onclick="showSection('import', this)" class="nav-item flex-1 py-3 px-4 rounded-xl text-sm font-medium text-gray-600 transition">📤 导入</button>
+                <button onclick="showSection('progress', this)" class="nav-item flex-1 py-3 px-4 rounded-xl text-sm font-medium text-gray-600 transition">📊 进度</button>
+            </nav>
+            
+            <!-- 知识点目录 -->
+            <section id="topics" class="fade-in">
+                <div class="card p-6 mb-6">
+                    <h2 class="section-title mb-4">知识点目录 · AS Level Topics</h2>
+                    
+                    <div class="mb-6">
+                        <h3 class="font-bold text-lg text-blue-700 mb-3 flex items-center gap-2"><span>📐</span> Mathematics (9709)</h3>
+                        <div class="grid gap-2">
+                            <div onclick="goToTopic('lesson', 'math-quadratics')" class="topic-card card p-3 flex items-center justify-between"><div><p class="font-medium text-gray-800">1. Quadratics 二次方程</p></div><span class="text-blue-500">→</span></div>
+                            <div onclick="goToTopic('lesson', 'math-functions')" class="topic-card card p-3 flex items-center justify-between"><div><p class="font-medium text-gray-800">2. Functions 函数</p></div><span class="text-blue-500">→</span></div>
+                            <div onclick="goToTopic('lesson', 'math-coordinate')" class="topic-card card p-3 flex items-center justify-between"><div><p class="font-medium text-gray-800">3. Coordinate Geometry 坐标几何</p></div><span class="text-blue-500">→</span></div>
+                            <div onclick="goToTopic('lesson', 'math-trigonometry')" class="topic-card card p-3 flex items-center justify-between"><div><p class="font-medium text-gray-800">4. Trigonometry 三角函数</p></div><span class="text-blue-500">→</span></div>
+                            <div onclick="goToTopic('lesson', 'math-sequences')" class="topic-card card p-3 flex items-center justify-between"><div><p class="font-medium text-gray-800">5. Sequences 数列</p></div><span class="text-blue-500">→</span></div>
+                            <div onclick="goToTopic('lesson', 'math-differentiation')" class="topic-card card p-3 flex items-center justify-between"><div><p class="font-medium text-gray-800">6. Differentiation 微分</p></div><span class="text-blue-500">→</span></div>
+                            <div onclick="goToTopic('lesson', 'math-integration')" class="topic-card card p-3 flex items-center justify-between"><div><p class="font-medium text-gray-800">7. Integration 积分</p></div><span class="text-blue-500">→</span></div>
+                            <div onclick="goToTopic('lesson', 'math-circular')" class="topic-card card p-3 flex items-center justify-between"><div><p class="font-medium text-gray-800">8. Circular Motion 圆周运动</p></div><span class="text-blue-500">→</span></div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="font-bold text-lg text-purple-700 mb-3 flex items-center gap-2"><span>🔬</span> Physics (9702)</h3>
+                        <div class="grid gap-2">
+                            <div onclick="goToTopic('lesson', 'physics-quantities')" class="topic-card card p-3 flex items-center justify-between"><div><p class="font-medium text-gray-800">1. Physical Quantities 物理量</p></div><span class="text-purple-500">→</span></div>
+                            <div onclick="goToTopic('lesson', 'physics-kinematics')" class="topic-card card p-3 flex items-center justify-between"><div><p class="font-medium text-gray-800">2. Kinematics 运动学</p></div><span class="text-purple-500">→</span></div>
+                            <div onclick="goToTopic('lesson', 'physics-dynamics')" class="topic-card card p-3 flex items-center justify-between"><div><p class="font-medium text-gray-800">3. Dynamics 动力学</p></div><span class="text-purple-500">→</span></div>
+                            <div onclick="goToTopic('lesson', 'physics-forces')" class="topic-card card p-3 flex items-center justify-between"><div><p class="font-medium text-gray-800">4. Forces 力</p></div><span class="text-purple-500">→</span></div>
+                            <div onclick="goToTopic('lesson', 'physics-energy')" class="topic-card card p-3 flex items-center justify-between"><div><p class="font-medium text-gray-800">5. Energy 能量</p></div><span class="text-purple-500">→</span></div>
+                            <div onclick="goToTopic('lesson', 'physics-waves')" class="topic-card card p-3 flex items-center justify-between"><div><p class="font-medium text-gray-800">6. Waves 波</p></div><span class="text-purple-500">→</span></div>
+                            <div onclick="goToTopic('lesson', 'physics-optics')" class="topic-card card p-3 flex items-center justify-between"><div><p class="font-medium text-gray-800">7. Optics 光学</p></div><span class="text-purple-500">→</span></div>
+                            <div onclick="goToTopic('lesson', 'physics-electricity')" class="topic-card card p-3 flex items-center justify-between"><div><p class="font-medium text-gray-800">8. Electric Currents 电流</p></div><span class="text-purple-500">→</span></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="lesson" class="fade-in hidden">
+                <div class="card p-6 mb-6">
+                    <h2 class="section-title mb-4">今日课程 · Daily Lesson</h2>
+                    
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        <button onclick="selectSubject('math')" id="btn-math" class="tag bg-blue-100 text-blue-700 subject-active">📐 Mathematics</button>
+                        <button onclick="selectSubject('physics')" id="btn-physics" class="tag bg-gray-100 text-gray-600">🔬 Physics</button>
+                    </div>
+                    
+                    <!-- 动态内容区域 -->
+                    <div id="topicContent" class="card p-6 border-l-4 border-l-blue-500">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs font-medium">📚 选择一个知识点</span>
+                            <span class="text-gray-400 text-sm">CIE AS Level</span>
+                        </div>
+                        <p class="text-gray-600">请从左侧知识点目录选择一个主题开始学习。</p>
+                    </div>
+                    
+                    </div></section><!-- 练习 -->
+            <section id="practice" class="fade-in hidden">
+                <div class="card p-6">
+                    <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+                        <h2 class="section-title">智能练习 · Practice</h2>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <label class="text-sm text-gray-600">知识点:</label>
+                            <select id="topicFilter" class="border rounded-lg px-2 py-1 text-sm">
+                                <option value="">全部知识点</option>
+                                <optgroup label="📐 Mathematics 数学">
+                                    <option value="math-quadratics">1. 二次方程</option>
+                                    <option value="math-functions">2. 函数</option>
+                                    <option value="math-coordinate">3. 坐标几何</option>
+                                    <option value="math-trigonometry">4. 三角函数</option>
+                                    <option value="math-sequences">5. 数列</option>
+                                    <option value="math-differentiation">6. 微分</option>
+                                    <option value="math-integration">7. 积分</option>
+                                    <option value="math-circular">8. 圆周运动</option>
+                                </optgroup>
+                                <optgroup label="🔬 Physics 物理">
+                                    <option value="physics-quantities">1. 物理量</option>
+                                    <option value="physics-kinematics">2. 运动学</option>
+                                    <option value="physics-dynamics">3. 动力学</option>
+                                    <option value="physics-forces">4. 力</option>
+                                    <option value="physics-energy">5. 能量</option>
+                                    <option value="physics-waves">6. 波</option>
+                                    <option value="physics-optics">7. 光学</option>
+                                    <option value="physics-electricity">8. 电流</option>
+                                </optgroup>
+                            </select>
+                            <label class="text-sm text-gray-600 ml-2">数量:</label>
+                            <select id="questionCount" class="border rounded-lg px-2 py-1 text-sm">
+                                <option value="3">3道</option>
+                                <option value="5" selected>5道</option>
+                                <option value="10">10道</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- 练习区域 -->
+                    <div id="practiceArea">
+                        <div id="practiceQuestions" class="space-y-4 mb-6">
+                            <!-- 动态生成题目 -->
+                        </div>
+                        
+                        <div class="flex gap-3">
+                            <button id="submitBtn" class="btn-primary flex-1 py-3 text-white font-semibold rounded-xl">提交答案</button>
+                            <button id="refreshBtn" class="flex-1 py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200">换一批</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 结果汇总区域 -->
+                    <div id="practiceResult" class="hidden">
+                        <div class="text-center mb-6">
+                            <div class="text-5xl font-bold text-blue-600 mb-2" id="practiceScore">0/5</div>
+                            <p class="text-gray-600">答题正确率</p>
+                        </div>
+                        
+                        <div id="practiceDetails" class="space-y-4">
+                            <!-- 详细结果 -->
+                        </div>
+                        
+                        <button id="resetBtn" class="btn-primary w-full py-3 text-white font-semibold rounded-xl mt-6">重新开始</button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 导入 -->
+            <section id="import" class="fade-in hidden">
+                <div class="card p-6">
+                    <h2 class="section-title mb-4">导入习题集 · Import</h2>
+                    
+                    <!-- 文件上传区域 -->
+                    <div class="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center mb-4" id="dropZone">
+                        <div class="w-16 h-16 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center">
+                            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                        </div>
+                        <p class="text-gray-600 mb-2">拖拽文件到这里，或点击选择</p>
+                        <p class="text-gray-400 text-sm mb-4">支持 PDF、JPG、PNG 格式</p>
+                        <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" class="hidden">
+                        <button onclick="document.getElementById('fileInput').click()" class="btn-primary py-2 px-6 text-white rounded-xl inline-block cursor-pointer">选择文件</button>
+                    </div>
+                    
+                    <!-- 上传结果 -->
+                    <div id="uploadResult" class="hidden mb-4">
+                        <div class="card p-4 bg-green-50 border border-green-200 rounded-xl">
+                            <p class="text-green-700 font-medium">✅ 文件上传成功！</p>
+                            <p id="fileName" class="text-gray-600 text-sm"></p>
+                        </div>
+                    </div>
+                    
+                    <!-- 已上传文件列表 -->
+                    <div class="card p-4 mb-4">
+                        <h3 class="font-semibold text-gray-700 mb-3">📁 已上传文件</h3>
+                        <div id="uploadedFilesList">
+                            <p class="text-gray-400 text-sm">暂无文件</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 题目输入区域 -->
+                    <div class="card p-4 mb-4">
+                        <h3 class="font-semibold text-gray-700 mb-3">📝 手动输入题目（如从图片/PDF中识别）</h3>
+                        <textarea id="questionInput" class="w-full p-3 border border-gray-200 rounded-xl text-sm mb-3" rows="3" placeholder="输入题目内容..."></textarea>
+                        <textarea id="studentAnswerInput" class="w-full p-3 border border-gray-200 rounded-xl text-sm mb-3" rows="3" placeholder="输入学生答案..."></textarea>
+                        <input id="standardAnswerInput" class="w-full p-3 border border-gray-200 rounded-xl text-sm mb-3" placeholder="标准答案（可选）">
+                        <button onclick="analyzeAnswer()" class="btn-primary w-full py-3 text-white rounded-xl">开始分析</button>
+                    </div>
+                    
+                    <!-- 分析结果 -->
+                    <div id="analysisResult" class="hidden">
+                        <div class="card p-4">
+                            <h3 class="font-semibold text-gray-700 mb-3">📊 分析结果</h3>
+                            <div id="resultContent"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 p-4 bg-yellow-50 rounded-xl">
+                        <p class="text-yellow-800 text-sm"><strong>💡 功能说明：</strong>上传 PDF 或图片格式的习题集/错题集，AI 将自动分析知识点薄弱环节，推荐针对性练习。</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 进度 -->
+            <section id="progress" class="fade-in hidden">
+                <div class="card p-6">
+                    <h2 class="section-title mb-4">学习进度 · Progress</h2>
+                    
+                    <!-- 统计卡片 -->
+                    <div class="grid grid-cols-3 gap-4 mb-6">
+                        <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-4 text-white">
+                            <p class="text-3xl font-bold" id="statDays">12</p>
+                            <p class="text-blue-100 text-sm">已学天数</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-4 text-white">
+                            <p class="text-3xl font-bold" id="statQuestions">48</p>
+                            <p class="text-purple-100 text-sm">完成题目</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-4 text-white">
+                            <p class="text-3xl font-bold" id="statAccuracy">85%</p>
+                            <p class="text-green-100 text-sm">正确率</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 成就系统 -->
+                    <div class="card p-4 mb-6">
+                        <h3 class="font-semibold text-gray-700 mb-3">🏆 成就徽章</h3>
+                        <div class="grid grid-cols-4 gap-3" id="achievementBadges">
+                            <!-- 动态生成 -->
+                        </div>
+                    </div>
+                    
+                    <!-- 学习趋势图 -->
+                    <div class="card p-4 mb-6">
+                        <h3 class="font-semibold text-gray-700 mb-3">📈 学习趋势（最近7天）</h3>
+                        <div class="h-48 flex items-end justify-between gap-2 px-4" id="trendChart">
+                            <!-- 动态生成柱状图 -->
+                        </div>
+                        <div class="flex justify-between text-xs text-gray-500 mt-2 px-4">
+                            <span>6天前</span>
+                            <span>5天前</span>
+                            <span>4天前</span>
+                            <span>3天前</span>
+                            <span>2天前</span>
+                            <span>昨天</span>
+                            <span>今天</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 学习记录 -->
+                    <div class="card p-4 mb-6">
+                        <h3 class="font-semibold text-gray-700 mb-3">📝 最近学习记录</h3>
+                        <div class="space-y-2 max-h-64 overflow-y-auto" id="studyHistory">
+                            <!-- 动态生成 -->
+                        </div>
+                    </div>
+                    
+                    <!-- 薄弱点 -->
+                    <div class="card p-4">
+                        <h3 class="font-semibold text-gray-700 mb-3">⚠️ 需要强化的概念</h3>
+                        <div class="space-y-2" id="weakPoints">
+                            <div class="flex items-center justify-between p-3 bg-red-50 rounded-xl">
+                                <span class="text-gray-700">链式法则嵌套</span>
+                                <span class="text-red-600 text-sm font-medium">再练 3 题 →</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-yellow-50 rounded-xl">
+                                <span class="text-gray-700">隐函数求导</span>
+                                <span class="text-yellow-600 text-sm font-medium">再练 2 题 →</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <footer class="text-center py-8 text-gray-400 text-sm"><p>A-Level CIE Study Master 🦊</p></footer>
+        </div>
+    </div>
+    
+    <script>
+        // 文件上传处理
+        let uploadedFiles = [];
+        
+        // 等待 DOM 加载完成
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('fileInput');
+            const dropZone = document.getElementById('dropZone');
+            
+            if (fileInput) {
+                fileInput.addEventListener('change', async function(e) {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    await handleFileUpload(file);
+                });
+            }
+            
+            if (dropZone) {
+                dropZone.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    dropZone.classList.add('bg-blue-50', 'border-blue-400');
+                });
+                dropZone.addEventListener('dragleave', function(e) {
+                    e.preventDefault();
+                    dropZone.classList.remove('bg-blue-50', 'border-blue-400');
+                });
+                dropZone.addEventListener('drop', async function(e) {
+                    e.preventDefault();
+                    dropZone.classList.remove('bg-blue-50', 'border-blue-400');
+                    const files = e.dataTransfer.files;
+                    for (let file of files) {
+                        await handleFileUpload(file);
+                    }
+                });
+            }
+        });
+        
+        async function handleFileUpload(file) {
+            // 验证文件类型
+            const validTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+            if (!validTypes.includes(file.type)) {
+                alert('不支持的文件类型，请上传 PDF、JPG 或 PNG');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            try {
+                const response = await fetch('http://localhost:8000/upload-pdf', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    uploadedFiles.push({
+                        id: result.file_id,
+                        name: result.filename,
+                        pages: result.page_count || 1,
+                        type: file.type
+                    });
+                    renderUploadedFiles();
+                    document.getElementById('uploadResult').classList.remove('hidden');
+                    document.getElementById('fileName').textContent = result.filename + ' - ' + (result.page_count || '1') + ' 页';
+                    
+                    // 自动填充识别的文本到题目输入框
+                    if (result.text_preview && result.text_preview !== '[图片文件 - AI将分析图片中的题目]') {
+                        document.getElementById('questionInput').value = result.text_preview;
+                        showProgress('上传完成！已自动提取文本到题目框', 100, '完成');
+                    } else {
+                        // 调用 AI 提取多个题目
+                        showProgress('上传成功！正在用 AI 识别题目...', 30, '步骤 1/3: 上传文件');
+                        extractQuestionsFromFile(result.file_id);
+                    }
+                }
+            } catch (error) {
+                alert('上传失败: ' + error.message);
+            }
+        }
+        
+        function renderUploadedFiles() {
+            const container = document.getElementById('uploadedFilesList');
+            if (!container) return;
+            
+            let html = '<div class="space-y-2">';
+            uploadedFiles.forEach((f, i) => {
+                const icon = f.type === 'application/pdf' ? '📄' : '🖼️';
+                html += `<div class="flex items-center justify-between p-3 bg-green-50 rounded-xl">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl">${icon}</span>
+                        <div>
+                            <p class="text-gray-800 font-medium text-sm">${f.name}</p>
+                            <p class="text-gray-500 text-xs">${f.pages} 页</p>
+                        </div>
+                    </div>
+                    <button onclick="removeFile(${i})" class="text-red-500 text-sm">删除</button>
+                </div>`;
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        }
+        
+        function removeFile(index) {
+            uploadedFiles.splice(index, 1);
+            renderUploadedFiles();
+        }
+        
+        // 存储提取的题目列表
+        let extractedQuestions = [];
+        let currentFileId = '';
+        
+        // 显示分析结果（先定义，后面会用到）
+        function showAnalysis(i, a) {
+            const resultDiv = document.getElementById('analysisResult');
+            const contentDiv = document.getElementById('resultContent');
+            
+            if (!resultDiv || !contentDiv) {
+                console.error('找不到分析结果显示区域');
+                return;
+            }
+            
+            resultDiv.classList.remove('hidden');
+            
+            let h = '<div class="card p-4 mb-4"><h3 class="font-bold text-xl mb-3">题目 ' + (i+1) + ' 批改结果</h3>';
+            h += '<div class="text-center mb-4"><span class="text-5xl font-bold text-blue-600">' + a.score + '</span><span class="text-xl">分</span>';
+            h += '<p class="text-gray-700 mt-2">' + a.comment + '</p></div>';
+            
+            if (a.errors && a.errors.length) {
+                h += '<div class="mb-3"><h4 class="font-semibold text-red-600">错误分析</h4>';
+                a.errors.forEach(function(e) {
+                    h += '<p class="text-sm">• ' + e.type + ': ' + e.description + '</p>';
+                });
+                h += '</div>';
+            }
+            
+            if (a.better_solution) {
+                h += '<div><h4 class="font-semibold text-blue-600">更好解法</h4><pre class="bg-gray-50 p-3 rounded text-sm whitespace-pre-wrap">' + a.better_solution + '</pre></div>';
+            }
+            
+            h += '</div>';
+            contentDiv.innerHTML = h;
+        }
+        
+        // 分析当前题目
+        async function analyzeCurrentQuestion() {
+            const question = document.getElementById('questionInput').value;
+            const studentAnswer = document.getElementById('studentAnswerInput').value;
+            
+            if (!question) {
+                alert('请输入题目内容');
+                return;
+            }
+            
+            const btn = document.getElementById('analyzeBtn');
+            const originalText = btn ? btn.textContent : '开始分析';
+            if (btn) {
+                btn.disabled = true;
+                btn.textContent = '分析中...';
+            }
+            
+            try {
+                const response = await fetch('http://localhost:8000/analyze', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        question: question,
+                        student_answer: studentAnswer,
+                        file_id: currentFileId
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    console.log('分析成功，显示结果', result.analysis);
+                    showAnalysis(0, result.analysis);
+                    showProgress('分析完成！', 100, '完成');
+                    console.log('进度已更新到100%');
+                    // 3秒后隐藏进度条
+                    setTimeout(() => hideProgress(), 3000);
+                } else {
+                    console.error('分析失败', result.error);
+                    showProgress('分析失败: ' + (result.error || '未知错误'), 0, '');
+                }
+            } catch (error) {
+                console.error('分析异常:', error);
+                // 不弹出 alert，避免干扰用户体验
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.textContent = originalText;
+                }
+            }
+        }
+        
+        // 从文件中提取多个题目
+        async function extractQuestionsFromFile(fileId) {
+            currentFileId = fileId;
+            showProgress('正在识别题目...', 50, '步骤 2/3: AI识别题目');
+            try {
+                const response = await fetch('http://localhost:8000/extract-questions', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({file_id: fileId})
+                });
+                const result = await response.json();
+                
+                if (result.success && result.questions && result.questions.length > 0) {
+                    extractedQuestions = result.questions;
+                    
+                    if (extractedQuestions.length === 1) {
+                        // 只有一道题，直接填充并自动分析
+                        const q = extractedQuestions[0];
+                        console.log('识别到题目:', q);
+                        document.getElementById('questionInput').value = q.question || '';
+                        document.getElementById('studentAnswerInput').value = q.student_answer || '';
+                        showProgress('识别完成！正在分析答案...', 70, '步骤 3/3: AI分析答案');
+                        console.log('开始调用 analyzeCurrentQuestion');
+                        // 自动调用分析
+                        await analyzeCurrentQuestion();
+                        console.log('analyzeCurrentQuestion 完成');
+                    } else {
+                        // 多道题，显示选择界面
+                        showProgress(`识别完成！发现 ${extractedQuestions.length} 道题目`, 70, '请选择要分析的题目');
+                        showQuestionSelectorWithAutoAnalyze();
+                    }
+                } else {
+                    showProgress('未能识别题目，请手动输入', 0, '');
+                }
+            } catch (error) {
+                console.error('识别异常:', error);
+                showProgress('识别失败，请手动输入题目', 0, '');
+            }
+        }
+        
+        // 显示进度条
+        function showProgress(message, percent, step) {
+            let progressDiv = document.getElementById('progressContainer');
+            if (!progressDiv) {
+                progressDiv = document.createElement('div');
+                progressDiv.id = 'progressContainer';
+                progressDiv.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-96';
+                progressDiv.innerHTML = `
+                    <div class="bg-white rounded-xl shadow-lg p-4 border border-gray-200">
+                        <div class="flex justify-between items-center mb-2">
+                            <span id="progressStep" class="text-sm font-medium text-blue-600"></span>
+                            <span id="progressPercent" class="text-sm text-gray-500"></span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                            <div id="progressBar" class="bg-blue-600 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                        </div>
+                        <div id="progressMessage" class="mt-2 text-sm text-gray-600 text-center"></div>
+                    </div>
+                `;
+                document.body.appendChild(progressDiv);
+            }
+            
+            document.getElementById('progressStep').textContent = step;
+            document.getElementById('progressPercent').textContent = percent + '%';
+            document.getElementById('progressBar').style.width = percent + '%';
+            document.getElementById('progressMessage').textContent = message;
+            progressDiv.style.display = 'block';
+        }
+        
+        // 隐藏进度条
+        function hideProgress() {
+            const progressDiv = document.getElementById('progressContainer');
+            if (progressDiv) {
+                progressDiv.style.display = 'none';
+            }
+        }
+        
+        // 显示题目选择器（带自动分析）
+        function showQuestionSelectorWithAutoAnalyze() {
+            let html = '<div class="mb-4"><h3 class="font-bold text-lg mb-3">📋 识别到 ' + extractedQuestions.length + ' 道题目</h3><div class="space-y-2">';
+            
+            extractedQuestions.forEach((q, index) => {
+                const preview = q.question ? q.question.substring(0, 80) + '...' : '题目 ' + (index + 1);
+                html += `<div class="p-3 bg-blue-50 rounded-xl cursor-pointer hover:bg-blue-100 transition" onclick="selectQuestionAndAnalyze(${index})">
+                    <div class="flex items-center justify-between">
+                        <span class="font-semibold text-blue-700">题目 ${q.id || (index + 1)}</span>
+                        <span class="text-blue-500">点击分析 →</span>
+                    </div>
+                    <p class="text-gray-600 text-sm mt-1">${preview}</p>
+                </div>`;
+            });
+            
+            html += '</div></div>';
+            
+            // 显示在结果区域
+            document.getElementById('resultContent').innerHTML = html;
+            document.getElementById('analysisResult').classList.remove('hidden');
+            document.getElementById('analysisResult').querySelector('h3').textContent = '请选择要分析的题目';
+        }
+        
+        // 选择题目并自动分析
+        async function selectQuestionAndAnalyze(index) {
+            const q = extractedQuestions[index];
+            document.getElementById('questionInput').value = q.question || '';
+            document.getElementById('studentAnswerInput').value = q.student_answer || '';
+            showProgress('正在分析答案...', 80, '步骤 3/3: AI分析答案');
+            await analyzeCurrentQuestion();
+        }
+        
+        // AI 分析图片
+        async function analyzeImageWithAI(fileId) {
+            try {
+                const response = await fetch('http://localhost:8000/analyze-image', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({file_id: fileId})
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    const a = result.analysis;
+                    
+                    // 自动填充识别的题目和答案
+                    if (a.question) document.getElementById('questionInput').value = a.question;
+                    if (a.student_answer) document.getElementById('studentAnswerInput').value = a.student_answer;
+                    
+                    // 显示分析结果
+                    let html = `<div class="mb-4">
+                        <div class="text-3xl font-bold text-blue-600">${a.score || 0}分</div>
+                        <p class="text-gray-700 mt-2">${a.comment || ''}</p>
+                    </div>`;
+                    
+                    if (a.errors && a.errors.length > 0) {
+                        html += '<div class="mb-3"><h4 class="font-semibold text-red-600">❌ 错误分析</h4>';
+                        a.errors.forEach(e => {
+                            html += `<p class="text-gray-600 text-sm">• ${e.type}: ${e.description}</p>`;
+                        });
+                        html += '</div>';
+                    }
+                    
+                    if (a.weak_points && a.weak_points.length > 0) {
+                        html += '<div class="mb-3"><h4 class="font-semibold text-orange-600">⚠️ 薄弱知识点</h4>';
+                        a.weak_points.forEach(wp => {
+                            html += `<p class="text-gray-600 text-sm">• ${wp}</p>`;
+                        });
+                        html += '</div>';
+                    }
+                    
+                    if (a.suggestions && a.suggestions.length > 0) {
+                        html += '<div class="mb-3"><h4 class="font-semibold text-green-600">📚 学习建议</h4>';
+                        a.suggestions.forEach(s => {
+                            html += `<p class="text-gray-600 text-sm">• ${s.topic}: ${s.reason}</p>`;
+                        });
+                        html += '</div>';
+                    }
+                    
+                    document.getElementById('resultContent').innerHTML = html;
+                    document.getElementById('analysisResult').classList.remove('hidden');
+                    
+                    alert('AI 分析完成！已自动填充识别的题目和答案，请检查并修改。');
+                } else {
+                    alert('AI 分析失败: ' + (result.error || '未知错误'));
+                }
+            } catch (error) {
+                alert('分析异常: ' + error.message);
+            }
+        }
+        
+        // 分析答案
+        async function analyzeAnswer() {
+            const question = document.getElementById('questionInput').value;
+            const studentAnswer = document.getElementById('studentAnswerInput').value;
+            const standardAnswer = document.getElementById('standardAnswerInput').value;
+            
+            if (!question || !studentAnswer) {
+                alert('请输入题目和学生答案');
+                return;
+            }
+            
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = '分析中...';
+            
+            try {
+                const response = await fetch('http://localhost:8000/analyze', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        question: question,
+                        student_answer: studentAnswer,
+                        standard_answer: standardAnswer
+                    })
+                });
+                const result = await response.json();
+                
+                alert('上传成功: ' + result.filename); if (result.success) {
+                    const a = result.analysis;
+                    let html = `<div class="mb-4">
+                        <div class="text-3xl font-bold text-blue-600">${a.score}分</div>
+                        <p class="text-gray-700 mt-2">${a.comment}</p>
+                    </div>`;
+                    
+                    if (a.errors && a.errors.length > 0) {
+                        html += '<div class="mb-3"><h4 class="font-semibold text-red-600">❌ 错误分析</h4>';
+                        a.errors.forEach(e => {
+                            html += `<p class="text-gray-600 text-sm">• ${e.type}: ${e.description}</p>`;
+                        });
+                        html += '</div>';
+                    }
+                    
+                    if (a.weak_points && a.weak_points.length > 0) {
+                        html += '<div class="mb-3"><h4 class="font-semibold text-orange-600">⚠️ 薄弱知识点</h4>';
+                        a.weak_points.forEach(wp => {
+                            html += `<p class="text-gray-600 text-sm">• ${wp}</p>`;
+                        });
+                        html += '</div>';
+                    }
+                    
+                    if (a.suggestions && a.suggestions.length > 0) {
+                        html += '<div class="mb-3"><h4 class="font-semibold text-green-600">📚 学习建议</h4>';
+                        a.suggestions.forEach(s => {
+                            html += `<p class="text-gray-600 text-sm">• ${s.topic}: ${s.reason}</p>`;
+                        });
+                        html += '</div>';
+                    }
+                    
+                    if (a.better_solution) {
+                        html += '<div><h4 class="font-semibold text-blue-600">💡 更好的解法</h4><pre class="bg-gray-50 p-3 rounded text-sm overflow-x-auto">' + a.better_solution + '</pre></div>';
+                    }
+                    
+                    document.getElementById('resultContent').innerHTML = html;
+                    document.getElementById('analysisResult').classList.remove('hidden');
+                }
+            } catch (error) {
+                alert('分析失败: ' + error.message);
+            }
+            
+            btn.disabled = false;
+            btn.textContent = '开始分析';
+        }
+        
+        // 知识点跳转 - 现在使用 topicData 数据
+        
+        // 科目切换
+        function selectSubject(subject) {
+            console.log('selectSubject called:', subject);
+            
+            // 更新科目按钮样式
+            var buttons = document.querySelectorAll('.tag');
+            console.log('Found buttons:', buttons.length);
+            buttons.forEach(function(btn) {
+                btn.classList.remove('subject-active');
+                btn.style.background = '';
+                btn.style.color = '';
+            });
+            var activeBtn = document.getElementById('btn-' + subject);
+            console.log('Active button:', activeBtn);
+            if (activeBtn) {
+                activeBtn.classList.add('subject-active');
+                activeBtn.style.background = '#007AFF';
+                activeBtn.style.color = 'white';
+            }
+            
+            // 更新内容区域样式
+            var topicContent = document.getElementById('topicContent');
+            console.log('Topic content element:', topicContent);
+            if (topicContent) {
+                topicContent.classList.remove('border-l-blue-500', 'border-l-purple-500');
+                if (subject === 'math') {
+                    topicContent.classList.add('border-l-blue-500');
+                } else if (subject === 'physics') {
+                    topicContent.classList.add('border-l-purple-500');
+                }
+            }
+        }
+        
+        // 登录
+        function handleLogin(event) {
+            event.preventDefault();
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
+            if (u === 'admin' && p === '12346789') {
+                localStorage.setItem('isLoggedIn', 'true');
+                document.getElementById('loginPage').classList.add('hidden');
+                document.getElementById('app').classList.remove('hidden');
+            } else {
+                document.getElementById('loginError').classList.remove('hidden');
+            }
+            return false;
+        }
+        
+        function logout() {
+            localStorage.removeItem('isLoggedIn');
+            document.getElementById('app').classList.add('hidden');
+            document.getElementById('loginPage').classList.remove('hidden');
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+        
+        window.onload = function() {
+            if (localStorage.getItem('isLoggedIn') === 'true') {
+                document.getElementById('loginPage').classList.add('hidden');
+                document.getElementById('app').classList.remove('hidden');
+            }
+        };
+        
+        document.querySelectorAll('.option-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('bg-blue-50', 'border-blue-500'));
+                this.classList.add('bg-blue-50', 'border-blue-500');
+            });
+        });
+        
+        async function handleFileUpload(file) {
+        dropZone.addEventListener('dragleave', function(e) { e.preventDefault(); dropZone.classList.remove('bg-blue-50'); });
+        dropZone.addEventListener('drop', async function(e) {
+            e.preventDefault();
+            dropZone.classList.remove('bg-blue-50');
+            for (let file of e.dataTransfer.files) {
+                await handleFileUpload(file);
+            }
+        });
+        
+        async function handleFileUpload(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+            try {
+                const response = await fetch('http://localhost:8000/upload-pdf', { method: 'POST', body: formData });
+                const result = await response.json();
+                alert('上传成功: ' + result.filename); if (result.success) {
+                    uploadedFiles.push({ id: result.file_id, name: result.filename, type: file.type });
+                    renderFiles();
+                    document.getElementById('filesSection').classList.remove('hidden');
+                }
+            } catch (error) {
+                alert('上传失败: ' + error.message);
+            }
+        }
+        
+        function renderFiles() {
+            const list = document.getElementById('uploadedFilesList');
+            let html = '';
+            uploadedFiles.forEach(function(f, i) {
+                html += '<div class="flex items-center justify-between p-2 bg-gray-50 rounded-lg">';
+                html += '<span>' + (f.type.includes('pdf') ? '📄' : '🖼️') + ' ' + f.name + '</span>';
+                html += '<button onclick="removeFile(' + i + ')" class="text-red-500 text-sm">删除</button>';
+                html += '</div>';
+            });
+            list.innerHTML = html;
+        }
+        
+        function removeFile(i) {
+            uploadedFiles.splice(i, 1);
+            renderFiles();
+            if (uploadedFiles.length === 0) {
+                document.getElementById('filesSection').classList.add('hidden');
+            }
+        }
+        
+        async function processFiles() {
+            if (uploadedFiles.length === 0) return;
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = 'AI解析中...';
+            try {
+                const response = await fetch('http://localhost:8000/extract', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ file_ids: uploadedFiles.map(function(f) { return f.id; }) })
+                });
+                const result = await response.json();
+                if (result.success && result.questions) {
+                    processedQuestions = result.questions;
+                    renderQuestions();
+                } else {
+                    alert('解析失败');
+                }
+            } catch (error) {
+                alert('解析失败: ' + error.message);
+            }
+            btn.disabled = false;
+            btn.textContent = '解析文件';
+        }
+        
+        function renderQuestions() {
+            document.getElementById('questionsSection').classList.remove('hidden');
+            const list = document.getElementById('questionsList');
+            let html = '';
+            processedQuestions.forEach(function(q, i) {
+                html += '<div class="card p-3 mb-2 border border-gray-200">';
+                html += '<div class="flex justify-between mb-2"><span class="font-medium">题目 ' + (i+1) + '</span>';
+                html += '<button onclick="analyzeQuestion(' + i + ')" class="text-blue-600 text-sm">批改 →</button></div>';
+                html += '<p class="text-sm bg-gray-50 p-2 rounded">' + (q.question || '未识别到题目') + '</p>';
+                if (q.answer) {
+                    html += '<p class="text-sm text-gray-600 mt-1">答案: ' + q.answer + '</p>';
+                }
+                html += '</div>';
+            });
+            list.innerHTML = html;
+        }
+        
+        async function analyzeQuestion(i) {
+            const q = processedQuestions[i];
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = '分析中...';
+            try {
+                const response = await fetch('http://localhost:8000/analyze', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ question: q.question, student_answer: q.answer || '' })
+                });
+                const result = await response.json();
+                alert('上传成功: ' + result.filename); if (result.success) {
+                    showAnalysis(i, result.analysis);
+                }
+            } catch (error) {
+                alert('分析失败: ' + error.message);
+            }
+            btn.disabled = false;
+            btn.textContent = '批改 →';
+        }
+        
+        // AI 分析图片
+        async function analyzeImageWithAI(fileId) {
+            try {
+                const response = await fetch('http://localhost:8000/analyze-image', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({file_id: fileId})
+                });
+                const result = await response.json();
+                if (result.success) {
+                    alert('图片分析完成！');
+                }
+            } catch (error) {
+                alert('分析失败: ' + error.message);
+            }
+        }
+        
+        // ===== 智能练习功能 =====
+        // 按知识点分类的习题库
+        const practiceQuestionBank = [
+            // Quadratics
+            {id: 1, topicId: 'math-quadratics', topic: 'Quadratics', question: '解方程 x² - 5x + 6 = 0', options: ['x = 2 或 x = 3', 'x = 1 或 x = 6', 'x = -2 或 x = -3', '无解'], correct: 0, explanation: '判别式 Δ = 25-24=1>0，有两个不等实根'},
+            {id: 2, topicId: 'math-quadratics', topic: 'Quadratics', question: 'x² - 4 = 0 的根是？', options: ['x = ±2', 'x = 2', 'x = 4', 'x = ±4'], correct: 0, explanation: 'x² = 4, x = ±2'},
+            {id: 3, topicId: 'math-quadratics', topic: 'Quadratics', question: '判别式 b²-4ac > 0 表示？', options: ['两个不等实根', '两个相等实根', '无实根', '无法确定'], correct: 0, explanation: 'Δ>0 有两个不等实根'},
+            // Functions
+            {id: 4, topicId: 'math-functions', topic: 'Functions', question: 'f(x) = 2x+1, f⁻¹(5) = ?', options: ['2', '3', '4', '5'], correct: 0, explanation: '设 y=2x+1, x=(y-1)/2, f⁻¹(5)=(5-1)/2=2'},
+            {id: 5, topicId: 'math-functions', topic: 'Functions', question: 'f(x)=x², 定义域 x≥0 的值域是？', options: ['y≥0', 'y>0', 'y≤0', '所有实数'], correct: 0, explanation: '平方非负，所以值域 y≥0'},
+            // Coordinate Geometry
+            {id: 6, topicId: 'math-coordinate', topic: 'Coordinate Geometry', question: '点(1,2)到点(4,6)的距离是？', options: ['5', '4', '3', '6'], correct: 0, explanation: 'd=√[(4-1)²+(6-2)²]=√25=5'},
+            {id: 7, topicId: 'math-coordinate', topic: 'Coordinate Geometry', question: '直线 y = 2x + 1 的斜率是？', options: ['2', '1', '-2', '0'], correct: 0, explanation: 'y=mx+c 中 m 为斜率'},
+            {id: 8, topicId: 'math-coordinate', topic: 'Coordinate Geometry', question: '斜率乘积为-1的两条直线什么关系？', options: ['垂直', '平行', '重合', '无关系'], correct: 0, explanation: '垂直直线的斜率乘积为-1'},
+            // Trigonometry
+            {id: 9, topicId: 'math-trigonometry', topic: 'Trigonometry', question: 'sin²θ + cos²θ = ?', options: ['1', '0', 'sin(2θ)', 'cos(2θ)'], correct: 0, explanation: '基本恒等式'},
+            {id: 10, topicId: 'math-trigonometry', topic: 'Trigonometry', question: 'tanθ = ?', options: ['sinθ/cosθ', 'cosθ/sinθ', 'sinθ+cosθ', '1/sinθ'], correct: 0, explanation: 'tan 定义为 sin/cos'},
+            // Sequences
+            {id: 11, topicId: 'math-sequences', topic: 'Sequences', question: '等差数列 2,5,8,... 第10项是？', options: ['29', '27', '30', '28'], correct: 0, explanation: 'a₁₀ = 2 + 9×3 = 29'},
+            {id: 12, topicId: 'math-sequences', topic: 'Sequences', question: '等比数列 2,4,8,... 第5项是？', options: ['16', '10', '32', '8'], correct: 0, explanation: 'a₅ = 2×2⁴ = 16'},
+            // Differentiation
+            {id: 13, topicId: 'math-differentiation', topic: 'Differentiation', question: 'd/dx(x³) = ?', options: ['3x²', 'x²', '3x³', 'x³'], correct: 0, explanation: '幂函数求导：d/dx(xⁿ)=nxⁿ⁻¹'},
+            {id: 14, topicId: 'math-differentiation', topic: 'Differentiation', question: 'd/dx(e²ˣ) = ?', options: ['2e²ˣ', 'e²ˣ', '2xe²ˣ', 'e²ˣ/2'], correct: 0, explanation: '链式法则：d/dx(eᵘ)=eᵘ·u\''},
+            {id: 15, topicId: 'math-differentiation', topic: 'Differentiation', question: 'y = (2x³-5)⁴, dy/dx = ?', options: ['4(2x³-5)³×6x²', '4(2x³-5)³', '(2x³-5)³×6x²', '8x(2x³-5)³'], correct: 0, explanation: '链式法则：dy/dx = 4(2x³-5)³ × 6x²'},
+            // Integration
+            {id: 16, topicId: 'math-integration', topic: 'Integration', question: '∫x²dx = ?', options: ['x³/3 + C', 'x³ + C', '2x + C', 'x² + C'], correct: 0, explanation: '∫xⁿdx = xⁿ⁺¹/(n+1) + C'},
+            {id: 17, topicId: 'math-integration', topic: 'Integration', question: '∫(3x²+2x)dx = ?', options: ['x³+x²+C', '6x+2+C', 'x³+x²', '3x³+x²+C'], correct: 0, explanation: '分别积分：∫3x²dx=x³, ∫2xdx=x²'},
+            // Circular Motion
+            {id: 18, topicId: 'math-circular', topic: 'Circular Motion', question: 'r=2m, ω=3rad/s, 线速度 v=?', options: ['6m/s', '1.5m/s', '9m/s', '5m/s'], correct: 0, explanation: 'v = rω = 2×3 = 6m/s'},
+            // Physics - Physical Quantities
+            {id: 19, topicId: 'physics-quantities', topic: 'Physical Quantities', question: '哪个是基本物理量？', options: ['质量', '力', '速度', '能量'], correct: 0, explanation: '质量是7个基本物理量之一'},
+            {id: 20, topicId: 'physics-quantities', topic: 'Physical Quantities', question: '力的单位（N）等于？', options: ['kg·m/s²', 'kg·m/s', 'kg/m·s²', 'kg·m²/s²'], correct: 0, explanation: 'F=ma, 单位 kg·m/s² = N'},
+            // Physics - Kinematics
+            {id: 21, topicId: 'physics-kinematics', topic: 'Kinematics', question: '汽车从静止匀加速，a=2m/s²，5秒后速度？', options: ['10m/s', '7m/s', '2.5m/s', '0.4m/s'], correct: 0, explanation: 'v = u + at = 0 + 2×5 = 10m/s'},
+            {id: 22, topicId: 'physics-kinematics', topic: 'Kinematics', question: 's = ut + ½at² 是什么公式？', options: ['位移公式', '速度公式', '加速度公式', '功率公式'], correct: 0, explanation: '匀加速直线运动的位移公式'},
+            // Physics - Dynamics
+            {id: 23, topicId: 'physics-dynamics', topic: 'Dynamics', question: 'F=ma, m=5kg, a=2m/s², F=?', options: ['10N', '7N', '3N', '10kg'], correct: 0, explanation: 'F = 5×2 = 10N'},
+            {id: 24, topicId: 'physics-dynamics', topic: 'Dynamics', question: '动量 p = ?', options: ['mv', 'm/v', 'm·a', 'm·g'], correct: 0, explanation: '动量定义：p = mv'},
+            // Physics - Forces
+            {id: 25, topicId: 'physics-forces', topic: 'Forces', question: '两垂直力 3N 和 4N，合力大小？', options: ['5N', '7N', '1N', '12N'], correct: 0, explanation: 'R = √(3²+4²) = 5N'},
+            {id: 26, topicId: 'physics-forces', topic: 'Forces', question: '平衡状态下物体受合外力？', options: ['0', 'mg', 'μN', '无法确定'], correct: 0, explanation: '平衡状态合外力为零'},
+            // Physics - Energy
+            {id: 27, topicId: 'physics-energy', topic: 'Energy', question: 'm=2kg, v=10m/s, 动能 Ek=?', options: ['100J', '20J', '200J', '10J'], correct: 0, explanation: 'Ek = ½mv² = ½×2×10² = 100J'},
+            {id: 28, topicId: 'physics-energy', topic: 'Energy', question: 'm=2kg, h=5m, g=10, 重力势能 Ep=?', options: ['100J', '10J', '50J', '25J'], correct: 0, explanation: 'Ep = mgh = 2×10×5 = 100J'},
+            // Physics - Waves
+            {id: 29, topicId: 'physics-waves', topic: 'Waves', question: 'v = fλ, f=50Hz, λ=2m, v=?', options: ['100m/s', '25m/s', '52m/s', '100Hz'], correct: 0, explanation: 'v = 50×2 = 100m/s'},
+            {id: 30, topicId: 'physics-waves', topic: 'Waves', question: '波速 v=340m/s, f=170Hz, λ=?', options: ['2m', '1m', '340m', '170m'], correct: 0, explanation: 'λ = v/f = 340/170 = 2m'},
+            // Physics - Optics
+            {id: 31, topicId: 'physics-optics', topic: 'Optics', question: 'n=c/v, c=3×10⁸m/s, n=1.5, v=?', options: ['2×10⁸m/s', '4.5×10⁸m/s', '1.5×10⁸m/s', '3×10⁸m/s'], correct: 0, explanation: 'v = 3×10⁸/1.5 = 2×10⁸m/s'},
+            {id: 32, topicId: 'physics-optics', topic: 'Optics', question: '全反射发生在？', options: ['光从光密到光疏', '光从光疏到光密', '任何情况', '都不对'], correct: 0, explanation: '从高折射率到低折射率时入射角大于临界角'},
+            // Physics - Electricity
+            {id: 33, topicId: 'physics-electricity', topic: 'Electricity', question: 'V=12V, I=3A, R=?', options: ['4Ω', '36Ω', '0.25Ω', '15Ω'], correct: 0, explanation: 'R = V/I = 12/3 = 4Ω'},
+            {id: 34, topicId: 'physics-electricity', topic: 'Electricity', question: 'P=IV, V=220V, I=2A, P=?', options: ['440W', '110W', '440Ω', '222W'], correct: 0, explanation: 'P = 220×2 = 440W'},
+            {id: 35, topicId: 'physics-electricity', topic: 'Electricity', question: '串联电路总电阻等于？', options: ['各电阻之和', '各电阻之积', '各电阻倒数之和', '最小电阻'], correct: 0, explanation: '串联：R = R₁ + R₂ + ...'}
+        ];
+
+        let currentTopicId = null;
+        
+        let currentPracticeQuestions = [];
+        let practiceAnswers = {};
+        
+        function generatePracticeQuestions() {
+            console.log('generatePracticeQuestions called');
+            try {
+                const countEl = document.getElementById('questionCount');
+                const topicEl = document.getElementById('topicFilter');
+                
+                if (!countEl || !topicEl) {
+                    console.log('Elements not found, retrying...');
+                    setTimeout(generatePracticeQuestions, 300);
+                    return;
+                }
+                
+                const count = parseInt(countEl.value);
+                const topicFilter = topicEl.value;
+                console.log('count:', count, 'topic:', topicFilter, 'total questions:', practiceQuestionBank.length);
+                
+                // 按知识点筛选
+                let filtered = practiceQuestionBank;
+                if (topicFilter) {
+                    filtered = practiceQuestionBank.filter(q => q.topicId === topicFilter);
+                    console.log('Filtered:', filtered.length, 'questions');
+                    if (filtered.length === 0) {
+                        alert('该知识点暂无可用习题');
+                        filtered = practiceQuestionBank;
+                    }
+                }
+                
+                const shuffled = [...filtered].sort(() => 0.5 - Math.random());
+                currentPracticeQuestions = shuffled.slice(0, Math.min(count, shuffled.length));
+                practiceAnswers = {};
+                console.log('Generated', currentPracticeQuestions.length, 'questions');
+                renderPracticeQuestions();
+            } catch (e) {
+                console.error('Error generating questions:', e);
+            }
+        }
+        
+        function renderPracticeQuestions() {
+            console.log('renderPracticeQuestions called');
+            const container = document.getElementById('practiceQuestions');
+            console.log('container:', container);
+            if (!container) {
+                console.error('practiceQuestions container not found!');
+                return;
+            }
+            container.innerHTML = currentPracticeQuestions.map((q, index) => `
+                <div class="bg-gray-50 rounded-2xl p-4">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs font-medium">${q.topic}</span>
+                        <span class="text-gray-400 text-sm">#${index + 1}</span>
+                    </div>
+                    <p class="text-gray-800 font-medium mb-3">${q.question}</p>
+                    <div class="space-y-2">
+                        ${q.options.map((opt, optIndex) => `
+                            <button onclick="selectPracticeAnswer(${index}, ${optIndex})" 
+                                    class="option-btn w-full p-3 text-left bg-white border border-gray-200 rounded-xl transition ${practiceAnswers[index] === optIndex ? 'selected' : ''}"
+                                    data-question="${index}" data-option="${optIndex}">
+                                <span class="text-gray-600 font-medium">${String.fromCharCode(65 + optIndex)}.</span> ${opt}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+            console.log('rendered');
+        }
+        
+        function selectPracticeAnswer(questionIndex, optionIndex) {
+            practiceAnswers[questionIndex] = optionIndex;
+            const buttons = document.querySelectorAll(`[data-question="${questionIndex}"]`);
+            buttons.forEach(btn => btn.classList.remove('selected'));
+            buttons[optionIndex].classList.add('selected');
+        }
+        
+        function submitPracticeAnswers() {
+            if (Object.keys(practiceAnswers).length < currentPracticeQuestions.length) {
+                alert('请完成所有题目后再提交');
+                return;
+            }
+            
+            let correct = 0;
+            currentPracticeQuestions.forEach((q, index) => {
+                if (practiceAnswers[index] === q.correct) correct++;
+            });
+            
+            document.getElementById('practiceArea').classList.add('hidden');
+            document.getElementById('practiceResult').classList.remove('hidden');
+            document.getElementById('practiceScore').textContent = `${correct}/${currentPracticeQuestions.length}`;
+            
+            const detailsContainer = document.getElementById('practiceDetails');
+            detailsContainer.innerHTML = currentPracticeQuestions.map((q, index) => {
+                const isCorrect = practiceAnswers[index] === q.correct;
+                const userAnswer = String.fromCharCode(65 + practiceAnswers[index]);
+                const correctAnswer = String.fromCharCode(65 + q.correct);
+                
+                return `
+                    <div class="bg-gray-50 rounded-xl p-4 ${isCorrect ? 'border-l-4 border-green-500' : 'border-l-4 border-red-500'}">
+                        <div class="flex items-start justify-between mb-2">
+                            <span class="font-medium text-gray-800">题目 ${index + 1}</span>
+                            <span class="${isCorrect ? 'text-green-600' : 'text-red-600'} font-medium">${isCorrect ? '✓ 正确' : '✗ 错误'}</span>
+                        </div>
+                        <p class="text-gray-700 mb-2">${q.question}</p>
+                        <p class="text-sm text-gray-600 mb-2">你的答案: ${userAnswer} | 正确答案: ${correctAnswer}</p>
+                        <div class="bg-blue-50 p-3 rounded-lg">
+                            <p class="text-sm text-blue-800"><strong>解析:</strong> ${q.explanation}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function resetPractice() {
+            document.getElementById('practiceResult').classList.add('hidden');
+            document.getElementById('practiceArea').classList.remove('hidden');
+            generatePracticeQuestions();
+        }
+        
+        // 初始化 - 等待DOM加载完成
+        function initPractice() {
+            console.log('initPractice called');
+            generatePracticeQuestions();
+            
+            // 添加事件监听器
+            const topicFilter = document.getElementById('topicFilter');
+            const questionCount = document.getElementById('questionCount');
+            const submitBtn = document.getElementById('submitBtn');
+            const refreshBtn = document.getElementById('refreshBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            
+            if (topicFilter) {
+                topicFilter.addEventListener('change', generatePracticeQuestions);
+                console.log('topicFilter listener added');
+            }
+            if (questionCount) {
+                questionCount.addEventListener('change', generatePracticeQuestions);
+                console.log('questionCount listener added');
+            }
+            if (submitBtn) {
+                submitBtn.addEventListener('click', submitPracticeAnswers);
+                console.log('submitBtn listener added');
+            }
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', generatePracticeQuestions);
+                console.log('refreshBtn listener added');
+            }
+            if (resetBtn) {
+                resetBtn.addEventListener('click', resetPractice);
+                console.log('resetBtn listener added');
+            }
+        }
+        
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initPractice);
+        } else {
+            initPractice();
+        }
+        
+        // ===== 学习记录与成就系统 =====
+        
+        // 从 localStorage 加载学习记录
+        function loadStudyRecords() {
+            const records = localStorage.getItem('studyRecords');
+            return records ? JSON.parse(records) : [];
+        }
+        
+        // 保存学习记录
+        function saveStudyRecord(topic, score, total) {
+            const records = loadStudyRecords();
+            const record = {
+                date: new Date().toISOString(),
+                topic: topic,
+                score: score,
+                total: total,
+                accuracy: Math.round((score / total) * 100)
+            };
+            records.push(record);
+            localStorage.setItem('studyRecords', JSON.stringify(records));
+            updateProgressPage();
+        }
+        
+        // 成就定义
+        const achievements = [
+            { id: 'first_step', name: '初出茅庐', icon: '🌱', desc: '完成第一次练习', condition: (stats) => stats.totalQuestions >= 1 },
+            { id: 'steady_learner', name: '坚持学习', icon: '📚', desc: '连续学习3天', condition: (stats) => stats.studyDays >= 3 },
+            { id: 'perfect_score', name: '满分达人', icon: '💯', desc: '单次练习全对', condition: (stats) => stats.perfectScores >= 1 },
+            { id: 'hard_worker', name: '勤奋学者', icon: '⭐', desc: '完成50道题目', condition: (stats) => stats.totalQuestions >= 50 },
+            { id: 'accuracy_master', name: '精准大师', icon: '🎯', desc: '正确率达到90%', condition: (stats) => stats.accuracy >= 90 },
+            { id: 'topic_master', name: '专题高手', icon: '🏆', desc: '完成一个专题的所有题目', condition: (stats) => stats.completedTopics >= 1 }
+        ];
+        
+        // 计算统计数据
+        function calculateStats() {
+            const records = loadStudyRecords();
+            const stats = {
+                totalQuestions: records.reduce((sum, r) => sum + r.total, 0),
+                correctQuestions: records.reduce((sum, r) => sum + r.score, 0),
+                studyDays: new Set(records.map(r => r.date.split('T')[0])).size,
+                perfectScores: records.filter(r => r.score === r.total).length,
+                accuracy: records.length > 0 ? Math.round(records.reduce((sum, r) => sum + r.accuracy, 0) / records.length) : 0,
+                completedTopics: 0 // 简化处理
+            };
+            return stats;
+        }
+        
+        // 更新进度页面
+        function updateProgressPage() {
+            const stats = calculateStats();
+            const records = loadStudyRecords();
+            
+            // 更新统计数字
+            document.getElementById('statDays').textContent = stats.studyDays;
+            document.getElementById('statQuestions').textContent = stats.totalQuestions;
+            document.getElementById('statAccuracy').textContent = stats.accuracy + '%';
+            
+            // 渲染成就徽章
+            const badgesContainer = document.getElementById('achievementBadges');
+            badgesContainer.innerHTML = achievements.map(ach => {
+                const unlocked = ach.condition(stats);
+                return `
+                    <div class="text-center p-3 rounded-xl ${unlocked ? 'bg-yellow-50 border-2 border-yellow-300' : 'bg-gray-50 border-2 border-gray-200 opacity-50'}">
+                        <div class="text-3xl mb-1">${ach.icon}</div>
+                        <div class="text-xs font-medium ${unlocked ? 'text-yellow-700' : 'text-gray-500'}">${ach.name}</div>
+                        <div class="text-xs text-gray-400">${ach.desc}</div>
+                    </div>
+                `;
+            }).join('');
+            
+            // 渲染趋势图（最近7天）
+            const trendChart = document.getElementById('trendChart');
+            const last7Days = [];
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                last7Days.push(date.toISOString().split('T')[0]);
+            }
+            
+            const dailyStats = last7Days.map(date => {
+                const dayRecords = records.filter(r => r.date.startsWith(date));
+                return dayRecords.reduce((sum, r) => sum + r.total, 0);
+            });
+            
+            const maxCount = Math.max(...dailyStats, 1);
+            trendChart.innerHTML = dailyStats.map((count, i) => `
+                <div class="flex flex-col items-center flex-1">
+                    <div class="w-full bg-blue-500 rounded-t-lg transition-all duration-500" style="height: ${(count / maxCount) * 160}px; opacity: ${count > 0 ? 1 : 0.3}"></div>
+                    <div class="text-xs text-gray-500 mt-1">${count}</div>
+                </div>
+            `).join('');
+            
+            // 渲染学习记录
+            const historyContainer = document.getElementById('studyHistory');
+            const recentRecords = [...records].reverse().slice(0, 10);
+            historyContainer.innerHTML = recentRecords.map(r => `
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+                    <div>
+                        <p class="font-medium text-gray-800">${r.topic || '智能练习'}</p>
+                        <p class="text-xs text-gray-500">${new Date(r.date).toLocaleString('zh-CN')}</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="font-bold ${r.accuracy >= 80 ? 'text-green-600' : r.accuracy >= 60 ? 'text-yellow-600' : 'text-red-600'}">${r.score}/${r.total}</span>
+                        <p class="text-xs text-gray-500">${r.accuracy}%</p>
+                    </div>
+                </div>
+            `).join('') || '<p class="text-gray-400 text-center py-4">暂无学习记录</p>';
+        }
+        
+        // 修改提交答案函数，保存记录
+        const originalSubmitPractice = submitPracticeAnswers;
+        submitPracticeAnswers = function() {
+            if (Object.keys(practiceAnswers).length < currentPracticeQuestions.length) {
+                alert('请完成所有题目后再提交');
+                return;
+            }
+            
+            let correct = 0;
+            currentPracticeQuestions.forEach((q, index) => {
+                if (practiceAnswers[index] === q.correct) correct++;
+            });
+            
+            // 保存记录
+            saveStudyRecord('智能练习', correct, currentPracticeQuestions.length);
+            
+            // 显示结果
+            document.getElementById('practiceArea').classList.add('hidden');
+            document.getElementById('practiceResult').classList.remove('hidden');
+            document.getElementById('practiceScore').textContent = `${correct}/${currentPracticeQuestions.length}`;
+            
+            const detailsContainer = document.getElementById('practiceDetails');
+            detailsContainer.innerHTML = currentPracticeQuestions.map((q, index) => {
+                const isCorrect = practiceAnswers[index] === q.correct;
+                const userAnswer = String.fromCharCode(65 + practiceAnswers[index]);
+                const correctAnswer = String.fromCharCode(65 + q.correct);
+                
+                return `
+                    <div class="bg-gray-50 rounded-xl p-4 ${isCorrect ? 'border-l-4 border-green-500' : 'border-l-4 border-red-500'}">
+                        <div class="flex items-start justify-between mb-2">
+                            <span class="font-medium text-gray-800">题目 ${index + 1}</span>
+                            <span class="${isCorrect ? 'text-green-600' : 'text-red-600'} font-medium">${isCorrect ? '✓ 正确' : '✗ 错误'}</span>
+                        </div>
+                        <p class="text-gray-700 mb-2">${q.question}</p>
+                        <p class="text-sm text-gray-600 mb-2">你的答案: ${userAnswer} | 正确答案: ${correctAnswer}</p>
+                        <div class="bg-blue-50 p-3 rounded-lg">
+                            <p class="text-sm text-blue-800"><strong>解析:</strong> ${q.explanation}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        };
+        
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM Content Loaded');
+            updateProgressPage();
+            
+            // 初始化练习
+            if (typeof initPractice === 'function') {
+                initPractice();
+            }
+            
+            // 初始化每日课程按钮
+            if (typeof selectSubject === 'function') {
+                selectSubject('math');
+            }
+        });
+        
+        // 备用：window.onload
+        window.onload = function() {
+            console.log('Window loaded');
+            if (typeof initPractice === 'function') {
+                initPractice();
+            }
+            if (typeof selectSubject === 'function') {
+                selectSubject('math');
+            }
+        };
+        
+        // 强制初始化
+        setTimeout(function() {
+            console.log('Force init');
+            if (typeof initPractice === 'function') {
+                initPractice();
+            }
+            if (typeof selectSubject === 'function') {
+                selectSubject('math');
+            }
+        }, 500);
+    </script>
+</body>
+</html>
