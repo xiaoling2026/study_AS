@@ -1049,6 +1049,10 @@ function generateQuestions() {
         document.getElementById('practiceQuestions').innerHTML = html;
         document.getElementById('practiceResult').classList.add('hidden');
         document.getElementById('practiceArea').classList.remove('hidden');
+        // 渲染数学公式
+        if(typeof MathJax !== 'undefined') {
+            MathJax.typesetPromise();
+        }
         return;
     }
     
@@ -1072,6 +1076,10 @@ function generateQuestions() {
                 html += '</div>';
             }
             document.getElementById("practiceQuestions").innerHTML = html;
+            // 渲染数学公式
+            if(typeof MathJax !== 'undefined') {
+                MathJax.typesetPromise();
+            }
         } else {
             useLocalQuestionBank(subject, topic, difficulty, count);
         }
@@ -1138,6 +1146,10 @@ function useLocalQuestionBank(subject, topic, difficulty, count) {
         html += '</div>';
     }
     document.getElementById('practiceQuestions').innerHTML = html;
+    // 渲染数学公式
+    if(typeof MathJax !== 'undefined') {
+        MathJax.typesetPromise();
+    }
 }
 </script>
 <script>
