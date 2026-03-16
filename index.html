@@ -8,7 +8,7 @@
     <meta http-equiv="Expires" content="0">
     <title>A-Level CIE Study Master v71</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="js/data/questions.js?v=2"></script>
+    <script src="js/data/questions.js?v=2" charset="UTF-8"></script>
     <script>
         // 核心功能 - 必须在页面加载前定义
         function showSection(id, btn) {
@@ -924,14 +924,14 @@
             document.getElementById('subjectFilter').value = subject;
             // 更新知识点下拉列表
             updateTopicFilter();
-            // 设置知识点（在updateTopicFilter之后）
-            document.getElementById('topicFilter').value = topicId;
-            // 设置题目来源为真题
-            document.getElementById('questionSource').value = 'pastpaper';
-            // 生成题目
+            // 设置知识点（在updateTopicFilter之后）- 使用更长延迟确保DOM更新
             setTimeout(function() {
+                document.getElementById('topicFilter').value = topicId;
+                // 设置题目来源为真题
+                document.getElementById('questionSource').value = 'pastpaper';
+                // 生成题目
                 generateQuestions();
-            }, 200);
+            }, 300);
         }
         
         function logout() {
