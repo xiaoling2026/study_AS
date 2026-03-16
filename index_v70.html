@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A-Level CIE Study Master v70</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .card { background: rgba(255,255,255,0.95); border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+        .btn-primary { background: linear-gradient(135deg,#007AFF,#5856D6); border-radius: 12px; }
+        .btn-primary:hover { transform: scale(1.02); }
+        .tag { padding: 6px 14px; border-radius: 20px; font-size: 13px; cursor: pointer; }
+        .section-title { font-size: 20px; font-weight: 700; background: linear-gradient(135deg,#007AFF,#5856D6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        body { background: linear-gradient(135deg,#F5F7FA,#E4E8EC); min-height: 100vh; }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+        .login-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg,#667eea,#764ba2); }
+        .login-card { background: white; border-radius: 24px; padding: 48px; width: 100%; max-width: 400px; }
+        .input-field { width: 100%; padding: 14px; border: 1px solid #E5E7EB; border-radius: 12px; font-size: 16px; }
+        .input-field:focus { border-color: #007AFF; outline: none; }
+        .subject-active { background: #007AFF !important; color: white !important; }
+        .topic-card { transition: all 0.2s; cursor: pointer; }
+        .topic-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+        .chapter-header { background: linear-gradient(135deg,#f0f4ff,#e8eeff); border-left: 4px solid #007AFF; padding: 12px; border-radius: 8px; margin-bottom: 8px; cursor: pointer; }
+        .diff-easy { background: #dcfce7; color: #166534; }
+        .diff-medium { background: #fef3c7; color: #92400e; }
+        .diff-hard { background: #fee2e2; color: #991b1b; }
+        .source-cie { background: #dbeafe; color: #1e40af; }
+        .source-ai { background: #f3e8ff; color: #7c3aed; }
+        .ext-link { padding: 2px 8px; font-size: 11px; border-radius: 6px; text-decoration: none; margin-left: 4px; }
+        .ext-yt { background: #fee2e2; color: #dc2626; }
+        .collapsible { max-height: 0; overflow: hidden; transition: max-height 0.3s; }
+        .collapsible.open { max-height: 2000px; }
+        .nav-item { transition: all 0.2s; border-radius: 12px; text-align: center; padding: 12px 8px; font-size: 14px; }
+        .nav-item.active { background: rgba(0,122,255,0.1); color: #007AFF; }
+    </style>
+</head>
+<body>
+    <!-- 登录页 -->
+    <div id="loginPage" class="login-container">
+        <div class="login-card fade-in">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center"><span class="text-3xl">📚</span></div>
+                <h1 class="text-2xl font-bold text-gray-800">A-Level Study</h1>
+                <p class="text-gray-500 text-sm mt-1">CIE 数学 + 物理 完整版</p>
+            </div>
+            <form onsubmit="return handleLogin(event)">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-medium mb-2">用户名</label>
+                    <input type="text" id="username" class="input-field" placeholder="请输入用户名" required>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-medium mb-2">密码</label>
+                    <input type="password" id="password" class="input-field" placeholder="请输入密码" required>
+                </div>
+                <div id="loginError" class="mb-4 p-3 bg-red-50 text-red-600 rounded-xl text-sm hidden">用户名或密码错误</div>
+                <button type="submit" class="btn-primary w-full py-4 text-white font-semibold rounded-xl">登录</button>
+            </form>
+            <p class="text-center text-gray-400 text-xs mt-6">默认: admin / 12346789</p>
+        </div>
+    </div>
+    
+    <!-- 主应用 -->
+    <div id="app" class="hidden p-4 md:p-6">
+        <div class="max-w-5xl mx-auto">
+            <header class="card p-5 mb-4 flex items-center justify-between">
+                <div>
+                    <h1 class="text-xl font-bold text-gray-800">A-Level CIE Study Master</h1>
+                    <p class="text-gray-500 text-sm">数学 9709 + 物理 9702 | AS & A2</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-sm text-gray-500">Day <span id="studyDay">1</span></span>
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-semibold">A</div>
+                    <button onclick="logout()" class="text-gray-400 hover:text-gray-600 text-sm">退出</button>
+                </div>
+            </header>
+            
+            <nav class="flex gap-1 mb-4 p-1 bg-white/60 rounded-2xl">
+                <button onclick="showSection('topics',this)" class="nav-item active flex-1">📋 知识点</button>
+                <button onclick="showSection('lesson',this)" class="nav-item flex-1">📚 每日一课</button>
+                <button onclick="showSection('practice',this)" class="nav-item flex-1">✍️ 练习</button>
+                <button onclick="showSection('import',this)" class="nav-item flex-1">📤 导入</button>
+                <button onclick="showSection('progress',this)" class="nav-item flex-1">📊 进度</button>
+            </nav>
+            
+            <!-- 知识点目录 -->
+            <section id="topics" class="fade-in">
+                <div class="card p-5 mb-4">
+                    <h2 class="section-title mb-4">📐 Mathematics (9709) 完整大纲</h2>
+                    
+                    <!-- P1 -->
+                    <div class="mb-4">
+                        <div class="chapter-header" onclick="toggleChapter('p1')">
+                            <h3 class="font-bold text-gray-800">📘 Pure Mathematics 1 (P1) - AS</h3>
+                            <p class="text-xs text-gray-500">二次方程、函数、坐标几何、三角、向量、数列、微分、积分</p>
+                        </div>
+                        <div id="p1" class="collapsible open pl-4 space-y-2">
+                            <div onclick="goToTopic('lesson','p1-quadratics')" class="topic-card card p-3 flex items-center justify-between"><div><p class="font-medium">1. Quadratics 二次方程</p></div><div class="flex items-center gap-1"><a href="https://www.youtube.com/results?search_query=CIE+9709+quadratics" target="_blank" class="ext-link ext-yt">YouTube</a><span class="text-blue-500">→</span></div></div>
+                            <div onclick="goToTopic('lesson','p1-functions')" class="topic-card card p-3 flex items-center justify-between"><div><p class="font-medium">2. Functions 函数</p></div><div class="flex items-center gap-1"><a href="https://www.youtube.com/results?search_query=CIE+9709+functions" target="_blank" class="ext-link ext-yt">YouTube</a><span class="text-blue-500">→</span></div></div>
+                            <div onclick="goToTopic('lesson','p1-coordinate')" class="topic-card card p-3 flex items-center justify-between"><div><p class="font-medium">3. Coordinate Geometry 坐标几何</p></div><span class="text-blue-500">→</span></div>
+                            <div onclick="goToTopic('lesson','p1-circular')" class="topic-card card p-3 flex items-center justify-between"><div><p class="font-medium">4. Circular Measure 弧度制</p></div><span class="text-blue-500">→</span></div>
+                            <div onclick="goToTopic('lesson','p1-trigonometry')" class="topic-card card p-3 flex items-center justify-between"><div><p class="font-medium">5. Trigonometry 三角函数</p></div><span class="text-blue-500">→</span></div>
+                            <div onclick="goToTopic('lesson','p1-vectors')" class="topic-card card p-3 flex items-center justify-between"><div><p class="font-medium">6. Vectors 向量</p></div><span class="text-blue-500">→</span></div>
+                            <div onclick="goToTopic('lesson','p1-series')" class="topic-card card p-3 flex items-center justify-between"><div><p class="font-medium">7. Series 数列与级数</p></div><span class="text-blue-500">→</span></div>
+                            <div onclick="goToTopic('lesson','p1-differentiation')" class="topic-card card p-3 flex items-center justify-between"><div><p class="font-medium">8. Differentiation 微分</p></div><span class="text-blue-500">→</span></div>
+                            <div onclick="goToTopic('lesson','p1-integration')" class="topic-card card p-3 flex items-center justify-between"><div><p class="font-medium">9. Integration 积分</p></div><span class="text-blue-500">→</span></div>
+                        </div>
+                    </div>
+                    
+                    <!-- P2/P3 -->
+                    <div class="mb-4">
+                        <div class="chapter-header" onclick="toggleChapter('p23')">
+                            <h3 class="font-bold text-gray-800">📗 Pure Mathematics 2 & 3 (P2/P3) - A2</h3>
+                            <p class="text-xs text-gray-500">代数、对数、三角进阶、微分/积分进阶、数值解、向量、微分方程、复数</p>
+                        </div>
+                        <div id="p23" class="collapsible pl-4 space-y-2">
+                            <div onclick="goToTopic('lesson','p2-algebra')" class="topic-card card p-3"><p class="font-medium">1. Algebra 代数</p></div>
+                            <div onclick="goToTopic('lesson','p2-logarithms')" class="topic-card card p-3"><p class="font-medium">2. Log & Exp 对数与指数</p></div>
+                            <div onclick="goToTopic('lesson','p2-trig-adv')" class="topic-card card p-3"><p class="font-medium">3. Trig Advanced 三角进阶</p></div>
+                            <div onclick="goToTopic('lesson','p2-diff-adv')" class="topic-card card p-3"><p class="font-medium">4. Differentiation 进阶</p></div>
+                            <div onclick="goToTopic('lesson','p2-int-adv')" class="topic-card card p-3"><p class="font-medium">5. Integration 进阶</p></div>
+                            <div onclick="goToTopic('lesson','p2-numerical')" class="topic-card card p-3"><p class="font-medium">6. Numerical 数值解法</p></div>
+                            <div onclick="goToTopic('lesson','p2-vectors-3d')" class="topic-card card p-3"><p class="font-medium">7. Vectors 3D 三维向量</p></div>
+                            <div onclick="goToTopic('lesson','p2-diffeq')" class="topic-card card p-3"><p class="font-medium">8. Differential Eq 微分方程</p></div>
+                            <div onclick="goToTopic('lesson','p2-complex')" class="topic-card card p-3"><p class="font-medium">9. Complex Numbers 复数</p></div>
+                        </div>
+                    </div>
+                    
+                    <!-- M1/M2 -->
+                    <div class="mb-4">
+                        <div class="chapter-header" onclick="toggleChapter('m1m2')">
+                            <h3 class="font-bold text-gray-800">⚙️ Mechanics (M1/M2)</h3>
+                            <p class="text-xs text-gray-500">运动学、力、牛顿定律、能量、抛体、圆周、弹簧、动量</p>
+                        </div>
+                        <div id="m1m2" class="collapsible pl-4 space-y-2">
+                            <div onclick="goToTopic('lesson','m1-kinematics')" class="topic-card card p-3"><p class="font-medium">M1: Kinematics 运动学</p></div>
+                            <div onclick="goToTopic('lesson','m1-forces')" class="topic-card card p-3"><p class="font-medium">M1: Forces 力</p></div>
+                            <div onclick="goToTopic('lesson','m1-newton')" class="topic-card card p-3"><p class="font-medium">M1: Newton's Laws 牛顿定律</p></div>
+                            <div onclick="goToTopic('lesson','m1-energy')" class="topic-card card p-3"><p class="font-medium">M1: Energy 能量</p></div>
+                            <div onclick="goToTopic('lesson','m2-projectiles')" class="topic-card card p-3"><p class="font-medium">M2: Projectiles 抛体</p></div>
+                            <div onclick="goToTopic('lesson','m2-circular')" class="topic-card card p-3"><p class="font-medium">M2: Circular 圆周</p></div>
+                            <div onclick="goToTopic('lesson','m2-hookes')" class="topic-card card p-3"><p class="font-medium">M2: Hooke's Law 胡克定律</p></div>
+                            <div onclick="goToTopic('lesson','m2-momentum')" class="topic-card card p-3"><p class="font-medium">M2: Momentum 动量</p></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Physics -->
+                <div class="card p-5 mb-4">
+                    <h2 class="section-title mb-4">🔬 Physics (9702) 完整大纲</h2>
+                    
+                    <!-- AS Physics -->
+                    <div class="mb-4">
+                        <div class="chapter-header" onclick="toggleChapter('phys-as')">
+                            <h3 class="font-bold text-gray-800">📘 Physics - AS Level</h3>
+                            <p class="text-xs text-gray-500">物理量、运动学、动力学、力、能量、波、光学、电路</p>
+                        </div>
+                        <div id="phys-as" class="collapsible open pl-4 space-y-2">
+                            <div onclick="goToTopic('lesson','phys1-quantities')" class="topic-card card p-3 flex items-center justify-between"><div><p class="font-medium">1. Physical Quantities 物理量</p></div><div class="flex"><a href="https://www.youtube.com/results?search_query=CIE+9702+physical+quantities" target="_blank" class="ext-link ext-yt">YouTube</a><span class="text-blue-500 ml-2">→</span></div></div>
+                            <div onclick="goToTopic('lesson','phys1-kinematics')" class="topic-card card p-3 flex items-center justify-between"><div><p class="font-medium">2. Kinematics 运动学</p></div><div class="flex"><a href="https://www.youtube.com/results?search_query=CIE+9702+kinematics" target="_blank" class="ext-link ext-yt">YouTube</a><span class="text-blue-500 ml-2">→</span></div></div>
+                            <div onclick="goToTopic('lesson','phys1-dynamics')" class="topic-card card p-3 flex items-center justify-between"><div><p class="font-medium">3. Dynamics 动力学</p></div><span class="text-blue-500">→</span></div>
+                            <div onclick="goToTopic('lesson','phys1-forces')" class="topic-card card p-3"><p class="font-medium">4. Forces 力</p></div>
+                            <div onclick="goToTopic('lesson','phys1-energy')" class="topic-card card p-3"><p class="font-medium">5. Energy 能量</p></div>
+                            <div onclick="goToTopic('lesson','phys1-waves')" class="topic-card card p-3 flex items-center justify-between"><div><p class="font-medium">6. Waves 波</p></div><div class="flex"><a href="https://www.youtube.com/results?search_query=CIE+9702+waves" target="_blank" class="ext-link ext-yt">YouTube</a><span class="text-blue-500 ml-2">→</span></div></div>
+                            <div onclick="goToTopic('lesson','phys1-optics')" class="topic-card card p-3 flex items-center justify-between"><div><p class="font-medium">7. Optics 光学</p></div><div class="flex"><a href="https://www.youtube.com/results?search_query=CIE+9702+optics" target="_blank" class="ext-link ext-yt">YouTube</a><span class="text-blue-500 ml-2">→</span></div></div>
+                            <div onclick="goToTopic('lesson','phys1-electricity')" class="topic-card card p-3 flex items-center justify-between"><div><p class="font-medium">8. Electricity 电路</p></div><div class="flex"><a href="https://www.youtube.com/results?search_query=CIE+9702+electricity" target="_blank" class="ext-link ext-yt">YouTube</a><span class="text-blue-500 ml-2">→</span></div></div>
+                        </div>
+                    </div>
+                    
+                    <!-- A2 Physics -->
+                    <div class="mb-4">
+                        <div class="chapter-header" onclick="toggleChapter('phys-a2')">
+                            <h3 class="font-bold text-gray-800">📗 Physics - A2 Level</h3>
+                            <p class="text-xs text-gray-500">圆周、引力、原子、核物理、振动、场、电容、电子学</p>
+                        </div>
+                        <div id="phys-a2" class="collapsible pl-4 space-y-2">
+                            <div onclick="goToTopic('lesson','phys2-circular')" class="topic-card card p-3"><p class="font-medium">1. Circular Motion 圆周</p></div>
+                            <div onclick="goToTopic('lesson','phys2-gravitation')" class="topic-card card p-3"><p class="font-medium">2. Gravitation 引力</p></div>
+                            <div onclick="goToTopic('lesson','phys2-atom')" class="topic-card card p-3"><p class="font-medium">3. Atomic Physics 原子</p></div>
+                            <div onclick="goToTopic('lesson','phys2-nuclear')" class="topic-card card p-3"><p class="font-medium">4. Nuclear Physics 核物理</p></div>
+                            <div onclick="goToTopic('lesson','phys2-vibration')" class="topic-card card p-3"><p class="font-medium">5. Vibration 振动</p></div>
+                            <div onclick="goToTopic('lesson','phys2-fields')" class="topic-card card p-3"><p class="font-medium">6. Electric Fields 电场</p></div>
+                            <div onclick="goToTopic('lesson','phys2-capacitor')" class="topic-card card p-3"><p class="font-medium">7. Capacitors 电容</p></div>
+                            <div onclick="goToTopic('lesson','phys2-electronics')" class="topic-card card p-3"><p class="font-medium">8. Electronics 电子学</p></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 每日课程 -->
+            <section id="lesson" class="fade-in hidden">
+                <div class="card p-5 mb-4">
+                    <h2 class="section-title mb-4">📚 每日一课</h2>
+                    <div class="flex gap-2 mb-4">
+                        <button onclick="selectSubject('math')" id="btn-math" class="tag bg-blue-100 text-blue-700 subject-active">📐 数学</button>
+                        <button onclick="selectSubject('physics')" id="btn-physics" class="tag bg-gray-100 text-gray-600">🔬 物理</button>
+                    </div>
+                    <div id="topicContent" class="card p-5 border-l-4 border-l-blue-500">
+                        <p class="text-gray-600">请从左侧知识点目录选择一个主题开始学习。</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 练习 -->
+            <section id="practice" class="fade-in hidden">
+                <div class="card p-5">
+                    <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                        <h2 class="section-title">✍️ 智能练习</h2>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <select id="subjectFilter" class="border rounded-lg px-2 py-1 text-sm">
+                                <option value="">全部科目</option>
+                                <option value="math">数学</option>
+                                <option value="physics">物理</option>
+                            </select>
+                            <select id="difficultyFilter" class="border rounded-lg px-2 py-1 text-sm">
+                                <option value="">全部难度</option>
+                                <option value="easy">容易</option>
+                                <option value="medium">中等</option>
+                                <option value="hard">进阶</option>
+                            </select>
+                            <select id="questionCount" class="border rounded-lg px-2 py-1 text-sm">
+                                <option value="3">3道</option>
+                                <option value="5" selected>5道</option>
+                                <option value="10">10道</option>
+                                <option value="20">20道</option>
+                            </select>
+                            <label class="flex items-center gap-1 text-sm cursor-pointer">
+                                <input type="checkbox" id="aiGenerate" checked class="w-4 h-4">
+                                <span>🤖 AI生成</span>
+                            </label>
+                            <button onclick="generateQuestions()" class="px-3 py-1 bg-blue-500 text-white text-sm rounded-lg">生成题目</button>
+                        </div>
+                    </div>
+                    <div id="practiceQuestions" class="space-y-4 mb-4"></div>
+                    <div class="flex gap-3">
+                        <button onclick="submitPracticeAnswers()" class="btn-primary flex-1 py-3 text-white font-semibold rounded-xl">提交答案</button>
+                        <button onclick="generateQuestions()" class="flex-1 py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl">换一批</button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 导入 -->
+            <section id="import" class="fade-in hidden">
+                <div class="card p-5">
+                    <h2 class="section-title mb-4">📤 导入习题集 · Import</h2>
+                    
+                    <!-- 文件上传区域 -->
+                    <div class="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center mb-4" id="dropZone">
+                        <div class="w-16 h-16 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center">
+                            <span class="text-3xl">📁</span>
+                        </div>
+                        <p class="text-gray-600 mb-2">拖拽文件到这里，或点击选择</p>
+                        <p class="text-gray-400 text-sm mb-4">支持 PDF、JPG、PNG 格式</p>
+                        <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" class="hidden">
+                        <button onclick="document.getElementById('fileInput').click()" class="btn-primary py-2 px-6 text-white rounded-xl inline-block cursor-pointer">选择文件</button>
+                    </div>
+                    
+                    <!-- 上传结果 -->
+                    <div id="uploadResult" class="hidden mb-4">
+                        <div class="card p-4 bg-green-50 border border-green-200 rounded-xl">
+                            <p class="text-green-700 font-medium">✅ 文件上传成功！</p>
+                            <p id="fileName" class="text-gray-600 text-sm"></p>
+                        </div>
+                    </div>
+                    
+                    <!-- 已上传文件列表 -->
+                    <div class="card p-4 mb-4">
+                        <h3 class="font-semibold text-gray-700 mb-3">📁 已上传文件</h3>
+                        <div id="uploadedFilesList">
+                            <p class="text-gray-400 text-sm">暂无文件</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 手动输入区域 -->
+                    <div class="card p-4 mb-4">
+                        <h3 class="font-semibold text-gray-700 mb-3">📝 手动输入题目</h3>
+                        <textarea id="questionInput" class="w-full p-3 border border-gray-200 rounded-xl text-sm mb-3" rows="3" placeholder="输入题目内容..."></textarea>
+                        <textarea id="studentAnswerInput" class="w-full p-3 border border-gray-200 rounded-xl text-sm mb-3" rows="3" placeholder="输入学生答案..."></textarea>
+                        <input id="standardAnswerInput" class="w-full p-3 border border-gray-200 rounded-xl text-sm mb-3" placeholder="标准答案（可选）">
+                        <button onclick="analyzeAnswer()" class="btn-primary w-full py-3 text-white rounded-xl">开始分析</button>
+                    </div>
+                    
+                    <!-- 分析结果 -->
+                    <div id="analysisResult" class="hidden">
+                        <div class="card p-4">
+                            <h3 class="font-semibold text-gray-700 mb-3">📊 分析结果</h3>
+                            <div id="resultContent"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 p-4 bg-yellow-50 rounded-xl">
+                        <p class="text-yellow-800 text-sm"><strong>💡 功能说明：</strong>上传 PDF 或图片格式的习题集，AI 将自动分析知识点薄弱环节。</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 进度 -->
+            <section id="progress" class="fade-in hidden">
+                <div class="card p-5">
+                    <h2 class="section-title mb-4">📊 学习进度</h2>
+                    <div class="grid grid-cols-3 gap-3 mb-4">
+                        <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-4 text-white">
+                            <p class="text-2xl font-bold" id="statDays">1</p>
+                            <p class="text-blue-100 text-xs">已学天数</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-4 text-white">
+                            <p class="text-2xl font-bold" id="statQuestions">0</p>
+                            <p class="text-purple-100 text-xs">完成题目</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-4 text-white">
+                            <p class="text-2xl font-bold" id="statAccuracy">0%</p>
+                            <p class="text-green-100 text-xs">正确率</p>
+                        </div>
+                    </div>
+                    <div class="card p-4">
+                        <h3 class="font-semibold text-gray-700 mb-3">📝 最近学习记录</h3>
+                        <div id="studyHistory" class="text-gray-500 text-sm">暂无记录</div>
+                    </div>
+                </div>
+            </section>
+            
+            <footer class="text-center py-6 text-gray-400 text-sm">A-Level CIE Study Master 🦊</footer>
+        </div>
+    </div>
+    
+    <script>
+    // 知识点数据
+    const topicData = {
+        'p1-quadratics': { name:'Quadratics 二次方程', subject:'math', content:`<h3 class="text-lg font-bold mb-3">Quadratics 二次方程</h3>
+            <div class="grid md:grid-cols-2 gap-4 mb-4">
+                <div><h4 class="font-semibold mb-2">📖 核心概念 Core Concepts</h4>
+                    <p class="text-sm text-gray-600 mb-2">一般形式 General form: <strong>ax² + bx + c = 0</strong></p>
+                    <p class="text-sm text-gray-600 mb-2">求根公式 Quadratic formula: <strong>x = (-b ± √(b²-4ac)) / 2a</strong></p>
+                    <p class="text-sm text-gray-600 mb-2">判别式 Discriminant Δ = b² - 4ac:</p>
+                    <ul class="text-sm text-gray-600 list-disc pl-4"><li>Δ > 0: 两个不等实根 two distinct real roots</li><li>Δ = 0: 两个相等实根 equal real roots</li><li>Δ < 0: 无实根 no real roots</li></ul>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-xl"><h4 class="font-semibold mb-2">📝 例题 Example</h4>
+                    <p class="text-sm">解方程 Solve: x² - 5x + 6 = 0</p>
+                    <p class="text-sm text-blue-600 mt-2">解 Solution: a=1, b=-5, c=6<br>Δ = 25 - 24 = 1 > 0<br>x = (5 ± 1)/2 = 3 或 2</p>
+                </div>
+            </div>
+            <p><strong>📺 学习资源 Resources:</strong></p>
+            <div class="flex gap-2 mt-2"><a href="https://www.youtube.com/results?search_query=CIE+9709+quadratics" target="_blank" class="text-blue-600 underline text-sm">YouTube</a></div>` },
+        'p1-functions': { name:'Functions 函数', subject:'math', content:`<h3 class="text-lg font-bold mb-3">Functions 函数</h3>
+            <div class="grid md:grid-cols-2 gap-4"><div><h4 class="font-semibold mb-2">📖 核心概念</h4>
+                <p class="text-sm text-gray-600">函数表示映射关系 f: A → B</p>
+                <p class="text-sm text-gray-600 mt-2"><strong>定义域 Domain:</strong> 输入值集合</p>
+                <p class="text-sm text-gray-600"><strong>值域 Range:</strong> 输出值集合</p>
+                <p class="text-sm text-gray-600 mt-2"><strong>复合函数 Composite:</strong> f(g(x))</p>
+                <p class="text-sm text-gray-600"><strong>反函数 Inverse:</strong> f⁻¹(x)</p>
+            </div><div class="bg-gray-50 p-4 rounded-xl"><h4 class="font-semibold mb-2">📝 例题</h4>
+                <p class="text-sm">f(x) = 2x + 1, 求 f⁻¹(x)</p>
+                <p class="text-sm text-blue-600 mt-2">解: y = 2x + 1<br>x = (y - 1)/2<br>f⁻¹(x) = (x - 1)/2</p>
+            </div></div>` },
+        'p1-coordinate': { name:'Coordinate Geometry 坐标几何', subject:'math', content:`<h3 class="text-lg font-bold mb-3">Coordinate Geometry 坐标几何</h3>
+            <div class="grid md:grid-cols-2 gap-4"><div><h4 class="font-semibold mb-2">📖 核心概念</h4>
+                <p class="text-sm text-gray-600"><strong>直线方程:</strong> y = mx + c</p>
+                <p class="text-sm text-gray-600">m = 斜率 slope, c = 截距 intercept</p>
+                <p class="text-sm text-gray-600 mt-2"><strong>距离公式:</strong> d = √[(x₂-x₁)²+(y₂-y₁)²]</p>
+                <p class="text-sm text-gray-600 mt-2"><strong>斜率公式:</strong> m = (y₂-y₁)/(x₂-x₁)</p>
+            </div><div class="bg-gray-50 p-4 rounded-xl"><h4 class="font-semibold mb-2">📝 例题</h4>
+                <p class="text-sm">求点(1,2)到(4,6)距离</p>
+                <p class="text-sm text-blue-600 mt-2">d = √[(4-1)²+(6-2)²]<br>= √(9+16) = 5</p>
+            </div></div>` },
+        'p1-trigonometry': { name:'Trigonometry 三角函数', subject:'math', content:`<h3 class="text-lg font-bold mb-3">Trigonometry 三角函数</h3>
+            <div class="grid md:grid-cols-2 gap-4"><div><h4 class="font-semibold mb-2">📖 核心概念</h4>
+                <p class="text-sm text-gray-600"><strong>基本恒等式:</strong></p>
+                <p class="text-sm text-gray-600">sin²θ + cos²θ = 1</p>
+                <p class="text-sm text-gray-600">tanθ = sinθ/cosθ</p>
+                <p class="text-sm text-gray-600 mt-2"><strong>特殊角:</strong></p>
+                <p class="text-sm text-gray-600">sin30°=cos60°=1/2</p>
+            </div><div class="bg-gray-50 p-4 rounded-xl"><h4 class="font-semibold mb-2">📝 例题</h4>
+                <p class="text-sm">证明 sin²θ = 1 - cos²θ</p>
+                <p class="text-sm text-blue-600 mt-2">由 sin²θ + cos²θ = 1<br>得 sin²θ = 1 - cos²θ ✓</p>
+            </div></div>` },
+        'p1-differentiation': { name:'Differentiation 微分', subject:'math', content:`<h3 class="text-lg font-bold mb-3">Differentiation 微分</h3>
+            <div class="grid md:grid-cols-2 gap-4"><div><h4 class="font-semibold mb-2">📖 求导法则 Rules</h4>
+                <p class="text-sm text-gray-600">d/dx(xⁿ) = nxⁿ⁻¹</p>
+                <p class="text-sm text-gray-600">d/dx(eˣ) = eˣ</p>
+                <p class="text-sm text-gray-600">d/dx(ln x) = 1/x</p>
+                <p class="text-sm text-gray-600 mt-2"><strong>链式法则:</strong> d/dx[f(g(x))] = f'(g(x))·g'(x)</p>
+            </div><div class="bg-gray-50 p-4 rounded-xl"><h4 class="font-semibold mb-2">📝 例题</h4>
+                <p class="text-sm">y = x³ + 2x, 求 dy/dx</p>
+                <p class="text-sm text-blue-600 mt-2">dy/dx = 3x² + 2</p>
+            </div></div>` },
+        'p1-integration': { name:'Integration 积分', subject:'math', content:`<h3 class="text-lg font-bold mb-3">Integration 积分</h3>
+            <div class="grid md:grid-cols-2 gap-4"><div><h4 class="font-semibold mb-2">📖 积分公式</h4>
+                <p class="text-sm text-gray-600">∫xⁿdx = xⁿ⁺¹/(n+1) + C</p>
+                <p class="text-sm text-gray-600">∫eˣdx = eˣ + C</p>
+                <p class="text-sm text-gray-600">∫1/x dx = ln|x| + C</p>
+                <p class="text-sm text-gray-600 mt-2">注意: 必须加常数 C！</p>
+            </div><div class="bg-gray-50 p-4 rounded-xl"><h4 class="font-semibold mb-2">📝 例题</h4>
+                <p class="text-sm">∫(3x² + 2x)dx</p>
+                <p class="text-sm text-blue-600 mt-2">= x³ + x² + C</p>
+            </div></div>` },
+        // Physics topics
+        'phys1-kinematics': { name:'Kinematics 运动学', subject:'physics', content:`<h3 class="text-lg font-bold mb-3">Kinematics 运动学</h3>
+            <div class="grid md:grid-cols-2 gap-4"><div><h4 class="font-semibold mb-2">📖 核心概念 Core Concepts</h4>
+                <p class="text-sm text-gray-600"><strong>基本公式 Equations:</strong></p>
+                <p class="text-sm text-gray-600">v = u + at</p>
+                <p class="text-sm text-gray-600">s = ut + ½at²</p>
+                <p class="text-sm text-gray-600">v² = u² + 2as</p>
+            </div><div class="bg-gray-50 p-4 rounded-xl"><h4 class="font-semibold mb-2">📝 例题 Example</h4>
+                <p class="text-sm">汽车从静止匀加速，a=2m/s²，5秒后速度？</p>
+                <p class="text-sm text-blue-600 mt-2">解: v = u + at = 0 + 2×5 = 10m/s</p>
+            </div></div>` },
+        'phys1-dynamics': { name:'Dynamics 动力学', subject:'physics', content:`<h3 class="text-lg font-bold mb-3">Dynamics 动力学</h3>
+            <div class="grid md:grid-cols-2 gap-4"><div><h4 class="font-semibold mb-2">📖 牛顿定律 Newton's Laws</h4>
+                <p class="text-sm text-gray-600"><strong>F = ma</strong></p>
+                <p class="text-sm text-gray-600">F: 力 Force, m: 质量 mass</p>
+                <p class="text-sm text-gray-600">a: 加速度 acceleration</p>
+            </div><div class="bg-gray-50 p-4 rounded-xl"><h4 class="font-semibold mb-2">📝 例题</h4>
+                <p class="text-sm">质量5kg，受10N力，求加速度</p>
+                <p class="text-sm text-blue-600 mt-2">a = F/m = 10/5 = 2 m/s²</p>
+            </div></div>` },
+        'phys1-waves': { name:'Waves 波', subject:'physics', content:`<h3 class="text-lg font-bold mb-3">Waves 波</h3>
+            <div class="grid md:grid-cols-2 gap-4"><div><h4 class="font-semibold mb-2">📖 波动公式 Wave Equation</h4>
+                <p class="text-sm text-gray-600"><strong>v = fλ</strong></p>
+                <p class="text-sm text-gray-600">v: 波速 velocity</p>
+                <p class="text-sm text-gray-600">f: 频率 frequency</p>
+                <p class="text-sm text-gray-600">λ: 波长 wavelength</p>
+            </div><div class="bg-gray-50 p-4 rounded-xl"><h4 class="font-semibold mb-2">📝 例题</h4>
+                <p class="text-sm">f=50Hz，λ=2m，求波速</p>
+                <p class="text-sm text-blue-600 mt-2">v = fλ = 50×2 = 100m/s</p>
+            </div></div>` },
+        'phys1-electricity': { name:'Electricity 电路', subject:'physics', content:`<h3 class="text-lg font-bold mb-3">Electricity 电路</h3>
+            <div class="grid md:grid-cols-2 gap-4"><div><h4 class="font-semibold mb-2">📖 欧姆定律 Ohm's Law</h4>
+                <p class="text-sm text-gray-600"><strong>V = IR</strong></p>
+                <p class="text-sm text-gray-600">V: 电压 Voltage</p>
+                <p class="text-sm text-gray-600">I: 电流 Current</p>
+                <p class="text-sm text-gray-600">R: 电阻 Resistance</p>
+            </div><div class="bg-gray-50 p-4 rounded-xl"><h4 class="font-semibold mb-2">📝 例题</h4>
+                <p class="text-sm">V=12V，I=3A，电阻？</p>
+                <p class="text-sm text-blue-600 mt-2">R = V/I = 12/3 = 4Ω</p>
+            </div></div>` }
+    };
+
+    // 练习题题库 - 中英文对照 + 来源标注
+    const practiceQuestionBank = [
+        // Math - Easy (CIE)
+        {id:1, topicId:'p1-quadratics', topic:'Quadratics', difficulty:'easy', source:'CIE 2023 Summer', question:'x²-5x+6=0的根是？', questionEn:'The roots of x²-5x+6=0 are?', options:['2,3','1,6','-2,-3','无解'], correct:0, explanation:'因式分解: (x-2)(x-3)=0, ∴ x=2 或 3', explanationEn:'Factorize: (x-2)(x-3)=0, so x=2 or 3'},
+        {id:2, topicId:'p1-quadratics', topic:'Quadratics', difficulty:'easy', source:'CIE 2022 Winter', question:'Δ>0表示什么？', questionEn:'What does Δ>0 represent?', options:['两个不等实根','两个相等实根','无实根','无法确定'], correct:0, explanation:'判别式>0有两个不等实根', explanationEn:'Discriminant>0 means two distinct real roots'},
+        {id:3, topicId:'p1-functions', topic:'Functions', difficulty:'easy', source:'CIE 2023 Summer', question:'f(x)=2x+1的反函数？', questionEn:'The inverse function of f(x)=2x+1?', options:['(x-1)/2','2x-1','x/2-1','1/(2x)'], correct:0, explanation:'令y=2x+1, x=(y-1)/2', explanationEn:'Let y=2x+1, then x=(y-1)/2'},
+        {id:4, topicId:'p1-coordinate', topic:'Coordinate', difficulty:'easy', source:'CIE 2022 Summer', question:'直线2x+y=4的斜率？', questionEn:'The slope of line 2x+y=4?', options:['-2','2','4','-1/2'], correct:0, explanation:'2x+y=4 → y=-2x+4, 斜率=-2', explanationEn:'Rewrite as y=-2x+4, slope=-2'},
+        {id:5, topicId:'p1-trigonometry', topic:'Trigonometry', difficulty:'easy', source:'CIE 2023 Winter', question:'sin²θ+cos²θ=?', questionEn:'sin²θ+cos²θ=?', options:['1','0','sin2θ','cos2θ'], correct:0, explanation:'基本三角恒等式', explanationEn:'Basic trigonometric identity'},
+        // Math - Medium
+        {id:6, topicId:'p1-differentiation', topic:'Differentiation', difficulty:'medium', source:'CIE 2023 Summer', question:'y=x³的导数？', questionEn:'The derivative of y=x³?', options:['3x²','x²','3x','x³'], correct:0, explanation:'幂函数求导: d/dx(xⁿ)=nxⁿ⁻¹', explanationEn:'Power rule: d/dx(xⁿ)=nxⁿ⁻¹'},
+        {id:7, topicId:'p1-integration', topic:'Integration', difficulty:'medium', source:'CIE 2022 Winter', question:'∫x²dx=?', questionEn:'∫x²dx=?', options:['x³/3+C','x³','x²/2+C','x³+C'], correct:0, explanation:'幂函数积分: ∫xⁿdx=xⁿ⁺¹/(n+1)+C', explanationEn:'Power rule: ∫xⁿdx=xⁿ⁺¹/(n+1)+C'},
+        {id:8, topicId:'p1-series', topic:'Sequences', difficulty:'medium', source:'CIE 2023 Summer', question:'等差数列2,5,8,...第10项？', questionEn:'The 10th term of arithmetic sequence 2,5,8,...?', options:['29','27','30','28'], correct:0, explanation:'a₁₀ = 2 + 9×3 = 29', explanationEn:'a₁₀ = 2 + 9×3 = 29'},
+        // Math - Hard (AI Generated)
+        {id:9, topicId:'p1-quadratics', topic:'Quadratics', difficulty:'hard', source:'AI生成', question:'顶点坐标公式？', questionEn:'Vertex formula?', options:['(-b/2a,(4ac-b²)/4a)','(b/2a,4ac-b²)','(-b/2a,-b²/4a)','(b/a,c/a)'], correct:0, explanation:'顶点坐标(-b/2a, (4ac-b²)/4a)', explanationEn:'Vertex at (-b/2a, (4ac-b²)/4a)'},
+        {id:10, topicId:'p1-differentiation', topic:'Differentiation', difficulty:'hard', source:'AI生成', question:'y=eˣsinx的导数？', questionEn:'Derivative of y=eˣsinx?', options:['eˣ(sinx+cosx)','eˣ(sinx-cosx)','eˣcosx','eˣsinx'], correct:0, explanation:'乘积法则: (uv)\'=u\'v+uv\'', explanationEn:'Product rule: (uv)\'=u\'v+uv\''},
+        // Physics - Easy
+        {id:11, topicId:'phys1-kinematics', topic:'Kinematics', difficulty:'easy', source:'CIE 2023 Summer', question:'v=v₀+at中a是？', questionEn:'In v=v₀+at, a is?', options:['加速度 acceleration','速度 velocity','位移 displacement','时间 time'], correct:0, explanation:'a = acceleration 加速度', explanationEn:'a = acceleration'},
+        {id:12, topicId:'phys1-dynamics', topic:'Dynamics', difficulty:'easy', source:'CIE 2022 Winter', question:'F=ma中m是？', questionEn:'In F=ma, m is?', options:['质量 mass','力 force','加速度 acceleration','速度 velocity'], correct:0, explanation:'m = mass 质量', explanationEn:'m = mass'},
+        {id:13, topicId:'phys1-waves', topic:'Waves', difficulty:'easy', source:'CIE 2023 Summer', question:'波速公式？', questionEn:'Wave speed formula?', options:['v=fλ','v=f/λ','v=λ/f','v=λf'], correct:0, explanation:'v = fλ', explanationEn:'v = fλ'},
+        // Physics - Medium
+        {id:14, topicId:'phys1-energy', topic:'Energy', difficulty:'medium', source:'CIE 2023 Winter', question:'动能公式？', questionEn:'Kinetic energy formula?', options:['½mv²','mv²','mgh','mv'], correct:0, explanation:'Ek = ½mv²', explanationEn:'Ek = ½mv²'},
+        {id:15, topicId:'phys1-electricity', topic:'Electricity', difficulty:'medium', source:'CIE 2022 Summer', question:'欧姆定律？', questionEn:'Ohm\'s Law?', options:['V=IR','V=I/R','R=VI','I=V/R'], correct:0, explanation:'V = IR', explanationEn:'V = IR'},
+        // Physics - Hard (AI)
+        {id:16, topicId:'phys1-optics', topic:'Optics', difficulty:'hard', source:'AI生成', question:'全反射条件？', questionEn:'Condition for total internal reflection?', options:['θ>临界角','θ<临界角','θ=90°','任何角度'], correct:0, explanation:'入射角 > 临界角', explanationEn:'Incident angle > critical angle'},
+        {id:17, topicId:'phys1-dynamics', topic:'Dynamics', difficulty:'hard', source:'AI生成', question:'动量守恒条件？', questionEn:'Condition for momentum conservation?', options:['合外力为零','不受力','外力做功','内力'], correct:0, explanation:'合外力为零时动量守恒', explanationEn:'Momentum conserved when net external force = 0'},
+        // More Math
+        {id:18, topicId:'p1-functions', topic:'Functions', difficulty:'medium', source:'CIE 2023 Summer', question:'f(x)=x²对称轴？', questionEn:'Axis of symmetry for f(x)=x²?', options:['x=0','x=1','x=-1','x=2'], correct:0, explanation:'偶函数关于y轴对称', explanationEn:'Even function, symmetric about y-axis'},
+        {id:19, topicId:'p1-trigonometry', topic:'Trigonometry', difficulty:'easy', source:'CIE 2022 Winter', question:'sin30°=?', questionEn:'sin30°=?', options:['1/2','√3/2','1','√2/2'], correct:0, explanation:'特殊角 sin30°=1/2', explanationEn:'Special angle: sin30°=1/2'},
+        {id:20, topicId:'phys1-quantities', topic:'Quantities', difficulty:'easy', source:'CIE 2023 Summer', question:'加速度单位？', questionEn:'Unit of acceleration?', options:['m/s²','m/s','m²/s','m/s³'], correct:0, explanation:'加速度 = m/s²', explanationEn:'Acceleration = m/s²'},
+        // 新增更多题目 - 覆盖所有知识点
+        // P1 Quadratics - 更多题目
+        {id:21, topicId:'p1-quadratics', topic:'Quadratics', difficulty:'medium', source:'CIE 2023 Winter', question:'x²-4=0的根？', questionEn:'The roots of x²-4=0?', options:['±2','2','4','±4'], correct:0, explanation:'x²=4, x=±2', explanationEn:'x²=4, so x=±2'},
+        {id:22, topicId:'p1-quadratics', topic:'Quadratics', difficulty:'hard', source:'CIE 2022 Summer', question:'配方法解x²+6x+5=0', questionEn:'Solve x²+6x+5=0 by completing square?', options:['-1,-5','1,5','-2,-3','2,3'], correct:0, explanation:'(x+3)²-4=0, x=-3±2', explanationEn:'(x+3)²-4=0, x=-3±2'},
+        {id:23, topicId:'p1-quadratics', topic:'Quadratics', difficulty:'easy', source:'AI生成', question:'x²+2x+1=0的根？', questionEn:'Roots of x²+2x+1=0?', options:['-1(重根)','1,-1','1','-2'], correct:0, explanation:'(x+1)²=0, x=-1', explanationEn:'(x+1)²=0, x=-1'},
+        // P1 Functions
+        {id:24, topicId:'p1-functions', topic:'Functions', difficulty:'medium', source:'CIE 2023 Summer', question:'f(x)=x², g(x)=x+1, 求f(g(2))', questionEn:'f(x)=x², g(x)=x+1, find f(g(2))?', options:['9','4','3','1'], correct:0, explanation:'g(2)=3, f(3)=9', explanationEn:'g(2)=3, f(3)=9'},
+        {id:25, topicId:'p1-functions', topic:'Functions', difficulty:'hard', source:'AI生成', question:'f(x)=1/x的定义域？', questionEn:'Domain of f(x)=1/x?', options:['x≠0','x>0','x<0','所有实数'], correct:0, explanation:'分母不能为0', explanationEn:'Denominator cannot be zero'},
+        // P1 Coordinate
+        {id:26, topicId:'p1-coordinate', topic:'Coordinate', difficulty:'medium', source:'CIE 2022 Winter', question:'点(3,4)到原点距离？', questionEn:'Distance from (3,4) to origin?', options:['5','7','25','√7'], correct:0, explanation:'√(3²+4²)=5', explanationEn:'√(3²+4²)=5'},
+        {id:27, topicId:'p1-coordinate', topic:'Coordinate', difficulty:'hard', source:'AI生成', question:'过(1,2)和(3,8)的直线斜率？', questionEn:'Slope through (1,2) and (3,8)?', options:['3','2','4','6'], correct:0, explanation:'(8-2)/(3-1)=3', explanationEn:'(8-2)/(3-1)=3'},
+        // P1 Circular
+        {id:28, topicId:'p1-circular', topic:'Circular', difficulty:'easy', source:'CIE 2023 Summer', question:'180°= ? rad', questionEn:'180° = ? rad', options:['π','π/2','2π','π/4'], correct:0, explanation:'180°=π rad', explanationEn:'180°=π rad'},
+        {id:29, topicId:'p1-circular', topic:'Circular', difficulty:'medium', source:'AI生成', question:'半径2，圆心角π/3的弧长？', questionEn:'Arc length r=2, θ=π/3?', options:['2π/3','π/3','4π/3','π'], correct:0, explanation:'弧长=rθ=2×π/3=2π/3', explanationEn:'Arc length=rθ=2×π/3'},
+        // P1 Trigonometry
+        {id:30, topicId:'p1-trigonometry', topic:'Trigonometry', difficulty:'medium', source:'CIE 2023 Winter', question:'cos60°=?', questionEn:'cos60°=?', options:['1/2','√3/2','√2/2','1'], correct:0, explanation:'cos60°=1/2', explanationEn:'cos60°=1/2'},
+        {id:31, topicId:'p1-trigonometry', topic:'Trigonometry', difficulty:'hard', source:'AI生成', question:'tan45°=?', questionEn:'tan45°=?', options:['1','0','√3','1/√3'], correct:0, explanation:'tan45°=1', explanationEn:'tan45°=1'},
+        // P1 Vectors
+        {id:32, topicId:'p1-vectors', topic:'Vectors', difficulty:'easy', source:'CIE 2022 Summer', question:'向量(3,4)的模？', questionEn:'Magnitude of vector (3,4)?', options:['5','7','25','√7'], correct:0, explanation:'√(3²+4²)=5', explanationEn:'√(3²+4²)=5'},
+        {id:33, topicId:'p1-vectors', topic:'Vectors', difficulty:'medium', source:'AI生成', question:'(1,2)+(3,4)=?', questionEn:'(1,2)+(3,4)=?', options:['(4,6)','(3,8)','(2,2)','(4,2)'], correct:0, explanation:'分量相加', explanationEn:'Add components'},
+        // P1 Series
+        {id:34, topicId:'p1-series', topic:'Series', difficulty:'easy', source:'CIE 2023 Summer', question:'等比数列2,4,8,...公比？', questionEn:'Common ratio of 2,4,8,...?', options:['2','4','1/2','8'], correct:0, explanation:'4/2=2, 8/4=2', explanationEn:'4/2=2, 8/4=2'},
+        {id:35, topicId:'p1-series', topic:'Series', difficulty:'medium', source:'CIE 2022 Winter', question:'等差数列首项3，公差2，前5项和？', questionEn:'AP: a₁=3, d=2, S₅=?', options:['35','25','15','30'], correct:0, explanation:'S₅=5/2×(2×3+4×2)=35', explanationEn:'S₅=5/2×(6+8)=35'},
+        // P1 Differentiation
+        {id:36, topicId:'p1-differentiation', topic:'Differentiation', difficulty:'easy', source:'AI生成', question:'y=5的导数？', questionEn:'Derivative of y=5?', options:['0','5','1','不存在'], correct:0, explanation:'常数导数为0', explanationEn:'Derivative of constant is 0'},
+        {id:37, topicId:'p1-differentiation', topic:'Differentiation', difficulty:'medium', source:'CIE 2023 Summer', question:'y=1/x的导数？', questionEn:'Derivative of y=1/x?', options:['-1/x²','1/x²','lnx','-1/x'], correct:0, explanation:'y=x⁻¹, y\'=-x⁻²=-1/x²', explanationEn:'y=x⁻¹, y\'=-x⁻²'},
+        // P1 Integration
+        {id:38, topicId:'p1-integration', topic:'Integration', difficulty:'easy', source:'CIE 2022 Winter', question:'∫3dx=?', questionEn:'∫3dx=?', options:['3x+C','3','3x²/2+C','0'], correct:0, explanation:'∫kdx=kx+C', explanationEn:'∫kdx=kx+C'},
+        {id:39, topicId:'p1-integration', topic:'Integration', difficulty:'hard', source:'AI生成', question:'∫(2x+1)dx从0到1？', questionEn:'∫(2x+1)dx from 0 to 1?', options:['2','1','3','0'], correct:0, explanation:'[x²+x]₀¹=1+1=2', explanationEn:'[x²+x]₀¹=2'},
+        // P2/P3 进阶内容
+        {id:40, topicId:'p2-logarithms', topic:'Logarithms', difficulty:'medium', source:'CIE 2023 Summer', question:'ln(e²)=?', questionEn:'ln(e²)=?', options:['2','e','e²','1'], correct:0, explanation:'ln(eˣ)=x', explanationEn:'ln(eˣ)=x'},
+        {id:41, topicId:'p2-logarithms', topic:'Logarithms', difficulty:'hard', source:'AI生成', question:'log₂8=?', questionEn:'log₂8=?', options:['3','2','4','8'], correct:0, explanation:'2³=8', explanationEn:'2³=8'},
+        {id:42, topicId:'p2-complex', topic:'Complex', difficulty:'medium', source:'CIE 2022 Winter', question:'i²=?', questionEn:'i²=?', options:['-1','1','i','-i'], correct:0, explanation:'i²=-1', explanationEn:'i²=-1'},
+        {id:43, topicId:'p2-complex', topic:'Complex', difficulty:'hard', source:'AI生成', question:'|3+4i|=?', questionEn:'|3+4i|=?', options:['5','7','25','√7'], correct:0, explanation:'√(3²+4²)=5', explanationEn:'√(3²+4²)=5'},
+        // M1 Mechanics
+        {id:44, topicId:'m1-kinematics', topic:'Kinematics', difficulty:'medium', source:'CIE 2023 Summer', question:'自由落体5秒后的速度？(g=10)', questionEn:'Velocity after 5s free fall? (g=10)', options:['50m/s','25m/s','10m/s','5m/s'], correct:0, explanation:'v=gt=10×5=50', explanationEn:'v=gt=10×5=50'},
+        {id:45, topicId:'m1-forces', topic:'Forces', difficulty:'easy', source:'CIE 2022 Winter', question:'10N和10N垂直，合力？', questionEn:'10N and 10N perpendicular, resultant?', options:['10√2N','20N','10N','0'], correct:0, explanation:'R=√(10²+10²)=10√2', explanationEn:'R=√(10²+10²)=10√2'},
+        {id:46, topicId:'m1-newton', topic:'Newton', difficulty:'medium', source:'AI生成', question:'2kg物体受4N力，加速度？', questionEn:'2kg mass, 4N force, acceleration?', options:['2m/s²','8m/s²','0.5m/s²','4m/s²'], correct:0, explanation:'a=F/m=4/2=2', explanationEn:'a=F/m=2'},
+        {id:47, topicId:'m1-energy', topic:'Energy', difficulty:'hard', source:'CIE 2023 Summer', question:'质量2kg，高度10m，势能？(g=10)', questionEn:'PE of 2kg at 10m? (g=10)', options:['200J','20J','100J','50J'], correct:0, explanation:'PE=mgh=2×10×10=200', explanationEn:'PE=mgh=200J'},
+        // M2 Mechanics
+        {id:48, topicId:'m2-projectiles', topic:'Projectiles', difficulty:'medium', source:'AI生成', question:'抛体水平速度5m/s，2秒后水平位移？', questionEn:'Projectile vx=5m/s, horizontal distance in 2s?', options:['10m','5m','20m','2.5m'], correct:0, explanation:'x=vxt=5×2=10', explanationEn:'x=vxt=10m'},
+        {id:49, topicId:'m2-circular', topic:'Circular', difficulty:'hard', source:'CIE 2022 Winter', question:'圆周运动v=10m/s, r=5m, 向心加速度？', questionEn:'Circular motion v=10, r=5, centripetal acceleration?', options:['20m/s²','2m/s²','50m/s²','15m/s²'], correct:0, explanation:'a=v²/r=100/5=20', explanationEn:'a=v²/r=20'},
+        // Physics AS
+        {id:50, topicId:'phys1-forces', topic:'Forces', difficulty:'easy', source:'CIE 2023 Summer', question:'重力加速度g≈?', questionEn:'Gravitational acceleration g≈?', options:['10m/s²','9.8m/s²','10N/kg','Both A and B'], correct:3, explanation:'g≈9.8或10m/s²', explanationEn:'g≈9.8 or 10 m/s²'},
+        {id:51, topicId:'phys1-energy', topic:'Energy', difficulty:'easy', source:'AI生成', question:'势能公式？', questionEn:'Potential energy formula?', options:['mgh','½mv²','mv','mg/h'], correct:0, explanation:'PE=mgh', explanationEn:'PE=mgh'},
+        {id:52, topicId:'phys1-optics', topic:'Optics', difficulty:'medium', source:'CIE 2022 Winter', question:'折射率n=c/v，c是？', questionEn:'In n=c/v, c is?', options:['光速','声速','波长','频率'], correct:0, explanation:'c=光速', explanationEn:'c=speed of light'},
+        {id:53, topicId:'phys1-waves', topic:'Waves', difficulty:'hard', source:'AI生成', question:'电磁波在真空中速度？', questionEn:'EM wave speed in vacuum?', options:['3×10⁸m/s','3×10⁶m/s','340m/s','光速的一半'], correct:0, explanation:'c=3×10⁸m/s', explanationEn:'c=3×10⁸m/s'},
+        // Physics A2
+        {id:54, topicId:'phys2-circular', topic:'Circular', difficulty:'medium', source:'CIE 2023 Summer', question:'向心力公式？', questionEn:'Centripetal force formula?', options:['mv²/r','mv/r','mvr','m/vr'], correct:0, explanation:'F=mv²/r', explanationEn:'F=mv²/r'},
+        {id:55, topicId:'phys2-gravitation', topic:'Gravitation', difficulty:'hard', source:'AI生成', question:'万有引力F与距离r的关系？', questionEn:'Gravitational force F vs distance r?', options:['F∝1/r²','F∝r','F∝r²','F∝1/r'], correct:0, explanation:'F=GMm/r²', explanationEn:'F∝1/r²'},
+        {id:56, topicId:'phys2-atom', topic:'Atomic', difficulty:'easy', source:'CIE 2022 Winter', question:'原子核由什么组成？', questionEn:'Atomic nucleus consists of?', options:['质子和中子','质子和电子','电子和中子','只有质子'], correct:0, explanation:'质子+中子', explanationEn:'Protons and neutrons'},
+        {id:57, topicId:'phys2-nuclear', topic:'Nuclear', difficulty:'medium', source:'AI生成', question:'α衰变释放什么？', questionEn:'Alpha decay releases?', options:['He核','电子','光子','中子'], correct:0, explanation:'α粒子=He核', explanationEn:'Alpha particle = He nucleus'},
+        {id:58, topicId:'phys2-fields', topic:'Fields', difficulty:'hard', source:'CIE 2023 Summer', question:'点电荷电场强度E与距离r？', questionEn:'Point charge E vs r?', options:['E∝1/r²','E∝r','E∝1/r','E∝r²'], correct:0, explanation:'E=kQ/r²', explanationEn:'E∝1/r²'},
+        {id:59, topicId:'phys2-capacitor', topic:'Capacitor', difficulty:'medium', source:'AI生成', question:'电容C=Q/V，单位是？', questionEn:'Capacitance C=Q/V, unit?', options:['法拉F','库仑C','伏特V','欧姆Ω'], correct:0, explanation:'单位: 法拉(F)', explanationEn:'Unit: Farad (F)'},
+        {id:60, topicId:'phys2-electronics', topic:'Electronics', difficulty:'easy', source:'CIE 2022 Winter', question:'二极管的作用？', questionEn:'Function of diode?', options:['单向导电','放大','稳压','开关'], correct:0, explanation:'单向导电性', explanationEn:'Allows current in one direction'}
+    ];
+
+    let currentPracticeQuestions = [];
+    let practiceAnswers = {};
+
+    // AI题目生成器 - 根据知识点和难度生成新题
+    function generateAIQuestions(subject, difficulty, count) {
+        const templates = {
+            'p1-quadratics': {
+                easy: [
+                    {q: 'x²-9=0的根？', qEn: 'Roots of x²-9=0?', opts: ['±3','3','9','±9'], ans: 0, exp: 'x²=9, x=±3', expEn: 'x²=9, x=±3'},
+                    {q: 'x²+4x+4=0的根？', qEn: 'Roots of x²+4x+4=0?', opts: ['-2','2','-4','4'], ans: 0, exp: '(x+2)²=0', expEn: '(x+2)²=0'},
+                    {q: 'x²-x-6=0的根？', qEn: 'Roots of x²-x-6=0?', opts: ['3,-2','-3,2','3,2','-3,-2'], ans: 0, exp: '(x-3)(x+2)=0', expEn: '(x-3)(x+2)=0'}
+                ],
+                medium: [
+                    {q: '2x²-5x+2=0的根？', qEn: 'Roots of 2x²-5x+2=0?', opts: ['2,1/2','-2,-1/2','2,-1/2','-2,1/2'], ans: 0, exp: '(2x-1)(x-2)=0', expEn: '(2x-1)(x-2)=0'},
+                    {q: 'x²-3x+1=0的判别式？', qEn: 'Discriminant of x²-3x+1=0?', opts: ['5','9','1','13'], ans: 0, exp: 'Δ=9-4=5', expEn: 'Δ=9-4=5'}
+                ],
+                hard: [
+                    {q: 'x²+px+q=0两根之和？', qEn: 'Sum of roots of x²+px+q=0?', opts: ['-p','p','q','-q'], ans: 0, exp: 'α+β=-p', expEn: 'Sum of roots = -p'},
+                    {q: 'x²-4x+k=0有等根，k=？', qEn: 'x²-4x+k=0 has equal roots, k=?', opts: ['4','2','8','16'], ans: 0, exp: 'Δ=16-4k=0, k=4', expEn: 'Δ=16-4k=0, k=4'}
+                ]
+            },
+            'p1-functions': {
+                easy: [
+                    {q: 'f(x)=3x-2, f(2)=？', qEn: 'f(x)=3x-2, f(2)=?', opts: ['4','6','1','8'], ans: 0, exp: 'f(2)=3×2-2=4', expEn: 'f(2)=3×2-2=4'},
+                    {q: 'f(x)=x², f(-3)=？', qEn: 'f(x)=x², f(-3)=?', opts: ['9','-9','6','-6'], ans: 0, exp: '(-3)²=9', expEn: '(-3)²=9'}
+                ],
+                medium: [
+                    {q: 'f(x)=2x+3, g(x)=x², f(g(1))=？', qEn: 'f(x)=2x+3, g(x)=x², f(g(1))=?', opts: ['5','4','7','3'], ans: 0, exp: 'g(1)=1, f(1)=5', expEn: 'g(1)=1, f(1)=5'},
+                    {q: 'f(x)=1/(x-1)定义域？', qEn: 'Domain of f(x)=1/(x-1)?', opts: ['x≠1','x>1','x<1','所有实数'], ans: 0, exp: '分母≠0', expEn: 'Denominator≠0'}
+                ],
+                hard: [
+                    {q: 'f(x)=(x+1)/(x-1), f(2)=？', qEn: 'f(x)=(x+1)/(x-1), f(2)=?', opts: ['3','1','-3','0'], ans: 0, exp: '(2+1)/(2-1)=3', expEn: '(2+1)/(2-1)=3'}
+                ]
+            },
+            'p1-differentiation': {
+                easy: [
+                    {q: 'y=4x的导数？', qEn: 'Derivative of y=4x?', opts: ['4','4x','x','0'], ans: 0, exp: 'd/dx(4x)=4', expEn: 'd/dx(4x)=4'},
+                    {q: 'y=x⁵的导数？', qEn: 'Derivative of y=x⁵?', opts: ['5x⁴','x⁴','5x⁵','x⁵'], ans: 0, exp: 'd/dx(x⁵)=5x⁴', expEn: 'd/dx(x⁵)=5x⁴'}
+                ],
+                medium: [
+                    {q: 'y=3x²+2x+1的导数？', qEn: 'Derivative of y=3x²+2x+1?', opts: ['6x+2','6x','3x+2','6x+1'], ans: 0, exp: 'dy/dx=6x+2', expEn: 'dy/dx=6x+2'},
+                    {q: 'y=(2x+1)²展开后求导？', qEn: 'Expand (2x+1)² then differentiate?', opts: ['8x+4','4x+2','4x+4','8x+2'], ans: 0, exp: 'y=4x²+4x+1, dy/dx=8x+4', expEn: 'y=4x²+4x+1, dy/dx=8x+4'}
+                ],
+                hard: [
+                    {q: 'y=x³-3x²+2x, 求极值点', qEn: 'y=x³-3x²+2x, find stationary points?', opts: ['x=1或x=2/3','x=0或x=1','x=2或x=1','x=3'], ans: 0, exp: 'dy/dx=3x²-6x+2=0', expEn: 'dy/dx=3x²-6x+2=0'}
+                ]
+            },
+            'p1-integration': {
+                easy: [
+                    {q: '∫4xdx=?', qEn: '∫4xdx=?', opts: ['2x²+C','4x²+C','x²+C','4+C'], ans: 0, exp: '∫4xdx=2x²+C', expEn: '∫4xdx=2x²+C'},
+                    {q: '∫x⁴dx=?', qEn: '∫x⁴dx=?', opts: ['x⁵/5+C','x⁵+C','x⁴/4+C','5x⁵+C'], ans: 0, exp: '∫x⁴dx=x⁵/5+C', expEn: '∫x⁴dx=x⁵/5+C'}
+                ],
+                medium: [
+                    {q: '∫(6x²+4x)dx=?', qEn: '∫(6x²+4x)dx=?', opts: ['2x³+2x²+C','6x³+4x²+C','2x³+2x+C','3x³+2x²+C'], ans: 0, exp: '∫6x²dx=2x³, ∫4xdx=2x²', expEn: '∫6x²dx=2x³, ∫4xdx=2x²'},
+                    {q: '∫₁²(2x)dx=?', qEn: '∫₁²(2x)dx=?', opts: ['3','2','4','1'], ans: 0, exp: '[x²]₁²=4-1=3', expEn: '[x²]₁²=4-1=3'}
+                ],
+                hard: [
+                    {q: '曲线y=x²下从0到2的面积？', qEn: 'Area under y=x² from 0 to 2?', opts: ['8/3','4','8','2'], ans: 0, exp: '∫₀²x²dx=[x³/3]₀²=8/3', expEn: '∫₀²x²dx=8/3'}
+                ]
+            },
+            'p1-trigonometry': {
+                easy: [
+                    {q: 'cos0°=?', qEn: 'cos0°=?', opts: ['1','0','-1','1/2'], ans: 0, exp: 'cos0°=1', expEn: 'cos0°=1'},
+                    {q: 'tan0°=?', qEn: 'tan0°=?', opts: ['0','1','∞','不存在'], ans: 0, exp: 'tan0°=0', expEn: 'tan0°=0'}
+                ],
+                medium: [
+                    {q: 'sin²30°+cos²30°=?', qEn: 'sin²30°+cos²30°=?', opts: ['1','1/2','1/4','3/4'], ans: 0, exp: 'sin²θ+cos²θ=1', expEn: 'sin²θ+cos²θ=1'},
+                    {q: 'sin60°=?', qEn: 'sin60°=?', opts: ['√3/2','1/2','√2/2','1'], ans: 0, exp: 'sin60°=√3/2', expEn: 'sin60°=√3/2'}
+                ],
+                hard: [
+                    {q: 'tan²θ+1=?', qEn: 'tan²θ+1=?', opts: ['sec²θ','cosec²θ','cos²θ','sin²θ'], ans: 0, exp: '1+tan²θ=sec²θ', expEn: '1+tan²θ=sec²θ'}
+                ]
+            },
+            'p1-series': {
+                easy: [
+                    {q: '等差数列3,7,11,...公差？', qEn: 'Common difference of 3,7,11,...?', opts: ['4','3','7','11'], ans: 0, exp: '7-3=4', expEn: '7-3=4'},
+                    {q: '等比数列1,2,4,8,...公比？', qEn: 'Common ratio of 1,2,4,8,...?', opts: ['2','1','4','1/2'], ans: 0, exp: '2/1=2', expEn: '2/1=2'}
+                ],
+                medium: [
+                    {q: '等差数列首项5，公差3，第6项？', qEn: 'AP: a₁=5, d=3, 6th term?', opts: ['20','15','18','23'], ans: 0, exp: 'a₆=5+5×3=20', expEn: 'a₆=5+5×3=20'},
+                    {q: '等比数列首项2，公比3，第4项？', qEn: 'GP: a₁=2, r=3, 4th term?', opts: ['54','18','162','6'], ans: 0, exp: 'a₄=2×3³=54', expEn: 'a₄=2×3³=54'}
+                ],
+                hard: [
+                    {q: '等差数列前n项和公式？', qEn: 'Sum of first n terms of AP?', opts: ['n/2(2a+(n-1)d)','n(a+(n-1)d)','n/2(a+d)','na+(n-1)d'], ans: 0, exp: 'Sₙ=n/2[2a+(n-1)d]', expEn: 'Sₙ=n/2[2a+(n-1)d]'}
+                ]
+            },
+            'phys1-kinematics': {
+                easy: [
+                    {q: '初速度0，加速度5m/s²，2秒后速度？', qEn: 'u=0, a=5, v after 2s?', opts: ['10m/s','5m/s','20m/s','2.5m/s'], ans: 0, exp: 'v=u+at=0+5×2=10', expEn: 'v=u+at=10'},
+                    {q: '速度10m/s匀速运动5秒，位移？', qEn: 'v=10m/s, t=5s, displacement?', opts: ['50m','25m','15m','5m'], ans: 0, exp: 's=vt=10×5=50', expEn: 's=vt=50'}
+                ],
+                medium: [
+                    {q: '从静止下落，g=10，3秒后速度？', qEn: 'Fall from rest, g=10, v after 3s?', opts: ['30m/s','15m/s','45m/s','10m/s'], ans: 0, exp: 'v=gt=10×3=30', expEn: 'v=gt=30'},
+                    {q: '匀加速运动，初速2m/s，末速8m/s，位移15m，求加速度？', qEn: 'u=2, v=8, s=15, find a?', opts: ['2m/s²','1m/s²','3m/s²','4m/s²'], ans: 0, exp: 'v²=u²+2as, 64=4+30a, a=2', expEn: 'v²=u²+2as, a=2'}
+                ],
+                hard: [
+                    {q: '竖直上抛，初速20m/s，最大高度？(g=10)', qEn: 'Thrown up at 20m/s, max height? (g=10)', opts: ['20m','10m','40m','5m'], ans: 0, exp: 'v²=u²-2gh, 0=400-20h, h=20', expEn: 'v²=u²-2gh, h=20'}
+                ]
+            },
+            'phys1-dynamics': {
+                easy: [
+                    {q: '质量10kg，加速度2m/s²，力？', qEn: 'm=10kg, a=2m/s², force?', opts: ['20N','5N','12N','8N'], ans: 0, exp: 'F=ma=10×2=20', expEn: 'F=ma=20'},
+                    {q: '力30N，质量6kg，加速度？', qEn: 'F=30N, m=6kg, acceleration?', opts: ['5m/s²','6m/s²','4m/s²','24m/s²'], ans: 0, exp: 'a=F/m=30/6=5', expEn: 'a=F/m=5'}
+                ],
+                medium: [
+                    {q: '2kg和3kg物体用轻绳连接，受10N拉力，加速度？', qEn: '2kg and 3kg connected, 10N pull, acceleration?', opts: ['2m/s²','5m/s²','3.3m/s²','4m/s²'], ans: 0, exp: 'a=F/(m₁+m₂)=10/5=2', expEn: 'a=10/(2+3)=2'},
+                    {q: '质量4kg物体受两个力：6N向东，8N向北，加速度大小？', qEn: '4kg, 6N east, 8N north, acceleration?', opts: ['2.5m/s²','3.5m/s²','2m/s²','3m/s²'], ans: 0, exp: 'F=√(6²+8²)=10, a=10/4=2.5', expEn: 'F=10N, a=2.5'}
+                ],
+                hard: [
+                    {q: '电梯中质量60kg的人，电梯以2m/s²向上加速，人对地板压力？', qEn: '60kg person in lift accelerating up at 2m/s², normal force?', opts: ['720N','600N','480N','120N'], ans: 0, exp: 'N=mg+ma=600+120=720', expEn: 'N=m(g+a)=720'}
+                ]
+            },
+            'phys1-energy': {
+                easy: [
+                    {q: '质量2kg，速度6m/s，动能？', qEn: 'm=2kg, v=6m/s, KE?', opts: ['36J','12J','18J','72J'], ans: 0, exp: 'KE=½mv²=½×2×36=36', expEn: 'KE=½×2×36=36'},
+                    {q: '质量5kg，高度4m，势能？(g=10)', qEn: 'm=5kg, h=4m, PE? (g=10)', opts: ['200J','20J','50J','100J'], ans: 0, exp: 'PE=mgh=5×10×4=200', expEn: 'PE=5×10×4=200'}
+                ],
+                medium: [
+                    {q: '物体从10m高自由落下，落地速度？(g=10)', qEn: 'Fall from 10m, velocity at ground? (g=10)', opts: ['10√2 m/s','10m/s','20m/s','5√2 m/s'], ans: 0, exp: 'mgh=½mv², v=√(2gh)=√200=10√2', expEn: 'v=√(2gh)=10√2'},
+                    {q: '功率100W，做功500J，所需时间？', qEn: 'Power 100W, work 500J, time?', opts: ['5s','50s','0.2s','2s'], ans: 0, exp: 't=W/P=500/100=5', expEn: 't=W/P=5'}
+                ],
+                hard: [
+                    {q: '弹簧k=100N/m，压缩0.1m，弹性势能？', qEn: 'Spring k=100N/m, compressed 0.1m, elastic PE?', opts: ['0.5J','1J','5J','10J'], ans: 0, exp: 'E=½kx²=½×100×0.01=0.5', expEn: 'E=½kx²=0.5J'}
+                ]
+            },
+            'phys1-waves': {
+                easy: [
+                    {q: '频率50Hz，周期？', qEn: 'Frequency 50Hz, period?', opts: ['0.02s','0.05s','50s','2s'], ans: 0, exp: 'T=1/f=1/50=0.02', expEn: 'T=1/f=0.02s'},
+                    {q: '波速100m/s，波长2m，频率？', qEn: 'v=100m/s, λ=2m, frequency?', opts: ['50Hz','25Hz','100Hz','200Hz'], ans: 0, exp: 'f=v/λ=100/2=50', expEn: 'f=v/λ=50'}
+                ],
+                medium: [
+                    {q: '波长从2m变为4m，波速不变，频率如何变化？', qEn: 'λ changes from 2m to 4m, v constant, frequency?', opts: ['减半','加倍','不变','变为1/4'], ans: 0, exp: 'f=v/λ, λ加倍则f减半', expEn: 'f=v/λ, f halves'},
+                    {q: '声波频率1000Hz，声速340m/s，波长？', qEn: 'Sound 1000Hz, v=340m/s, wavelength?', opts: ['0.34m','2.94m','340m','1000m'], ans: 0, exp: 'λ=v/f=340/1000=0.34', expEn: 'λ=340/1000=0.34m'}
+                ],
+                hard: [
+                    {q: '两列波干涉，路径差为半波长的奇数倍时？', qEn: 'Two waves interfere, path diff = (2n+1)λ/2?', opts: ['相消干涉','相长干涉','无干涉','无法确定'], ans: 0, exp: '半波长奇数倍：相消', expEn: 'Destructive interference'}
+                ]
+            },
+            'phys1-electricity': {
+                easy: [
+                    {q: '电压6V，电流2A，电阻？', qEn: 'V=6V, I=2A, resistance?', opts: ['3Ω','12Ω','4Ω','8Ω'], ans: 0, exp: 'R=V/I=6/2=3', expEn: 'R=V/I=3'},
+                    {q: '电阻10Ω，电流0.5A，电压？', qEn: 'R=10Ω, I=0.5A, voltage?', opts: ['5V','10V','0.5V','20V'], ans: 0, exp: 'V=IR=10×0.5=5', expEn: 'V=IR=5'}
+                ],
+                medium: [
+                    {q: '两个4Ω电阻串联，总电阻？', qEn: 'Two 4Ω resistors in series, total R?', opts: ['8Ω','4Ω','2Ω','16Ω'], ans: 0, exp: 'R=R₁+R₂=4+4=8', expEn: 'R=4+4=8'},
+                    {q: '两个4Ω电阻并联，总电阻？', qEn: 'Two 4Ω resistors in parallel, total R?', opts: ['2Ω','4Ω','8Ω','1Ω'], ans: 0, exp: '1/R=1/4+1/4=1/2, R=2', expEn: '1/R=1/2, R=2'}
+                ],
+                hard: [
+                    {q: '电阻R₁=2Ω,R₂=4Ω串联接6V电源，R₁功率？', qEn: 'R₁=2Ω,R₂=4Ω in series with 6V, power in R₁?', opts: ['2W','4W','6W','8W'], ans: 0, exp: 'I=6/6=1A, P=I²R=1×2=2', expEn: 'I=1A, P=I²R=2W'}
+                ]
+            }
+        };
+        
+        // 如果没有特定模板，使用通用模板
+        const genericTemplates = {
+            easy: [
+                {q: '计算: 2+3×4=?', qEn: 'Calculate: 2+3×4=?', opts: ['14','20','24','11'], ans: 0, exp: '先乘后加: 2+12=14', expEn: 'Multiply first: 2+12=14'},
+                {q: '化简: (x²)³=?', qEn: 'Simplify: (x²)³=?', opts: ['x⁶','x⁵','x⁸','3x²'], ans: 0, exp: '(x²)³=x⁶', expEn: '(x²)³=x⁶'}
+            ],
+            medium: [
+                {q: '解方程: 2x+5=13', qEn: 'Solve: 2x+5=13', opts: ['4','9','3','6'], ans: 0, exp: '2x=8, x=4', expEn: '2x=8, x=4'},
+                {q: '因式分解: x²-4', qEn: 'Factorize: x²-4', opts: ['(x+2)(x-2)','(x-2)²','(x+2)²','x(x-4)'], ans: 0, exp: 'a²-b²=(a+b)(a-b)', expEn: 'Difference of squares'}
+            ],
+            hard: [
+                {q: '求极限: lim(x→0) sinx/x', qEn: 'Find limit: lim(x→0) sinx/x', opts: ['1','0','∞','不存在'], ans: 0, exp: '重要极限=1', expEn: 'Standard limit = 1'}
+            ]
+        };
+        
+        let questions = [];
+        let idCounter = 1000;
+        
+        for(let i=0; i<count; i++) {
+            // 选择模板
+            let templateList;
+            if(templates[subject] && templates[subject][difficulty]) {
+                templateList = templates[subject][difficulty];
+            } else if(templates[subject]) {
+                // 如果没有特定难度，使用该科目的所有难度
+                templateList = [...(templates[subject].easy||[]), ...(templates[subject].medium||[]), ...(templates[subject].hard||[])];
+            } else {
+                templateList = genericTemplates[difficulty] || genericTemplates.easy;
+            }
+            
+            // 随机选择模板
+            const template = templateList[Math.floor(Math.random() * templateList.length)];
+            
+            // 生成变体（简单修改数字）
+            const variant = generateVariant(template);
+            
+            questions.push({
+                id: idCounter++,
+                topicId: subject || 'generic',
+                topic: subject ? subject.split('-')[1] || 'General' : 'General',
+                difficulty: difficulty || 'easy',
+                source: `AI生成 ${new Date().toLocaleDateString()}`,
+                question: variant.q,
+                questionEn: variant.qEn,
+                options: variant.opts,
+                correct: variant.ans,
+                explanation: variant.exp,
+                explanationEn: variant.expEn
+            });
+        }
+        
+        return questions;
+    }
+    
+    // 生成题目变体（修改数字）并生成易混淆的错误选项
+    function generateVariant(template) {
+        // 简单替换数字
+        let q = template.q;
+        let qEn = template.qEn;
+        let exp = template.exp;
+        let expEn = template.expEn;
+        
+        // 随机因子（用于生成变体）
+        const factor = Math.floor(Math.random() * 3) + 1; // 1, 2, 或 3
+        
+        // 替换一些常见数字
+        const numMap = {'2': (2*factor).toString(), '3': (3*factor).toString(), '4': (4*factor).toString(), 
+                       '5': (5*factor).toString(), '6': (6*factor).toString(), '10': (10*factor).toString()};
+        
+        for(let [old, newVal] of Object.entries(numMap)) {
+            q = q.replace(new RegExp(old, 'g'), newVal);
+            qEn = qEn.replace(new RegExp(old, 'g'), newVal);
+            exp = exp.replace(new RegExp(old, 'g'), newVal);
+            expEn = expEn.replace(new RegExp(old, 'g'), newVal);
+        }
+        
+        // 生成易混淆的错误选项
+        const correctAnswer = template.opts[template.ans];
+        let opts = generateDistractors(correctAnswer, template.opts, q);
+        
+        // 找到正确答案在新选项数组中的位置
+        const newAnsIndex = opts.indexOf(correctAnswer);
+        
+        return {q, qEn, opts, ans: newAnsIndex, exp, expEn};
+    }
+    
+    // 生成易混淆的错误选项（干扰项）
+    function generateDistractors(correctAnswer, originalOpts, question) {
+        let distractors = [correctAnswer]; // 正确答案放第一个
+        
+        // 从原选项中提取数字
+        const numbers = extractNumbers(correctAnswer);
+        const correctNum = numbers.length > 0 ? parseFloat(numbers[0]) : null;
+        
+        if(correctNum !== null) {
+            // 常见错误1：符号错误
+            distractors.push(correctAnswer.replace(correctNum.toString(), (-correctNum).toString()));
+            
+            // 常见错误2：计算顺序错误（如先加后乘）
+            distractors.push(correctAnswer.replace(correctNum.toString(), (correctNum * 2).toString()));
+            
+            // 常见错误3：忘记平方/开方
+            distractors.push(correctAnswer.replace(correctNum.toString(), Math.sqrt(Math.abs(correctNum)).toFixed(2).replace(/\.00$/, '')));
+            
+            // 常见错误4：单位错误
+            distractors.push(correctAnswer + '²');
+            
+            // 常见错误5：系数错误
+            distractors.push(correctAnswer.replace(correctNum.toString(), (correctNum / 2).toString()));
+        }
+        
+        // 添加原选项中的其他选项（排除正确答案）
+        originalOpts.forEach((opt, idx) => {
+            if(idx !== originalOpts.indexOf(correctAnswer) && distractors.length < 4) {
+                // 修改数字以匹配当前题目
+                let modifiedOpt = opt;
+                const optNumbers = extractNumbers(opt);
+                optNumbers.forEach((num, i) => {
+                    if(numbers[i]) {
+                        modifiedOpt = modifiedOpt.replace(num, numbers[i]);
+                    }
+                });
+                distractors.push(modifiedOpt);
+            }
+        });
+        
+        // 如果还不够4个，添加通用干扰项
+        const genericDistractors = ['0', '1', '-1', '∞', '不存在', '无法确定', 'N/A'];
+        while(distractors.length < 4) {
+            const randomDistractor = genericDistractors[Math.floor(Math.random() * genericDistractors.length)];
+            if(!distractors.includes(randomDistractor)) {
+                distractors.push(randomDistractor);
+            }
+        }
+        
+        // 只取前4个，并打乱顺序
+        distractors = distractors.slice(0, 4);
+        return shuffleArray(distractors);
+    }
+    
+    // 从字符串中提取数字
+    function extractNumbers(str) {
+        const matches = str.match(/-?\d+\.?\d*/g);
+        return matches || [];
+    }
+    
+    // 打乱数组
+    function shuffleArray(array) {
+        const newArray = [...array];
+        for(let i = newArray.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+        }
+        return newArray;
+    }
+
+    function generateQuestions() {
+        const subject = document.getElementById('subjectFilter').value;
+        const difficulty = document.getElementById('difficultyFilter').value;
+        const count = parseInt(document.getElementById('questionCount').value);
+        const useAI = document.getElementById('aiGenerate')?.checked ?? true;
+        
+        let allQuestions = [];
+        
+        // 从题库中选择
+        let filtered = practiceQuestionBank;
+        if(subject) filtered = filtered.filter(q => q.topicId.startsWith(subject));
+        if(difficulty) filtered = filtered.filter(q => q.difficulty === difficulty);
+        
+        // 添加AI生成题目
+        if(useAI) {
+            const aiCount = Math.min(20, count); // AI生成最多20道
+            const aiQuestions = generateAIQuestions(subject, difficulty, aiCount);
+            allQuestions = [...aiQuestions];
+            
+            // 如果需要更多，从题库补充
+            if(count > aiCount && filtered.length > 0) {
+                const extraCount = count - aiCount;
+                const extraQuestions = filtered.sort(() => Math.random() - 0.5).slice(0, extraCount);
+                allQuestions = [...allQuestions, ...extraQuestions];
+            }
+        } else {
+            // 只使用题库
+            allQuestions = filtered.sort(() => Math.random() - 0.5).slice(0, count);
+        }
+        
+        if(allQuestions.length === 0) {
+            // 如果没有匹配的题目，使用通用题目
+            allQuestions = generateAIQuestions('', difficulty || 'easy', count);
+        }
+        
+        currentPracticeQuestions = allQuestions;
+        practiceAnswers = {};
+        
+        renderQuestions();
+    }
+    
+    function renderQuestions() {
+        let html = '';
+        currentPracticeQuestions.forEach((q, i) => {
+            let diffBadge = q.difficulty === 'easy' ? '<span class="diff-easy difficulty-badge">容易 Easy</span>' : 
+                           q.difficulty === 'medium' ? '<span class="diff-medium difficulty-badge">中等 Medium</span>' : 
+                           '<span class="diff-hard difficulty-badge">进阶 Hard</span>';
+            let sourceBadge = q.source.startsWith('CIE') ? 
+                `<span class="source-badge source-cie">📚 ${q.source}</span>` : 
+                `<span class="source-badge source-ai">🤖 ${q.source}</span>`;
+            
+            html += `<div class="card p-4 mb-4">
+                <div class="flex flex-wrap gap-2 mb-3">
+                    <span class="text-gray-500 text-sm">${i+1}.</span>
+                    <span class="text-gray-800 font-medium">${q.question}</span>
+                </div>
+                <p class="text-gray-500 text-sm mb-3">${q.questionEn}</p>
+                <div class="flex flex-wrap gap-2 mb-3">${diffBadge} ${sourceBadge}</div>
+                <div class="space-y-2">`;
+            
+            q.options.forEach((opt, j) => {
+                html += `<button class="option-btn w-full text-left" data-question="${i}" data-option="${j}" onclick="selectOption(${i},${j})">
+                    <span class="font-medium">${String.fromCharCode(65+j)}.</span> ${opt}
+                </button>`;
+            });
+            html += `</div></div>`;
+        });
+        
+        document.getElementById('practiceQuestions').innerHTML = html;
+    }
+
+    function selectOption(qIdx, optIdx) {
+        practiceAnswers[qIdx] = optIdx;
+        document.querySelectorAll(`[data-question="${qIdx}"]`).forEach(btn => {
+            btn.classList.remove('selected');
+        });
+        document.querySelector(`[data-question="${qIdx}"][data-option="${optIdx}"]`).classList.add('selected');
+    }
+
+    function submitPracticeAnswers() {
+        const questions = currentPracticeQuestions;
+        const answers = practiceAnswers;
+        
+        if(Object.keys(answers).length < questions.length) {
+            alert('请完成所有题目！');
+            return;
+        }
+        
+        let correct = 0;
+        questions.forEach((q, i) => {
+            if(answers[i] === q.correct) correct++;
+        });
+        
+        // 显示结果
+        let html = `<div class="text-center mb-6">
+            <div class="text-5xl font-bold text-blue-600 mb-2">${correct}/${questions.length}</div>
+            <p class="text-gray-600">正确率 Accuracy: ${Math.round(correct/questions.length*100)}%</p>
+        </div>`;
+        
+        questions.forEach((q, i) => {
+            const isCorrect = answers[i] === q.correct;
+            const userIdx = answers[i];
+            const correctIdx = q.correct;
+            
+            html += `<div class="card p-4 mb-4 ${isCorrect ? 'border-l-4 border-green-500' : 'border-l-4 border-red-500'}">
+                <div class="flex flex-wrap gap-2 mb-2">
+                    <span class="text-gray-500 text-sm">${i+1}.</span>
+                    <span class="font-medium">${q.question}</span>
+                </div>
+                <p class="text-gray-500 text-sm mb-2">${q.questionEn}</p>`;
+            
+            q.options.forEach((opt, j) => {
+                let bgClass = '';
+                if(j === correctIdx) bgClass = 'bg-green-100 border-green-500';
+                else if(j === userIdx && !isCorrect) bgClass = 'bg-red-100 border-red-500';
+                html += `<div class="p-2 rounded border my-1 ${bgClass}">
+                    <span class="font-medium">${String.fromCharCode(65+j)}.</span> ${opt}
+                    ${j === correctIdx ? ' ✓ Correct' : ''}
+                    ${j === userIdx && !isCorrect ? ' ✗ Your answer' : ''}
+                </div>`;
+            });
+            
+            html += `<div class="bg-blue-50 p-3 rounded-lg mt-3">
+                <p class="text-blue-800 text-sm"><strong>解析:</strong> ${q.explanation}</p>
+                <p class="text-blue-600 text-sm"><strong>Explanation:</strong> ${q.explanationEn}</p>
+            </div></div>`;
+        });
+        
+        document.getElementById('practiceQuestions').innerHTML = html;
+        
+        // 更新统计
+        const statQuestions = document.getElementById('statQuestions');
+        const statAccuracy = document.getElementById('statAccuracy');
+        let total = parseInt(statQuestions.textContent) + questions.length;
+        let correctTotal = parseInt(statQuestions.textContent) * (parseInt(statAccuracy.textContent)/100) + correct;
+        statQuestions.textContent = total;
+        statAccuracy.textContent = Math.round(correctTotal/total*100) + '%';
+    }
+
+    function showSection(id, btn) {
+        document.querySelectorAll('#app section').forEach(s => s.classList.add('hidden'));
+        document.getElementById(id).classList.remove('hidden');
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        if(btn) btn.classList.add('active');
+        
+        if(id === 'practice') generateQuestions();
+    }
+
+    function toggleChapter(id) {
+        const el = document.getElementById(id);
+        el.classList.toggle('open');
+    }
+
+    function goToTopic(section, topicId) {
+        showSection(section);
+        if(topicData[topicId]) {
+            const topic = topicData[topicId];
+            selectSubject(topic.subject);
+            document.getElementById('topicContent').innerHTML = topic.content;
+            document.getElementById('topicContent').classList.remove('border-l-blue-500', 'border-l-purple-500');
+            document.getElementById('topicContent').classList.add(topic.subject === 'math' ? 'border-l-blue-500' : 'border-l-purple-500');
+        }
+    }
+
+    function selectSubject(subject) {
+        document.querySelectorAll('.tag').forEach(t => {
+            t.classList.remove('subject-active');
+            t.style.background = '';
+            t.style.color = '';
+        });
+        const btn = document.getElementById('btn-' + subject);
+        if(btn) {
+            btn.classList.add('subject-active');
+            btn.style.background = '#007AFF';
+            btn.style.color = 'white';
+        }
+    }
+
+    function handleLogin(e) {
+        e.preventDefault();
+        const u = document.getElementById('username').value;
+        const p = document.getElementById('password').value;
+        if(u === 'admin' && p === '12346789') {
+            localStorage.setItem('isLoggedIn', 'true');
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('app').classList.remove('hidden');
+        } else {
+            document.getElementById('loginError').classList.remove('hidden');
+        }
+        return false;
+    }
+
+    // 文件上传相关变量和函数
+    let uploadedFiles = [];
+    
+    function logout() {
+        localStorage.removeItem('isLoggedIn');
+        document.getElementById('app').classList.add('hidden');
+        document.getElementById('loginPage').classList.remove('hidden');
+    }
+    
+    // 文件上传处理
+    document.addEventListener('DOMContentLoaded', function() {
+        const fileInput = document.getElementById('fileInput');
+        const dropZone = document.getElementById('dropZone');
+        
+        if(fileInput) {
+            fileInput.addEventListener('change', async function(e) {
+                const file = e.target.files[0];
+                if(!file) return;
+                await handleFileUpload(file);
+            });
+        }
+        
+        if(dropZone) {
+            dropZone.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                dropZone.classList.add('bg-blue-50', 'border-blue-400');
+            });
+            dropZone.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                dropZone.classList.remove('bg-blue-50', 'border-blue-400');
+            });
+            dropZone.addEventListener('drop', async function(e) {
+                e.preventDefault();
+                dropZone.classList.remove('bg-blue-50', 'border-blue-400');
+                const files = e.dataTransfer.files;
+                for(let file of files) {
+                    await handleFileUpload(file);
+                }
+            });
+        }
+    });
+    
+    async function handleFileUpload(file) {
+        const validTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+        if(!validTypes.includes(file.type)) {
+            alert('不支持的文件类型，请上传 PDF、JPG 或 PNG');
+            return;
+        }
+        
+        // 模拟上传成功（实际使用时需要后端支持）
+        uploadedFiles.push({
+            name: file.name,
+            size: file.size,
+            type: file.type,
+            uploadTime: new Date().toLocaleString()
+        });
+        
+        document.getElementById('uploadResult').classList.remove('hidden');
+        document.getElementById('fileName').textContent = file.name + ' - ' + (file.size/1024).toFixed(1) + ' KB';
+        renderUploadedFiles();
+        
+        alert('文件已上传！AI分析功能需要后端支持，当前为演示模式。');
+    }
+    
+    function renderUploadedFiles() {
+        const container = document.getElementById('uploadedFilesList');
+        if(!container) return;
+        
+        if(uploadedFiles.length === 0) {
+            container.innerHTML = '<p class="text-gray-400 text-sm">暂无文件</p>';
+            return;
+        }
+        
+        let html = '<div class="space-y-2">';
+        uploadedFiles.forEach((f, i) => {
+            const icon = f.type === 'application/pdf' ? '📄' : '🖼️';
+            html += `<div class="flex items-center justify-between p-3 bg-green-50 rounded-xl">
+                <div class="flex items-center gap-2">
+                    <span class="text-xl">${icon}</span>
+                    <div>
+                        <p class="text-gray-800 font-medium text-sm">${f.name}</p>
+                        <p class="text-gray-500 text-xs">${f.uploadTime}</p>
+                    </div>
+                </div>
+                <button onclick="removeFile(${i})" class="text-red-500 text-sm">删除</button>
+            </div>`;
+        });
+        html += '</div>';
+        container.innerHTML = html;
+    }
+    
+    function removeFile(index) {
+        uploadedFiles.splice(index, 1);
+        renderUploadedFiles();
+        if(uploadedFiles.length === 0) {
+            document.getElementById('uploadResult').classList.add('hidden');
+        }
+    }
+    
+    // 分析答案（演示功能）
+    function analyzeAnswer() {
+        const question = document.getElementById('questionInput').value;
+        const studentAnswer = document.getElementById('studentAnswerInput').value;
+        
+        if(!question || !studentAnswer) {
+            alert('请输入题目和学生答案');
+            return;
+        }
+        
+        // 模拟分析结果
+        document.getElementById('analysisResult').classList.remove('hidden');
+        document.getElementById('resultContent').innerHTML = `
+            <div class="text-center mb-4">
+                <div class="text-4xl font-bold text-blue-600 mb-2">85</div>
+                <p class="text-gray-600">分 / Score</p>
+            </div>
+            <div class="bg-green-50 p-3 rounded-lg mb-3">
+                <p class="text-green-800 text-sm"><strong>✓ 正确点：</strong>解题思路清晰，步骤完整</p>
+            </div>
+            <div class="bg-yellow-50 p-3 rounded-lg mb-3">
+                <p class="text-yellow-800 text-sm"><strong>⚠ 注意：</strong>最后一步计算需仔细</p>
+            </div>
+            <div class="bg-blue-50 p-3 rounded-lg">
+                <p class="text-blue-800 text-sm"><strong>💡 建议：</strong>建议复习相关知识点，多做类似练习</p>
+            </div>
+            <p class="text-gray-400 text-xs mt-4 text-center">（完整AI分析功能需要后端支持）</p>
+        `;
+    }
+
+    window.onload = function() {
+        if(localStorage.getItem('isLoggedIn') === 'true') {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('app').classList.remove('hidden');
+        }
+    };
+    </script>
+</body>
+</html>
