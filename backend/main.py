@@ -864,18 +864,18 @@ Format as JSON:
 }}"""
 
     try:
-        # 调用 Minimax 生成题目
+        # 调用 Kimi 生成题目
         async with httpx.AsyncClient() as client:
             response = await client.post(
-                "https://api.minimax.chat/v1/text/chatcompletion_v2",
+                f"{KIMI_BASE_URL}/v1/chat/completions",
                 headers={
-                    "Authorization": f"Bearer {os.getenv('MINIMAX_API_KEY', '')}",
+                    "Authorization": f"Bearer {KIMI_API_KEY}",
                     "Content-Type": "application/json"
                 },
                 json={
-                    "model": "MiniMax-Text-01",
+                    "model": "kimi-k2.5",
                     "messages": [
-                        {"role": "system", "content": "You are an A-Level CIE exam question generator. Generate questions in both English and Chinese."},
+                        {"role": "system", "content": "You are an A-Level CIE exam question generator. Generate questions in both English and Chinese. Always return valid JSON format."},
                         {"role": "user", "content": prompt}
                     ]
                 },

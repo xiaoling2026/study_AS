@@ -1042,35 +1042,17 @@ function generateQuestions() {
     }
     
     // AI生成模式（原有逻辑）
-    document.getElementById("practiceQuestions").innerHTML = '<div class="text-center p-8"><p class="text-gray-500">🤖 AI正在生成题目...</p></div>';
+    // AI生成 - 调用 Kimi API
+    document.getElementById("practiceQuestions").innerHTML = '<div class="text-center p-8"><p class="text-gray-500">🤖 AI (Kimi) 正在生成题目...</p></div>';
     
-    // 调用后端API生成题目
-    fetch("http://localhost:8000/generate-questions", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({topic: topic || subject, difficulty: difficulty || "medium", count: count})
-    })
-    .then(function(r){return r.json();})
-    .then(function(result){
-        if(result.success && result.questions && result.questions.length > 0){
-            var q = result.questions.map(function(item, idx){
-                return {
-                    id: 1000 + idx,
-                    question: item.question,
-                    questionEn: item.questionEn,
-                    options: item.options,
-                    correct: item.correct,
-                    explanation: item.explanation,
-                    explanationEn: item.explanationEn,
-                    source: 'AI生成'
-                };
-            });
+    generateQuestionsWithKimi(topic || subject, difficulty || "medium", count)
+    .then(function(q) {
+        if(q && q.length > 0) {
             window.currentPracticeQuestions = q;
             window.practiceAnswers = {};
             var html = "";
             for(var i=0;i<q.length;i++){
-                html += '<div class="card p-4 mb-4"><div class="flex items-center gap-2 mb-2"><span class="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded">AI生成</span></div>';
-                // 英文为主
+                html += '<div class="card p-4 mb-4"><div class="flex items-center gap-2 mb-2"><span class="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded">AI (Kimi)</span></div>';
                 html += '<p class="font-medium mb-2">'+(i+1)+'. '+(q[i].questionEn || q[i].question)+'</p>';
                 if(q[i].question && q[i].questionEn) html += '<p class="text-gray-500 text-sm mb-2">'+q[i].question+'</p>';
                 for(var j=0;j<q[i].options.length;j++){
@@ -1080,14 +1062,50 @@ function generateQuestions() {
             }
             document.getElementById("practiceQuestions").innerHTML = html;
         } else {
-            // API失败，使用本地题库
             useLocalQuestionBank(subject, topic, difficulty, count);
         }
     })
     .catch(function(err){
-        console.error("生成题目失败:", err);
+        console.error("AI生成失败:", err);
         useLocalQuestionBank(subject, topic, difficulty, count);
     });
+}
+
+// Kimi API 生成题目
+async function generateQuestionsWithKimi(topic, difficulty, count) {
+    var prompt = "Generate " + count + " A-Level CIE " + (topic.indexOf('math') >= 0 ? "Mathematics (9709)" : "Physics (9702)") + " practice questions for topic: " + topic + ". Difficulty: " + difficulty + ". For each question provide: questionEn (English), question (Chinese), 4 options, correct answer index (0-3), explanationEn (English), explanation (Chinese). Format as JSON: {\"questions\": [{\"questionEn\":\"...\",\"question\":\"...\",\"options\":[\"A\",\"B\",\"C\",\"D\"],\"correct\":0,\"explanationEn\":\"...\",\"explanation\":\"...\"}]}";
+    
+    try {
+        var response = await fetch("https://api.moonshot.cn/v1/chat/completions", {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer sk-BzEYb4esUAq3qVdURq6swV7EYpEOwJsrvZm9QdvO1DnNCfDr",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                "model": "kimi-k2.5",
+                "messages": [
+                    {"role": "system", "content": "You are an A-Level CIE exam question generator. Generate questions in both English and Chinese. Always return valid JSON."},
+                    {"role": "user", "content": prompt}
+                ]
+            })
+        });
+        
+        if(response.ok) {
+            var result = await response.json();
+            var content = result.choices[0].message.content;
+            var jsonStart = content.indexOf("{");
+            var jsonEnd = content.lastIndexOf("}") + 1;
+            if(jsonStart >= 0 && jsonEnd > jsonStart) {
+                var jsonStr = content.substring(jsonStart, jsonEnd);
+                var data = JSON.parse(jsonStr);
+                return data.questions || [];
+            }
+        }
+    } catch(e) {
+        console.error("Kimi API error:", e);
+    }
+    return null;
 }
 
 // 使用本地题库的备用函数
