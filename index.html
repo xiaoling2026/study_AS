@@ -910,8 +910,27 @@
             if (topicId && topicData[topicId]) {
                 const topic = topicData[topicId];
                 selectSubject(topic.subject);
-                document.getElementById('topicContent').innerHTML = topic.content;
+                var content = topic.content;
+                // 添加练习按钮
+                content += '<div class="mt-6 pt-4 border-t border-gray-200"><button onclick="practiceThisTopic(\'' + topicId + '\', \'' + topic.subject + '\')" class="w-full py-3 bg-blue-500 text-white font-semibold rounded-xl hover:bg-blue-600 transition">📝 练习此知识点 · Practice This Topic</button></div>';
+                document.getElementById('topicContent').innerHTML = content;
             }
+        }
+        
+        // 练习当前知识点
+        function practiceThisTopic(topicId, subject) {
+            // 切换到练习页面
+            showSection('practice');
+            // 设置筛选条件
+            document.getElementById('subjectFilter').value = subject;
+            document.getElementById('topicFilter').value = topicId;
+            document.getElementById('questionSource').value = 'pastpaper'; // 默认使用真题
+            // 更新知识点下拉列表
+            updateTopicFilter();
+            // 生成题目
+            setTimeout(function() {
+                generateQuestions();
+            }, 100);
         }
         
         function logout() {
@@ -959,9 +978,118 @@
     </style>
 <script>
 function generateQuestions() {
+    var source = document.getElementById('questionSource').value;
     var subject = document.getElementById('subjectFilter').value;
+    var topic = document.getElementById('topicFilter').value;
+    var difficulty = document.getElementById('difficultyFilter').value;
     var count = parseInt(document.getElementById('questionCount').value);
-    var filtered = practiceQuestionBank;
+    
+    // 如果选择真题库
+    if (source === 'pastpaper') {
+        var filtered = PRACTICE_QUESTION_BANK || [];
+        
+        // 按科目筛选
+        if (subject) {
+            filtered = filtered.filter(function(q) { return q.topicId && q.topicId.startsWith(subject); });
+        }
+        
+        // 按知识点筛选
+        if (topic) {
+            filtered = filtered.filter(function(q) { return q.topicId === topic; });
+        }
+        
+        // 按难度筛选
+        if (difficulty) {
+            filtered = filtered.filter(function(q) { return q.difficulty === difficulty; });
+        }
+        
+        // 如果筛选后没有题目，使用全部真题
+        if (filtered.length === 0) {
+            filtered = PRACTICE_QUESTION_BANK || [];
+        }
+        
+        // 随机选取
+        var shuffled = filtered.slice().sort(function() { return Math.random() - 0.5; });
+        var selected = shuffled.slice(0, Math.min(count, shuffled.length));
+        
+        window.currentPracticeQuestions = selected;
+        window.practiceAnswers = {};
+        
+        var html = '';
+        for (var i = 0; i < selected.length; i++) {
+            var q = selected[i];
+            html += '<div class="card p-4 mb-4">';
+            html += '<div class="flex items-center gap-2 mb-2"><span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded">' + (q.source || 'CIE') + '</span>';
+            html += '<span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">' + q.topic + '</span></div>';
+            html += '<p class="font-medium mb-2">' + (i+1) + '. ' + q.question + '</p>';
+            if (q.questionEn) html += '<p class="text-gray-500 text-sm mb-3">' + q.questionEn + '</p>';
+            for (var j = 0; j < q.options.length; j++) {
+                html += '<button class="option-btn w-full p-3 text-left bg-white border border-gray-200 rounded-xl transition mb-2" data-question="' + i + '" data-option="' + j + '" onclick="selectPracticeOption(' + i + ',' + j + ')"><span class="text-gray-600 font-medium">' + String.fromCharCode(65+j) + '.</span> ' + q.options[j] + '</button>';
+            }
+            html += '</div>';
+        }
+        
+        if (selected.length === 0) {
+            html = '<div class="text-center p-8"><p class="text-gray-500">暂无符合条件的真题，请调整筛选条件</p></div>';
+        }
+        
+        document.getElementById('practiceQuestions').innerHTML = html;
+        document.getElementById('practiceResult').classList.add('hidden');
+        document.getElementById('practiceArea').classList.remove('hidden');
+        return;
+    }
+    
+    // AI生成模式（原有逻辑）
+    document.getElementById("practiceQuestions").innerHTML = '<div class="text-center p-8"><p class="text-gray-500">🤖 AI正在生成题目...</p></div>';
+    
+    // 调用后端API生成题目
+    fetch("http://localhost:8000/generate-questions", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({topic: topic || subject, difficulty: difficulty || "medium", count: count})
+    })
+    .then(function(r){return r.json();})
+    .then(function(result){
+        if(result.success && result.questions && result.questions.length > 0){
+            var q = result.questions.map(function(item, idx){
+                return {
+                    id: 1000 + idx,
+                    question: item.question,
+                    questionEn: item.questionEn,
+                    options: item.options,
+                    correct: item.correct,
+                    explanation: item.explanation,
+                    explanationEn: item.explanationEn,
+                    source: 'AI生成'
+                };
+            });
+            window.currentPracticeQuestions = q;
+            window.practiceAnswers = {};
+            var html = "";
+            for(var i=0;i<q.length;i++){
+                html += '<div class="card p-4 mb-4"><div class="flex items-center gap-2 mb-2"><span class="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded">AI生成</span></div>';
+                html += '<p class="font-medium mb-2">'+(i+1)+'. '+q[i].question+'</p>';
+                if(q[i].questionEn) html += '<p class="text-gray-500 text-sm mb-2">'+q[i].questionEn+'</p>';
+                for(var j=0;j<q[i].options.length;j++){
+                    html += '<button class="option-btn w-full p-3 text-left bg-white border border-gray-200 rounded-xl transition mb-2" data-question="'+i+'" data-option="'+j+'" onclick="selectPracticeOption('+i+','+j+')"><span class="text-gray-600 font-medium">'+String.fromCharCode(65+j)+'.</span> '+q[i].options[j]+'</button>';
+                }
+                html += '</div>';
+            }
+            document.getElementById("practiceQuestions").innerHTML = html;
+        } else {
+            // API失败，使用本地题库
+            useLocalQuestionBank(subject, topic, difficulty, count);
+        }
+    })
+    .catch(function(err){
+        console.error("生成题目失败:", err);
+        useLocalQuestionBank(subject, topic, difficulty, count);
+    });
+}
+
+// 使用本地题库的备用函数
+function useLocalQuestionBank(subject, topic, difficulty, count) {
+    var filtered = practiceQuestionBank || [];
     if(subject){
         filtered = practiceQuestionBank.filter(function(q){return q.topicId && q.topicId.startsWith(subject);});
     }
@@ -1017,29 +1145,27 @@ var practiceQuestionBank = [
 {id:34,topicId:'physics-quantities',topic:'Quantities',question:'1kg=?g',options:['1000','100','10','1'],correct:0,explanation:'1kg=1000g'},
 {id:35,topicId:'physics-quantities',topic:'Quantities',question:'加速度单位？',options:['m/s²','m/s','m²/s','m/s³'],correct:0,explanation:'加速度'}
 ];
+// 从topicData动态获取知识点列表
+function getTopicsFromTopicData(subject) {
+    var topics = [];
+    for (var key in topicData) {
+        if (topicData.hasOwnProperty(key)) {
+            var topic = topicData[key];
+            if (topic.subject === subject) {
+                topics.push({id: key, name: topic.name});
+            }
+        }
+    }
+    return topics;
+}
+
 function updateTopicFilter() {
         var subject = document.getElementById("subjectFilter").value;
         var topicSelect = document.getElementById("topicFilter");
         topicSelect.innerHTML = '<option value="">全部知识点</option>';
         
-        var mathTopics = [
-            {id:"math-quadratics", name:"二次方程"},
-            {id:"math-functions", name:"函数"},
-            {id:"math-coordinate", name:"坐标几何"},
-            {id:"math-trigonometry", name:"三角函数"},
-            {id:"math-differentiation", name:"微分"},
-            {id:"math-integration", name:"积分"}
-        ];
-        
-        var physicsTopics = [
-            {id:"physics-kinematics", name:"运动学"},
-            {id:"physics-dynamics", name:"动力学"},
-            {id:"physics-forces", name:"力"},
-            {id:"physics-energy", name:"能量"},
-            {id:"physics-waves", name:"波"}
-        ];
-        
-        var topics = subject === "math" ? mathTopics : subject === "physics" ? physicsTopics : [];
+        // 从topicData动态获取知识点
+        var topics = getTopicsFromTopicData(subject);
         
         for(var i=0; i<topics.length; i++) {
             var opt = document.createElement("option");
@@ -1047,6 +1173,22 @@ function updateTopicFilter() {
             opt.textContent = topics[i].name;
             topicSelect.appendChild(opt);
         }
+    }
+    
+    // 从topicData获取知识点列表
+    function getTopicsFromTopicData(subject) {
+        var topics = [];
+        if (typeof topicData !== 'undefined') {
+            for (var key in topicData) {
+                if (topicData.hasOwnProperty(key)) {
+                    var topic = topicData[key];
+                    if (!subject || topic.subject === subject) {
+                        topics.push({id: key, name: topic.name});
+                    }
+                }
+            }
+        }
+        return topics;
     }
 
     function generateQuestions(){var s=document.getElementById("subjectFilter").value;var c=parseInt(document.getElementById("questionCount").value);var f=s?practiceQuestionBank.filter(function(q){return q.topicId.startsWith(s)}):practiceQuestionBank;var q=f.slice().sort(function(){return 0.5-Math.random()}).slice(0,Math.min(c,f.length));var h="";for(var i=0;i<q.length;i++){h+="<div class=card p-4 mb-4><p class=font-medium>"+(i+1)+". "+q[i].question+"</p>";for(var j=0;j<q[i].options.length;j++){h+="<label class=block><input type=radio name=q"+q[i].id+" value="+j+"> "+q[i].options[j]+"</label>";}h+="</div>";}document.getElementById("practiceQuestions").innerHTML=h;}
@@ -1280,23 +1422,27 @@ function submitPracticeAnswers() {
                     <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
                         <h2 class="section-title">智能练习 · Practice</h2>
                         <div class="flex flex-wrap items-center gap-2">
-                            <label class="text-sm text-gray-600">知识点:</label>
+                            <label class="text-sm text-gray-600">来源:</label>
+                            <select id="questionSource" class="border rounded-lg px-2 py-1 text-sm">
+                                <option value="ai">AI智能生成</option>
+                                <option value="pastpaper">历年真题</option>
+                            </select>
+                            <label class="text-sm text-gray-600">科目:</label>
                             <select id="subjectFilter" class="border rounded-lg px-2 py-1 text-sm" onchange="updateTopicFilter()">
                                 <option value="">全部科目</option>
                                 <option value="math">数学</option>
                                 <option value="physics">物理</option>
                             </select>
                             <select id="topicFilter" class="border rounded-lg px-2 py-1 text-sm">
-                            <option value="">全部知识点</option>
-                        </select>
-                        <select id="difficultyFilter" class="border rounded-lg px-2 py-1 text-sm">
-                            <option value="">全部难度</option>
-                            <option value="medium">普通</option>
-                            <option value="hard">进阶</option>
-                        </select>
                                 <option value="">全部知识点</option>
                             </select>
-                            <label class="text-sm text-gray-600 ml-2">数量:</label>
+                            <select id="difficultyFilter" class="border rounded-lg px-2 py-1 text-sm">
+                                <option value="">全部难度</option>
+                                <option value="easy">简单</option>
+                                <option value="medium">普通</option>
+                                <option value="hard">进阶</option>
+                            </select>
+                            <label class="text-sm text-gray-600">数量:</label>
                             <select id="questionCount" class="border rounded-lg px-2 py-1 text-sm">
                                 <option value="3">3道</option>
                                 <option value="5" selected>5道</option>
