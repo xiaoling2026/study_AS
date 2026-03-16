@@ -18,10 +18,8 @@
             document.querySelectorAll(".nav-item").forEach(function(n) { n.classList.remove("active"); });
             if (btn) btn.classList.add("active");
             
-            // 切换到练习页面时生成习题
-            if (id === 'practice') {
-                generatePracticeQuestions();
-            }
+            // 切换到练习页面时不自动生成习题，等待用户点击生成按钮
+            // if (id === 'practice') { generatePracticeQuestions(); }
             
             // 切换到每日课程时默认显示数学
             if (id === 'lesson') {
