@@ -920,16 +920,18 @@
         function practiceThisTopic(topicId, subject) {
             // 切换到练习页面
             showSection('practice');
-            // 设置筛选条件
+            // 设置科目
             document.getElementById('subjectFilter').value = subject;
-            document.getElementById('topicFilter').value = topicId;
-            document.getElementById('questionSource').value = 'pastpaper'; // 默认使用真题
             // 更新知识点下拉列表
             updateTopicFilter();
+            // 设置知识点（在updateTopicFilter之后）
+            document.getElementById('topicFilter').value = topicId;
+            // 设置题目来源为真题
+            document.getElementById('questionSource').value = 'pastpaper';
             // 生成题目
             setTimeout(function() {
                 generateQuestions();
-            }, 100);
+            }, 200);
         }
         
         function logout() {
@@ -1189,12 +1191,9 @@ function updateTopicFilter() {
         }
         return topics;
     }
-
-    function generateQuestions(){var s=document.getElementById("subjectFilter").value;var c=parseInt(document.getElementById("questionCount").value);var f=s?practiceQuestionBank.filter(function(q){return q.topicId.startsWith(s)}):practiceQuestionBank;var q=f.slice().sort(function(){return 0.5-Math.random()}).slice(0,Math.min(c,f.length));var h="";for(var i=0;i<q.length;i++){h+="<div class=card p-4 mb-4><p class=font-medium>"+(i+1)+". "+q[i].question+"</p>";for(var j=0;j<q[i].options.length;j++){h+="<label class=block><input type=radio name=q"+q[i].id+" value="+j+"> "+q[i].options[j]+"</label>";}h+="</div>";}document.getElementById("practiceQuestions").innerHTML=h;}
 </script>
 <script>
 var practiceQuestionBank, currentPracticeQuestions=[], practiceAnswers={};
-function generateQuestions() {
     var subject = document.getElementById("subjectFilter").value;
     var topic = document.getElementById("topicFilter").value;
     var count = parseInt(document.getElementById("questionCount").value);
