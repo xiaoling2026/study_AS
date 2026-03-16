@@ -1943,6 +1943,76 @@ if (localStorage.getItem('studyProgress')) {
             }
         }
         
+        // 批量分析所有识别到的题目
+        async function analyzeAllQuestions() {
+            const results = [];
+            for (let i = 0; i < extractedQuestions.length; i++) {
+                const q = extractedQuestions[i];
+                showProgress(`正在分析第 ${i+1}/${extractedQuestions.length} 道题...`, 70 + Math.floor((i / extractedQuestions.length) * 30), `分析题目 ${i+1}/${extractedQuestions.length}`);
+                
+                try {
+                    const response = await fetch('http://localhost:8000/analyze', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            question: q.question || '',
+                            student_answer: q.student_answer || '',
+                            file_id: currentFileId
+                        })
+                    });
+                    const result = await response.json();
+                    if (result.success) {
+                        results.push({question: q, analysis: result.analysis});
+                    }
+                } catch (error) {
+                    console.error(`分析第 ${i+1} 题失败:`, error);
+                }
+            }
+            
+            // 显示所有分析结果
+            showAllAnalysisResults(results);
+            showProgress('所有题目分析完成！', 100, '完成');
+            setTimeout(() => hideProgress(), 3000);
+        }
+        
+        // 显示所有分析结果
+        function showAllAnalysisResults(results) {
+            let html = '<div class="space-y-6">';
+            html += '<h3 class="font-bold text-xl mb-4">📊 批量分析结果 (' + results.length + ' 道题)</h3>';
+            
+            results.forEach((item, idx) => {
+                const a = item.analysis;
+                html += '<div class="card p-4 border-l-4 border-l-blue-500">';
+                html += '<h4 class="font-bold text-lg mb-2">题目 ' + (idx + 1) + '</h4>';
+                html += '<p class="text-gray-700 mb-2"><strong>题目：</strong>' + (item.question.question || '').substring(0, 100) + '...</p>';
+                html += '<p class="text-gray-700 mb-2"><strong>学生答案：</strong>' + (item.question.student_answer || '未提供').substring(0, 100) + '</p>';
+                
+                if (a) {
+                    html += '<div class="bg-gray-50 p-3 rounded-lg mb-2">';
+                    html += '<p class="text-blue-700 font-medium">评分：' + (a.score || 'N/A') + '/100</p>';
+                    html += '<p class="text-gray-600 text-sm">' + (a.comment || '') + '</p>';
+                    html += '</div>';
+                    
+                    if (a.errors && a.errors.length > 0) {
+                        html += '<div class="mb-2"><p class="text-red-600 font-medium">❌ 错误：</p><ul class="list-disc pl-5 text-sm">';
+                        a.errors.forEach(e => html += '<li>' + e.type + ': ' + e.description + '</li>');
+                        html += '</ul></div>';
+                    }
+                    
+                    if (a.suggestions && a.suggestions.length > 0) {
+                        html += '<div><p class="text-green-600 font-medium">💡 建议：</p><ul class="list-disc pl-5 text-sm">';
+                        a.suggestions.forEach(s => html += '<li>' + s.topic + ': ' + s.reason + '</li>');
+                        html += '</ul></div>';
+                    }
+                }
+                html += '</div>';
+            });
+            
+            html += '</div>';
+            document.getElementById('analysisResult').classList.remove('hidden');
+            document.getElementById('resultContent').innerHTML = html;
+        }
+        
         // 从文件中提取多个题目
         async function extractQuestionsFromFile(fileId) {
             currentFileId = fileId;
@@ -1958,22 +2028,9 @@ if (localStorage.getItem('studyProgress')) {
                 if (result.success && result.questions && result.questions.length > 0) {
                     extractedQuestions = result.questions;
                     
-                    if (extractedQuestions.length === 1) {
-                        // 只有一道题，直接填充并自动分析
-                        const q = extractedQuestions[0];
-                        console.log('识别到题目:', q);
-                        document.getElementById('questionInput').value = q.question || '';
-                        document.getElementById('studentAnswerInput').value = q.student_answer || '';
-                        showProgress('识别完成！正在分析答案...', 70, '步骤 3/3: AI分析答案');
-                        console.log('开始调用 analyzeCurrentQuestion');
-                        // 自动调用分析
-                        await analyzeCurrentQuestion();
-                        console.log('analyzeCurrentQuestion 完成');
-                    } else {
-                        // 多道题，显示选择界面
-                        showProgress(`识别完成！发现 ${extractedQuestions.length} 道题目`, 70, '请选择要分析的题目');
-                        showQuestionSelectorWithAutoAnalyze();
-                    }
+                    // 直接分析所有识别到的题目
+                    showProgress(`识别完成！发现 ${extractedQuestions.length} 道题目，正在批量分析...`, 70, '步骤 3/3: AI分析答案');
+                    await analyzeAllQuestions();
                 } else {
                     showProgress('未能识别题目，请手动输入', 0, '');
                 }
