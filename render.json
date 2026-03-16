@@ -1,0 +1,7 @@
+{
+  "buildCommand": null,
+  "startCommand": "python3 -m http.server $PORT",
+  "env": {
+    "PYTHON_VERSION": "3.12"
+  }
+}
