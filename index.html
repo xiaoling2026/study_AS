@@ -1015,9 +1015,17 @@ function generateQuestions() {
             filtered = filtered.filter(function(q) { return q.difficulty === difficulty; });
         }
         
-        // 如果筛选后没有题目，使用全部真题
-        if (filtered.length === 0) {
-            filtered = (typeof PAST_PAPER_BANK !== 'undefined') ? PAST_PAPER_BANK : [];
+        // 如果筛选后没有题目或数量不足，使用同科目其他题目（模糊匹配）
+        if (filtered.length < count) {
+            var additional = (typeof PAST_PAPER_BANK !== 'undefined') ? PAST_PAPER_BANK : [];
+            // 只选同科目的其他题目
+            if (subject) {
+                additional = additional.filter(function(q) { 
+                    return q.subject === subject && !filtered.includes(q); 
+                });
+            }
+            // 合并并去重
+            filtered = filtered.concat(additional);
         }
         
         // 随机选取
@@ -1028,6 +1036,15 @@ function generateQuestions() {
         window.practiceAnswers = {};
         
         var html = '';
+        
+        // 如果精确匹配不足，显示提示
+        if (topic && selected.length > 0) {
+            var exactMatchCount = selected.filter(function(q) { return q.topicId === topic; }).length;
+            if (exactMatchCount === 0) {
+                html += '<div class="bg-blue-50 border border-blue-200 rounded-xl p-3 mb-4"><p class="text-blue-700 text-sm">💡 显示同科目相关题目（' + (subject === 'math' ? '数学' : '物理') + '）</p></div>';
+            }
+        }
+        
         for (var i = 0; i < selected.length; i++) {
             var q = selected[i];
             html += '<div class="card p-4 mb-4">';
@@ -1043,18 +1060,7 @@ function generateQuestions() {
         }
         
         if (selected.length === 0) {
-            // 智能降级：如果精确匹配没有题目，尝试同科目其他知识点
-            var fallbackFiltered = PAST_PAPER_BANK || [];
-            if (subject) {
-                fallbackFiltered = fallbackFiltered.filter(function(q) { return q.subject === subject; });
-            }
-            if (fallbackFiltered.length > 0) {
-                var shuffled = fallbackFiltered.slice().sort(function() { return Math.random() - 0.5; });
-                selected = shuffled.slice(0, Math.min(count, shuffled.length));
-                html = '<div class="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-4"><p class="text-yellow-700 text-sm">⚠️ 该知识点暂无真题，显示同科目其他知识点题目</p></div>';
-            } else {
-                html = '<div class="text-center p-8"><div class="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-4"><p class="text-blue-700 font-medium mb-2">该知识点暂无真题</p><p class="text-blue-600 text-sm mb-4">建议使用 AI 智能生成题目</p><button onclick="switchToAIGeneration()" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">切换到 AI 生成</button></div></div>';
-            }
+            html = '<div class="text-center p-8"><div class="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-4"><p class="text-blue-700 font-medium mb-2">该科目暂无真题</p><p class="text-blue-600 text-sm mb-4">建议使用 AI 智能生成题目</p><button onclick="switchToAIGeneration()" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">切换到 AI 生成</button></div></div>';
         }
         
         document.getElementById('practiceQuestions').innerHTML = html;
