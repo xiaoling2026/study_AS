@@ -1043,7 +1043,18 @@ function generateQuestions() {
         }
         
         if (selected.length === 0) {
-            html = '<div class="text-center p-8"><p class="text-gray-500">暂无符合条件的真题，请调整筛选条件</p></div>';
+            // 智能降级：如果精确匹配没有题目，尝试同科目其他知识点
+            var fallbackFiltered = PAST_PAPER_BANK || [];
+            if (subject) {
+                fallbackFiltered = fallbackFiltered.filter(function(q) { return q.subject === subject; });
+            }
+            if (fallbackFiltered.length > 0) {
+                var shuffled = fallbackFiltered.slice().sort(function() { return Math.random() - 0.5; });
+                selected = shuffled.slice(0, Math.min(count, shuffled.length));
+                html = '<div class="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-4"><p class="text-yellow-700 text-sm">⚠️ 该知识点暂无真题，显示同科目其他知识点题目</p></div>';
+            } else {
+                html = '<div class="text-center p-8"><div class="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-4"><p class="text-blue-700 font-medium mb-2">该知识点暂无真题</p><p class="text-blue-600 text-sm mb-4">建议使用 AI 智能生成题目</p><button onclick="switchToAIGeneration()" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">切换到 AI 生成</button></div></div>';
+            }
         }
         
         document.getElementById('practiceQuestions').innerHTML = html;
@@ -1088,6 +1099,12 @@ function generateQuestions() {
         console.error("AI生成失败:", err);
         useLocalQuestionBank(subject, topic, difficulty, count);
     });
+}
+
+// 切换到 AI 生成
+function switchToAIGeneration() {
+    document.getElementById('questionSource').value = 'ai';
+    generateQuestions();
 }
 
 // Kimi API 生成题目

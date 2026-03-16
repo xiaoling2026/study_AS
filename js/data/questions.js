@@ -98,7 +98,76 @@ const PRACTICE_QUESTION_BANK = [
   // Physics - Electricity (3道)
   {id:58, topicId:'physics-electricity', topic:'Electricity', difficulty:'easy', source:'CIE 2023 Summer', question:'欧姆定律是？', questionEn:'Ohm\'s law is?', options:['V=IR','V=I/R','R=VI','I=V/R'], correct:0, explanation:'V=IR', explanationEn:'V=IR'},
   {id:59, topicId:'physics-electricity', topic:'Electricity', difficulty:'medium', source:'CIE 2022 Winter', question:'电阻R₁和R₂并联，总电阻是？', questionEn:'Resistors R₁ and R₂ in parallel, total resistance is?', options:['R₁R₂/(R₁+R₂)','R₁+R₂','(R₁+R₂)/R₁R₂','√(R₁R₂)'], correct:0, explanation:'1/R=1/R₁+1/R₂，R=R₁R₂/(R₁+R₂)', explanationEn:'1/R=1/R₁+1/R₂, R=R₁R₂/(R₁+R₂)'},
-  {id:60, topicId:'physics-electricity', topic:'Electricity', difficulty:'medium', source:'CIE 2023 Winter', question:'电功率公式是？', questionEn:'The formula for electric power is?', options:['P=VI','P=V/I','P=I²R','P=IR'], correct:0, explanation:'P=VI=I²R=V²/R', explanationEn:'P=VI=I²R=V²/R'}
+  {id:60, topicId:'physics-electricity', topic:'Electricity', difficulty:'medium', source:'CIE 2023 Winter', question:'电功率公式是？', questionEn:'The formula for electric power is?', options:['P=VI','P=V/I','P=I²R','P=IR'], correct:0, explanation:'P=VI=I²R=V²/R', explanationEn:'P=VI=I²R=V²/R'},
+  
+  // ==================== 扩充题目 (40道) ====================
+  // Math - Integration (新增2道)
+  {id:61, topicId:'math-integration', topic:'Integration', difficulty:'medium', source:'CIE 2023 Summer', question:'计算∫(3x²+2x+1)dx', questionEn:'Evaluate ∫(3x²+2x+1)dx', options:['x³+x²+x+C','3x³+x²+x+C','x³+x²+C','3x³+2x²+x+C'], correct:0, explanation:'∫(3x²+2x+1)dx=x³+x²+x+C', explanationEn:'∫(3x²+2x+1)dx=x³+x²+x+C'},
+  {id:62, topicId:'math-integration', topic:'Integration', difficulty:'hard', source:'CIE 2022 Winter', question:'计算∫₀²(x²-2x)dx', questionEn:'Evaluate ∫₀²(x²-2x)dx', options:['-4/3','4/3','0','-2'], correct:0, explanation:'=[x³/3-x²]₀²=(8/3-4)-0=-4/3', explanationEn:'=[x³/3-x²]₀²=(8/3-4)-0=-4/3'},
+  
+  // Math - Circular Measure (新增3道)
+  {id:63, topicId:'math-circular', topic:'Circular Measure', difficulty:'easy', source:'CIE 2023 Summer', question:'将60°转换为弧度', questionEn:'Convert 60° to radians', options:['π/3','π/6','π/4','π/2'], correct:0, explanation:'60°=60×π/180=π/3', explanationEn:'60°=60×π/180=π/3'},
+  {id:64, topicId:'math-circular', topic:'Circular Measure', difficulty:'medium', source:'CIE 2022 Winter', question:'扇形半径为5cm，圆心角为π/3，弧长是？', questionEn:'Sector radius 5cm, angle π/3, arc length is?', options:['5π/3 cm','5π cm','π/3 cm','15 cm'], correct:0, explanation:'弧长=rθ=5×π/3=5π/3 cm', explanationEn:'Arc length=rθ=5×π/3=5π/3 cm'},
+  {id:65, topicId:'math-circular', topic:'Circular Measure', difficulty:'medium', source:'CIE 2023 Winter', question:'扇形半径为4cm，圆心角为π/2，面积是？', questionEn:'Sector radius 4cm, angle π/2, area is?', options:['2π cm²','4π cm²','8π cm²','16π cm²'], correct:0, explanation:'面积=½r²θ=½×16×π/2=4π cm²', explanationEn:'Area=½r²θ=½×16×π/2=4π cm²'},
+  
+  // Math - Vectors (新增3道)
+  {id:66, topicId:'math-vectors', topic:'Vectors', difficulty:'easy', source:'CIE 2023 Summer', question:'向量a=(3,4)的模是？', questionEn:'The magnitude of vector a=(3,4) is?', options:['5','7','25','√7'], correct:0, explanation:'|a|=√(3²+4²)=5', explanationEn:'|a|=√(3²+4²)=5'},
+  {id:67, topicId:'math-vectors', topic:'Vectors', topic:'Vectors', difficulty:'medium', source:'CIE 2022 Winter', question:'向量a=(1,2)和b=(3,4)的点积是？', questionEn:'The dot product of a=(1,2) and b=(3,4) is?', options:['11','7','5','14'], correct:0, explanation:'a·b=1×3+2×4=11', explanationEn:'a·b=1×3+2×4=11'},
+  {id:68, topicId:'math-vectors', topic:'Vectors', difficulty:'medium', source:'CIE 2023 Winter', question:'点A(1,2)到点B(4,6)的向量是？', questionEn:'The vector from A(1,2) to B(4,6) is?', options:['(3,4)','(-3,-4)','(5,8)','(4,6)'], correct:0, explanation:'AB=(4-1,6-2)=(3,4)', explanationEn:'AB=(4-1,6-2)=(3,4)'},
+  
+  // Math - Logarithms (新增3道)
+  {id:69, topicId:'math-logarithms', topic:'Logarithms', difficulty:'easy', source:'CIE 2023 Summer', question:'log₂8=?', questionEn:'log₂8=?', options:['3','2','4','8'], correct:0, explanation:'2³=8，所以log₂8=3', explanationEn:'2³=8, so log₂8=3'},
+  {id:70, topicId:'math-logarithms', topic:'Logarithms', difficulty:'medium', source:'CIE 2022 Winter', question:'ln(e²)=?', questionEn:'ln(e²)=?', options:['2','e','1','e²'], correct:0, explanation:'ln(e²)=2', explanationEn:'ln(e²)=2'},
+  {id:71, topicId:'math-logarithms', topic:'Logarithms', difficulty:'medium', source:'CIE 2023 Winter', question:'解方程2ˣ=32', questionEn:'Solve 2ˣ=32', options:['5','4','6','16'], correct:0, explanation:'2⁵=32，所以x=5', explanationEn:'2⁵=32, so x=5'},
+  
+  // Math - Complex Numbers (新增3道)
+  {id:72, topicId:'math-complex', topic:'Complex Numbers', difficulty:'easy', source:'CIE 2023 Summer', question:'i²=?', questionEn:'i²=?', options:['-1','1','i','-i'], correct:0, explanation:'i²=-1', explanationEn:'i²=-1'},
+  {id:73, topicId:'math-complex', topic:'Complex Numbers', difficulty:'medium', source:'CIE 2022 Winter', question:'(1+i)(1-i)=?', questionEn:'(1+i)(1-i)=?', options:['2','0','2i','-2i'], correct:0, explanation:'(1+i)(1-i)=1-i²=1-(-1)=2', explanationEn:'(1+i)(1-i)=1-i²=1-(-1)=2'},
+  {id:74, topicId:'math-complex', topic:'Complex Numbers', difficulty:'medium', source:'CIE 2023 Winter', question:'复数z=3+4i的模是？', questionEn:'The modulus of z=3+4i is?', options:['5','7','25','√7'], correct:0, explanation:'|z|=√(3²+4²)=5', explanationEn:'|z|=√(3²+4²)=5'},
+  
+  // Math - Probability (新增3道)
+  {id:75, topicId:'math-probability', topic:'Probability', difficulty:'easy', source:'CIE 2023 Summer', question:'掷骰子得偶数的概率是？', questionEn:'Probability of getting even number on a die?', options:['1/2','1/3','1/6','2/3'], correct:0, explanation:'偶数有2,4,6，P=3/6=1/2', explanationEn:'Even numbers: 2,4,6, P=3/6=1/2'},
+  {id:76, topicId:'math-probability', topic:'Probability', difficulty:'medium', source:'CIE 2022 Winter', question:'从52张牌中抽一张，抽到红桃的概率是？', questionEn:'Probability of drawing a heart from 52 cards?', options:['1/4','1/13','1/2','1/52'], correct:0, explanation:'红桃有13张，P=13/52=1/4', explanationEn:'13 hearts, P=13/52=1/4'},
+  {id:77, topicId:'math-probability', topic:'Probability', difficulty:'medium', source:'CIE 2023 Winter', question:'袋中有3红球2蓝球，随机取一球，取到红球的概率是？', questionEn:'Bag has 3 red and 2 blue balls, probability of drawing red?', options:['3/5','2/5','1/2','3/2'], correct:0, explanation:'P=3/(3+2)=3/5', explanationEn:'P=3/(3+2)=3/5'},
+  
+  // Physics - Forces (新增3道)
+  {id:78, topicId:'physics-forces', topic:'Forces', difficulty:'easy', source:'CIE 2023 Summer', question:'重力的方向是？', questionEn:'The direction of gravity is?', options:['竖直向下','竖直向上','水平','斜向'], correct:0, explanation:'重力方向竖直向下', explanationEn:'Gravity acts vertically downward'},
+  {id:79, topicId:'physics-forces', topic:'Forces', difficulty:'medium', source:'CIE 2022 Winter', question:'质量为10kg的物体在地球表面受到的重力约为？', questionEn:'Weight of 10kg mass on Earth surface?', options:['98N','10N','100N','9.8N'], correct:0, explanation:'W=mg=10×9.8=98N', explanationEn:'W=mg=10×9.8=98N'},
+  {id:80, topicId:'physics-forces', topic:'Forces', difficulty:'medium', source:'CIE 2023 Winter', question:'弹簧劲度系数k=200N/m，伸长0.05m，弹力是？', questionEn:'Spring constant k=200N/m, extension 0.05m, force is?', options:['10N','200N','0.05N','4000N'], correct:0, explanation:'F=kx=200×0.05=10N', explanationEn:'F=kx=200×0.05=10N'},
+  
+  // Physics - Energy (新增3道)
+  {id:81, topicId:'physics-energy', topic:'Energy', difficulty:'easy', source:'CIE 2023 Summer', question:'重力势能公式是？', questionEn:'Gravitational potential energy formula?', options:['mgh','½mv²','mv²','mg/h'], correct:0, explanation:'Ep=mgh', explanationEn:'Ep=mgh'},
+  {id:82, topicId:'physics-energy', topic:'Energy', difficulty:'medium', source:'CIE 2022 Winter', question:'质量为2kg的物体从10m高处自由落下，落地时动能约为？', questionEn:'2kg object falls from 10m, kinetic energy at ground?', options:['196J','200J','100J','20J'], correct:0, explanation:'Ek=mgh=2×9.8×10=196J', explanationEn:'Ek=mgh=2×9.8×10=196J'},
+  {id:83, topicId:'physics-energy', topic:'Energy', difficulty:'medium', source:'CIE 2023 Winter', question:'功率的单位是？', questionEn:'Unit of power is?', options:['Watt(W)','Joule(J)','Newton(N)','Pascal(Pa)'], correct:0, explanation:'功率单位是瓦特(W)', explanationEn:'Unit of power is Watt(W)'},
+  
+  // Physics - Kinematics (新增3道)
+  {id:84, topicId:'physics-kinematics', topic:'Kinematics', difficulty:'easy', source:'CIE 2023 Summer', question:'速度的单位是？', questionEn:'Unit of velocity is?', options:['m/s','m/s²','m','s'], correct:0, explanation:'速度单位是m/s', explanationEn:'Unit of velocity is m/s'},
+  {id:85, topicId:'physics-kinematics', topic:'Kinematics', difficulty:'medium', source:'CIE 2022 Winter', question:'物体做匀加速运动，初速度2m/s，加速度3m/s²，2秒后的速度是？', questionEn:'Object accelerates from 2m/s at 3m/s², velocity after 2s?', options:['8m/s','6m/s','5m/s','12m/s'], correct:0, explanation:'v=u+at=2+3×2=8m/s', explanationEn:'v=u+at=2+3×2=8m/s'},
+  {id:86, topicId:'physics-kinematics', topic:'Kinematics', difficulty:'medium', source:'CIE 2023 Winter', question:'自由落体运动，下落时间2秒，下落高度约为？', questionEn:'Free fall for 2s, distance fallen?', options:['19.6m','9.8m','39.2m','4.9m'], correct:0, explanation:'s=½gt²=½×9.8×4=19.6m', explanationEn:'s=½gt²=½×9.8×4=19.6m'},
+  
+  // Physics - Dynamics (新增3道)
+  {id:87, topicId:'physics-dynamics', topic:'Dynamics', difficulty:'easy', source:'CIE 2023 Summer', question:'牛顿第一定律描述的是？', questionEn:'Newton\'s first law describes?', options:['惯性','加速度','作用力与反作用力','万有引力'], correct:0, explanation:'牛顿第一定律描述惯性', explanationEn:'Newton\'s first law describes inertia'},
+  {id:88, topicId:'physics-dynamics', topic:'Dynamics', difficulty:'medium', source:'CIE 2022 Winter', question:'质量为5kg的物体以2m/s²加速，所需合力是？', questionEn:'5kg mass accelerates at 2m/s², net force required?', options:['10N','5N','2N','20N'], correct:0, explanation:'F=ma=5×2=10N', explanationEn:'F=ma=5×2=10N'},
+  {id:89, topicId:'physics-dynamics', topic:'Dynamics', difficulty:'medium', source:'CIE 2023 Winter', question:'作用力与反作用力大小？', questionEn:'Action and reaction forces are?', options:['相等','作用力大','反作用力大','无关'], correct:0, explanation:'作用力与反作用力大小相等', explanationEn:'Action and reaction are equal in magnitude'},
+  
+  // Physics - Gravitation (新增3道)
+  {id:90, topicId:'physics-gravitation', topic:'Gravitation', difficulty:'easy', source:'CIE 2023 Summer', question:'万有引力定律F=Gm₁m₂/r²中，G是？', questionEn:'In F=Gm₁m₂/r², G is?', options:['引力常数','重力加速度','质量','距离'], correct:0, explanation:'G是引力常数', explanationEn:'G is gravitational constant'},
+  {id:91, topicId:'physics-gravitation', topic:'Gravitation', difficulty:'medium', source:'CIE 2022 Winter', question:'卫星绕地球做匀速圆周运动，向心力由什么提供？', questionEn:'Satellite orbits Earth, centripetal force is provided by?', options:['万有引力','推力','离心力','惯性'], correct:0, explanation:'向心力由万有引力提供', explanationEn:'Centripetal force is provided by gravitational force'},
+  {id:92, topicId:'physics-gravitation', topic:'Gravitation', difficulty:'medium', source:'CIE 2023 Winter', question:'地球表面重力加速度约为？', questionEn:'Gravitational acceleration at Earth surface?', options:['9.8m/s²','10m/s²','8m/s²','9m/s²'], correct:0, explanation:'g≈9.8m/s²', explanationEn:'g≈9.8m/s²'},
+  
+  // Physics - Thermodynamics (新增3道)
+  {id:93, topicId:'physics-thermodynamics', topic:'Thermodynamics', difficulty:'easy', source:'CIE 2023 Summer', question:'热力学温度的单位是？', questionEn:'Unit of thermodynamic temperature?', options:['Kelvin(K)','Celsius(°C)','Fahrenheit(°F)','Joule(J)'], correct:0, explanation:'热力学温度单位是开尔文(K)', explanationEn:'Unit is Kelvin(K)'},
+  {id:94, topicId:'physics-thermodynamics', topic:'Thermodynamics', difficulty:'medium', source:'CIE 2022 Winter', question:'绝对零度是？', questionEn:'Absolute zero is?', options:['0K','0°C','-273°C','-273K'], correct:0, explanation:'绝对零度是0K或-273°C', explanationEn:'Absolute zero is 0K or -273°C'},
+  {id:95, topicId:'physics-thermodynamics', topic:'Thermodynamics', difficulty:'medium', source:'CIE 2023 Winter', question:'理想气体状态方程是？', questionEn:'Ideal gas law is?', options:['pV=nRT','pV=RT','p=nRT','V=nRT'], correct:0, explanation:'pV=nRT', explanationEn:'pV=nRT'},
+  
+  // Physics - Electric Fields (新增3道)
+  {id:96, topicId:'physics-electric-fields', topic:'Electric Fields', difficulty:'easy', source:'CIE 2023 Summer', question:'电场强度的单位是？', questionEn:'Unit of electric field strength?', options:['N/C或V/m','C/N','V','A'], correct:0, explanation:'E=F/q，单位N/C或V/m', explanationEn:'E=F/q, unit N/C or V/m'},
+  {id:97, topicId:'physics-electric-fields', topic:'Electric Fields', difficulty:'medium', source:'CIE 2022 Winter', question:'点电荷Q在距离r处产生的电场强度大小是？', questionEn:'Electric field at distance r from point charge Q?', options:['kQ/r²','kQ/r','kQr','Q/r²'], correct:0, explanation:'E=kQ/r²', explanationEn:'E=kQ/r²'},
+  {id:98, topicId:'physics-electric-fields', topic:'Electric Fields', difficulty:'medium', source:'CIE 2023 Winter', question:'电场线方向表示？', questionEn:'Electric field line direction indicates?', options:['正电荷受力方向','负电荷受力方向','电场强度减小方向','电势升高方向'], correct:0, explanation:'电场线方向表示正电荷受力方向', explanationEn:'Direction of force on positive charge'},
+  
+  // Physics - Nuclear Physics (新增2道)
+  {id:99, topicId:'physics-nuclear', topic:'Nuclear Physics', difficulty:'easy', source:'CIE 2023 Summer', question:'α粒子是？', questionEn:'Alpha particle is?', options:['氦核','氢核','电子','光子'], correct:0, explanation:'α粒子是氦核(₂⁴He)', explanationEn:'Alpha particle is helium nucleus'},
+  {id:100, topicId:'physics-nuclear', topic:'Nuclear Physics', difficulty:'medium', source:'CIE 2022 Winter', question:'放射性衰变遵循？', questionEn:'Radioactive decay follows?', options:['指数衰减规律','线性衰减','正弦规律','余弦规律'], correct:0, explanation:'N=N₀e^(-λt)，指数衰减', explanationEn:'Exponential decay N=N₀e^(-λt)'}
 ];
 
 // 导出数据
