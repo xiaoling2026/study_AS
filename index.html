@@ -1113,12 +1113,20 @@ async function generateQuestionsWithKimi(topic, difficulty, count) {
         if(response.ok) {
             var result = await response.json();
             var content = result.choices[0].message.content;
+            // 清理可能的Markdown代码块标记
+            content = content.replace(/```json\s*/g, '').replace(/```\s*$/g, '');
             var jsonStart = content.indexOf("{");
             var jsonEnd = content.lastIndexOf("}") + 1;
             if(jsonStart >= 0 && jsonEnd > jsonStart) {
                 var jsonStr = content.substring(jsonStart, jsonEnd);
-                var data = JSON.parse(jsonStr);
-                return data.questions || [];
+                // 尝试修复常见的JSON问题
+                try {
+                    var data = JSON.parse(jsonStr);
+                    return data.questions || [];
+                } catch(e) {
+                    console.error("JSON parse error:", e, "JSON string:", jsonStr.substring(0, 200));
+                    return null;
+                }
             }
         }
     } catch(e) {
