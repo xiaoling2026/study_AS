@@ -1943,12 +1943,19 @@ if (localStorage.getItem('studyProgress')) {
             }
         }
         
-        // 批量分析所有识别到的题目
+        // 批量分析所有识别到的题目（流式显示）
         async function analyzeAllQuestions() {
-            const results = [];
+            // 初始化结果区域
+            document.getElementById('analysisResult').classList.remove('hidden');
+            let html = '<div class="space-y-6"><h3 class="font-bold text-xl mb-4">📊 分析结果</h3><div id="analysisResultsList"></div></div>';
+            document.getElementById('resultContent').innerHTML = html;
+            
             for (let i = 0; i < extractedQuestions.length; i++) {
                 const q = extractedQuestions[i];
                 showProgress(`正在分析第 ${i+1}/${extractedQuestions.length} 道题...`, 70 + Math.floor((i / extractedQuestions.length) * 30), `分析题目 ${i+1}/${extractedQuestions.length}`);
+                
+                // 先显示题目和答案
+                appendAnalysisResult(i, q, null, 'analyzing');
                 
                 try {
                     const response = await fetch('http://localhost:8000/analyze', {
@@ -1962,55 +1969,96 @@ if (localStorage.getItem('studyProgress')) {
                     });
                     const result = await response.json();
                     if (result.success) {
-                        results.push({question: q, analysis: result.analysis});
+                        // 更新显示分析结果
+                        updateAnalysisResult(i, q, result.analysis, 'done');
                     }
                 } catch (error) {
                     console.error(`分析第 ${i+1} 题失败:`, error);
+                    updateAnalysisResult(i, q, null, 'error');
                 }
             }
             
-            // 显示所有分析结果
-            showAllAnalysisResults(results);
             showProgress('所有题目分析完成！', 100, '完成');
             setTimeout(() => hideProgress(), 3000);
         }
         
-        // 显示所有分析结果
-        function showAllAnalysisResults(results) {
-            let html = '<div class="space-y-6">';
-            html += '<h3 class="font-bold text-xl mb-4">📊 批量分析结果 (' + results.length + ' 道题)</h3>';
+        // 添加分析结果到列表
+        function appendAnalysisResult(index, question, analysis, status) {
+            const container = document.getElementById('analysisResultsList');
+            const div = document.createElement('div');
+            div.id = 'analysis-item-' + index;
+            div.className = 'card p-4 border-l-4 border-l-blue-500 mb-4';
             
-            results.forEach((item, idx) => {
-                const a = item.analysis;
-                html += '<div class="card p-4 border-l-4 border-l-blue-500">';
-                html += '<h4 class="font-bold text-lg mb-2">题目 ' + (idx + 1) + '</h4>';
-                html += '<p class="text-gray-700 mb-2"><strong>题目：</strong>' + (item.question.question || '').substring(0, 100) + '...</p>';
-                html += '<p class="text-gray-700 mb-2"><strong>学生答案：</strong>' + (item.question.student_answer || '未提供').substring(0, 100) + '</p>';
+            let html = '<h4 class="font-bold text-lg mb-2">题目 ' + (index + 1) + '</h4>';
+            html += '<div class="mb-3"><p class="text-gray-700"><strong>题目：</strong></p><div class="bg-gray-50 p-2 rounded">' + (question.question || '未识别') + '</div></div>';
+            html += '<div class="mb-3"><p class="text-gray-700"><strong>学生答案：</strong></p><div class="bg-yellow-50 p-2 rounded">' + (question.student_answer || '未提供') + '</div></div>';
+            
+            if (status === 'analyzing') {
+                html += '<div class="text-blue-600"><i>🤖 AI 正在分析...</i></div>';
+            }
+            
+            div.innerHTML = html;
+            container.appendChild(div);
+            
+            // 滚动到新添加的题目
+            div.scrollIntoView({behavior: 'smooth', block: 'center'});
+        }
+        
+        // 更新分析结果
+        function updateAnalysisResult(index, question, analysis, status) {
+            const div = document.getElementById('analysis-item-' + index);
+            if (!div) return;
+            
+            const a = analysis;
+            let html = '<h4 class="font-bold text-lg mb-2">题目 ' + (index + 1) + '</h4>';
+            html += '<div class="mb-3"><p class="text-gray-700"><strong>题目：</strong></p><div class="bg-gray-50 p-2 rounded">' + (question.question || '未识别') + '</div></div>';
+            html += '<div class="mb-3"><p class="text-gray-700"><strong>学生答案：</strong></p><div class="bg-yellow-50 p-2 rounded">' + (question.student_answer || '未提供') + '</div></div>';
+            
+            if (status === 'done' && a) {
+                html += '<div class="bg-blue-50 p-3 rounded-lg mb-3">';
+                html += '<p class="text-blue-700 font-bold text-lg">评分：' + (a.score || 'N/A') + '/100</p>';
+                html += '<p class="text-gray-700 mt-1">' + (a.comment || '') + '</p>';
+                html += '</div>';
                 
-                if (a) {
-                    html += '<div class="bg-gray-50 p-3 rounded-lg mb-2">';
-                    html += '<p class="text-blue-700 font-medium">评分：' + (a.score || 'N/A') + '/100</p>';
-                    html += '<p class="text-gray-600 text-sm">' + (a.comment || '') + '</p>';
-                    html += '</div>';
-                    
-                    if (a.errors && a.errors.length > 0) {
-                        html += '<div class="mb-2"><p class="text-red-600 font-medium">❌ 错误：</p><ul class="list-disc pl-5 text-sm">';
-                        a.errors.forEach(e => html += '<li>' + e.type + ': ' + e.description + '</li>');
-                        html += '</ul></div>';
-                    }
-                    
-                    if (a.suggestions && a.suggestions.length > 0) {
-                        html += '<div><p class="text-green-600 font-medium">💡 建议：</p><ul class="list-disc pl-5 text-sm">';
-                        a.suggestions.forEach(s => html += '<li>' + s.topic + ': ' + s.reason + '</li>');
-                        html += '</ul></div>';
-                    }
+                if (a.errors && a.errors.length > 0) {
+                    html += '<div class="mb-3"><p class="text-red-600 font-medium">❌ 错误分析：</p><ul class="list-disc pl-5 text-sm bg-red-50 p-2 rounded">';
+                    a.errors.forEach(e => html += '<li class="text-red-700">' + e.type + ': ' + e.description + '</li>');
+                    html += '</ul></div>';
+                }
+                
+                if (a.weak_points && a.weak_points.length > 0) {
+                    html += '<div class="mb-3"><p class="text-orange-600 font-medium">⚠️ 薄弱知识点：</p><ul class="list-disc pl-5 text-sm">';
+                    a.weak_points.forEach(wp => html += '<li>' + wp + '</li>');
+                    html += '</ul></div>';
+                }
+                
+                // 正确解法和标准答案
+                html += '<div class="bg-green-50 p-3 rounded-lg mb-3 border border-green-200">';
+                html += '<p class="text-green-700 font-bold">✅ 正确解法：</p>';
+                if (a.better_solution) {
+                    html += '<pre class="bg-white p-2 rounded mt-1 text-sm overflow-x-auto">' + a.better_solution + '</pre>';
+                } else if (a.correct_answer) {
+                    html += '<p class="text-green-800 mt-1"><strong>标准答案：</strong>' + a.correct_answer + '</p>';
+                } else {
+                    html += '<p class="text-green-800 mt-1">请参考教材或询问老师获取详细解答。</p>';
                 }
                 html += '</div>';
-            });
+                
+                if (a.suggestions && a.suggestions.length > 0) {
+                    html += '<div class="bg-purple-50 p-3 rounded-lg"><p class="text-purple-700 font-medium">💡 学习建议：</p><ul class="list-disc pl-5 text-sm">';
+                    a.suggestions.forEach(s => html += '<li>' + s.topic + ': ' + s.reason + '</li>');
+                    html += '</ul></div>';
+                }
+            } else if (status === 'error') {
+                html += '<div class="text-red-600">❌ 分析失败，请重试</div>';
+            }
             
-            html += '</div>';
-            document.getElementById('analysisResult').classList.remove('hidden');
-            document.getElementById('resultContent').innerHTML = html;
+            div.innerHTML = html;
+            
+            // 渲染数学公式
+            if (typeof MathJax !== 'undefined') {
+                MathJax.typesetPromise([div]);
+            }
         }
         
         // 从文件中提取多个题目
