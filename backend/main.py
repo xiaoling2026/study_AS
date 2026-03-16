@@ -825,3 +825,85 @@ async def analyze_single_question(request: dict):
         "analysis": analysis
     }
 
+
+
+@app.post("/generate-questions")
+async def generate_questions(request: dict):
+    """
+    生成练习题
+    请求体: {"topic": "math-quadratics", "difficulty": "easy", "count": 5}
+    """
+    topic = request.get("topic", "")
+    difficulty = request.get("difficulty", "medium")
+    count = request.get("count", 5)
+    
+    # 构建提示词
+    prompt = f"""Generate {count} A-Level CIE practice questions for topic: {topic}.
+Difficulty: {difficulty}
+
+For each question, provide:
+1. Question in English (questionEn)
+2. Question in Chinese (question)
+3. 4 options (A, B, C, D)
+4. Correct answer index (0-3)
+5. Explanation in English (explanationEn)
+6. Explanation in Chinese (explanation)
+
+Format as JSON:
+{{
+  "questions": [
+    {{
+      "questionEn": "...",
+      "question": "...",
+      "options": ["...", "...", "...", "..."],
+      "correct": 0,
+      "explanationEn": "...",
+      "explanation": "..."
+    }}
+  ]
+}}"""
+
+    try:
+        # 调用 Minimax 生成题目
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                "https://api.minimax.chat/v1/text/chatcompletion_v2",
+                headers={
+                    "Authorization": f"Bearer {os.getenv('MINIMAX_API_KEY', '')}",
+                    "Content-Type": "application/json"
+                },
+                json={
+                    "model": "MiniMax-Text-01",
+                    "messages": [
+                        {"role": "system", "content": "You are an A-Level CIE exam question generator. Generate questions in both English and Chinese."},
+                        {"role": "user", "content": prompt}
+                    ]
+                },
+                timeout=60.0
+            )
+            
+            if response.status_code == 200:
+                result = response.json()
+                content = result.get("choices", [{}])[0].get("message", {}).get("content", "")
+                
+                # 解析JSON响应
+                try:
+                    # 提取JSON部分
+                    json_start = content.find("{")
+                    json_end = content.rfind("}") + 1
+                    if json_start >= 0 and json_end > json_start:
+                        json_str = content[json_start:json_end]
+                        data = json.loads(json_str)
+                        return {
+                            "success": True,
+                            "questions": data.get("questions", [])
+                        }
+                except Exception as e:
+                    print(f"解析AI响应失败: {e}")
+                    return {"success": False, "error": "解析AI响应失败"}
+            else:
+                return {"success": False, "error": f"API错误: {response.status_code}"}
+                
+    except Exception as e:
+        print(f"生成题目失败: {e}")
+        return {"success": False, "error": str(e)}
