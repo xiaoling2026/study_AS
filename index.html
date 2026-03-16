@@ -1034,8 +1034,8 @@ function generateQuestions() {
             html += '<div class="flex items-center gap-2 mb-2"><span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded">' + (q.source || 'CIE') + '</span>';
             html += '<span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">' + q.topic + '</span></div>';
             // 英文为主，中文为辅
-            html += '<p class="font-medium mb-2">' + (i+1) + '. ' + (q.questionEn || q.question) + '</p>';
-            if (q.question && q.questionEn) html += '<p class="text-gray-500 text-sm mb-3">' + q.question + '</p>';
+            html += '<div class="font-medium mb-2" style="white-space: normal; word-wrap: break-word; line-height: 1.6;">' + (i+1) + '. ' + (q.questionEn || q.question) + '</div>';
+            if (q.question && q.questionEn) html += '<div class="text-gray-500 text-sm mb-3" style="white-space: normal; word-wrap: break-word; line-height: 1.6;">' + q.question + '</div>';
             for (var j = 0; j < q.options.length; j++) {
                 html += '<button class="option-btn w-full p-3 text-left bg-white border border-gray-200 rounded-xl transition mb-2" data-question="' + i + '" data-option="' + j + '" onclick="selectPracticeOption(' + i + ',' + j + ')"><span class="text-gray-600 font-medium">' + String.fromCharCode(65+j) + '.</span> ' + q.options[j] + '</button>';
             }
@@ -1068,8 +1068,8 @@ function generateQuestions() {
             var html = "";
             for(var i=0;i<q.length;i++){
                 html += '<div class="card p-4 mb-4"><div class="flex items-center gap-2 mb-2"><span class="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded">AI (Kimi)</span></div>';
-                html += '<p class="font-medium mb-2">'+(i+1)+'. '+(q[i].questionEn || q[i].question)+'</p>';
-                if(q[i].question && q[i].questionEn) html += '<p class="text-gray-500 text-sm mb-2">'+q[i].question+'</p>';
+                html += '<div class="font-medium mb-2" style="white-space: normal; word-wrap: break-word; line-height: 1.6;">'+(i+1)+'. '+(q[i].questionEn || q[i].question)+'</div>';
+                if(q[i].question && q[i].questionEn) html += '<div class="text-gray-500 text-sm mb-2" style="white-space: normal; word-wrap: break-word; line-height: 1.6;">'+q[i].question+'</div>';
                 for(var j=0;j<q[i].options.length;j++){
                     html += '<button class="option-btn w-full p-3 text-left bg-white border border-gray-200 rounded-xl transition mb-2" data-question="'+i+'" data-option="'+j+'" onclick="selectPracticeOption('+i+','+j+')"><span class="text-gray-600 font-medium">'+String.fromCharCode(65+j)+'.</span> '+q[i].options[j]+'</button>';
                 }
@@ -1146,8 +1146,8 @@ function useLocalQuestionBank(subject, topic, difficulty, count) {
     var html = '';
     for(var i=0;i<q.length;i++){
         // 英文为主
-        html += '<div class="card p-4 mb-4"><p class="font-medium mb-2">'+(i+1)+'. '+(q[i].questionEn || q[i].question)+'</p>';
-        if(q[i].question && q[i].questionEn) html += '<p class="text-gray-500 text-sm mb-2">'+q[i].question+'</p>';
+        html += '<div class="card p-4 mb-4"><div class="font-medium mb-2" style="white-space: normal; word-wrap: break-word; line-height: 1.6;">'+(i+1)+'. '+(q[i].questionEn || q[i].question)+'</div>';
+        if(q[i].question && q[i].questionEn) html += '<div class="text-gray-500 text-sm mb-2" style="white-space: normal; word-wrap: break-word; line-height: 1.6;">'+q[i].question+'</div>';
         for(var j=0;j<q[i].options.length;j++){
             html += '<label class="block"><input type="radio" name="q'+q[i].id+'" value="'+j+'"> '+q[i].options[j]+'</label>';
         }
