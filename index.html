@@ -1118,7 +1118,7 @@ function switchToAIGeneration() {
 
 // Kimi API 生成题目
 async function generateQuestionsWithKimi(topic, difficulty, count) {
-    var prompt = "Generate " + count + " A-Level CIE " + (topic.indexOf('math') >= 0 ? "Mathematics (9709)" : "Physics (9702)") + " practice questions for topic: " + topic + ". Difficulty: " + difficulty + ". For each question provide: questionEn (English), question (Chinese), 4 options, correct answer index (0-3), explanationEn (English), explanation (Chinese). Format as JSON: {\"questions\": [{\"questionEn\":\"...\",\"question\":\"...\",\"options\":[\"A\",\"B\",\"C\",\"D\"],\"correct\":0,\"explanationEn\":\"...\",\"explanation\":\"...\"}]}";
+    var prompt = "Generate " + count + " A-Level CIE " + (topic.indexOf('math') >= 0 ? "Mathematics (9709)" : "Physics (9702)") + " practice questions for topic: " + topic + ". Difficulty: " + difficulty + ". IMPORTANT: Provide question in English first (questionEn), then Chinese translation (question). Format as JSON: {\"questions\": [{\"questionEn\":\"English question text\",\"question\":\"中文翻译\",\"options\":[\"A\",\"B\",\"C\",\"D\"],\"correct\":0,\"explanationEn\":\"English explanation\",\"explanation\":\"中文解释\"}]}. Make sure questionEn is always in English and question is always in Chinese.";
     
     try {
         var response = await fetch("https://api.moonshot.cn/v1/chat/completions", {
