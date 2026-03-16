@@ -926,12 +926,25 @@
             updateTopicFilter();
             // 设置知识点（在updateTopicFilter之后）- 使用更长延迟确保DOM更新
             setTimeout(function() {
-                document.getElementById('topicFilter').value = topicId;
+                var topicSelect = document.getElementById('topicFilter');
+                // 检查选项是否存在
+                var optionExists = false;
+                for(var i=0; i<topicSelect.options.length; i++) {
+                    if(topicSelect.options[i].value === topicId) {
+                        optionExists = true;
+                        break;
+                    }
+                }
+                if(optionExists) {
+                    topicSelect.value = topicId;
+                } else {
+                    console.warn('Topic not found in dropdown:', topicId);
+                }
                 // 设置题目来源为真题
                 document.getElementById('questionSource').value = 'pastpaper';
                 // 生成题目
                 generateQuestions();
-            }, 300);
+            }, 500);
         }
         
         function logout() {
@@ -1338,6 +1351,19 @@ function submitPracticeAnswers() {
     document.getElementById("practiceQuestions").innerHTML = html;
 }
 </script>
+<!-- MathJax for LaTeX math rendering -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']]
+  },
+  svg: {
+    fontCache: 'global'
+  }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
     <!-- 登录页 -->
