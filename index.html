@@ -1041,86 +1041,16 @@ function generateQuestions() {
         return;
     }
     
-    // AI生成模式 - 直接调用 Minimax API
+    // AI生成模式（原有逻辑）
     document.getElementById("practiceQuestions").innerHTML = '<div class="text-center p-8"><p class="text-gray-500">🤖 AI正在生成题目...</p></div>';
     
-    // 调用 Minimax API 生成题目
-    generateWithMinimax(topic || subject, difficulty || "medium", count)
-    .then(function(questions) {
-        if(questions && questions.length > 0) {
-            var q = questions.map(function(item, idx) {
-                return {
-                    id: 2000 + idx,
-                    question: item.question || "",
-                    questionEn: item.questionEn || item.question || "",
-                    options: item.options || [],
-                    correct: item.correct || 0,
-                    explanation: item.explanation || "",
-                    explanationEn: item.explanationEn || item.explanation || "",
-                    source: 'AI生成'
-                };
-            });
-            window.currentPracticeQuestions = q;
-            window.practiceAnswers = {};
-            var html = "";
-            for(var i=0;i<q.length;i++){
-                html += '<div class="card p-4 mb-4"><div class="flex items-center gap-2 mb-2"><span class="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded">AI生成</span></div>';
-                // 英文为主
-                html += '<p class="font-medium mb-2">'+(i+1)+'. '+(q[i].questionEn || q[i].question)+'</p>';
-                if(q[i].question && q[i].questionEn) html += '<p class="text-gray-500 text-sm mb-2">'+q[i].question+'</p>';
-                for(var j=0;j<q[i].options.length;j++){
-                    html += '<button class="option-btn w-full p-3 text-left bg-white border border-gray-200 rounded-xl transition mb-2" data-question="'+i+'" data-option="'+j+'" onclick="selectPracticeOption('+i+','+j+')"><span class="text-gray-600 font-medium">'+String.fromCharCode(65+j)+'.</span> '+q[i].options[j]+'</button>';
-                }
-                html += '</div>';
-            }
-            document.getElementById("practiceQuestions").innerHTML = html;
-        } else {
-            useLocalQuestionBank(subject, topic, difficulty, count);
-        }
+    // 调用后端API生成题目
+    fetch("http://localhost:8000/generate-questions", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({topic: topic || subject, difficulty: difficulty || "medium", count: count})
     })
-    .catch(function(err){
-        console.error("AI生成失败:", err);
-        useLocalQuestionBank(subject, topic, difficulty, count);
-    });
-}
-
-// Minimax API 调用函数
-async function generateWithMinimax(topic, difficulty, count) {
-    var prompt = "Generate " + count + " A-Level CIE " + (topic.indexOf('math') >= 0 ? "Mathematics (9709)" : "Physics (9702)") + " practice questions for topic: " + topic + ". Difficulty: " + difficulty + ". For each question provide: questionEn (English), question (Chinese), 4 options, correct answer index (0-3), explanationEn (English), explanation (Chinese). Format as JSON: {\"questions\": [{\"questionEn\":\"...\",\"question\":\"...\",\"options\":[\"A\",\"B\",\"C\",\"D\"],\"correct\":0,\"explanationEn\":\"...\",\"explanation\":\"...\"}]}";
-    
-    try {
-        var response = await fetch("https://api.minimax.chat/v1/text/chatcompletion_v2", {
-            method: "POST",
-            headers: {
-                "Authorization": "Bearer sk-cp-PiUMYB55KWSYbZNBBAFYKgmuQX7fwUIruTewGiUWZT4cvkHq4cGcq7Lclpkjeton5SG0wAtl7eEwbIujzwP8ZR8uhzbe92u0Vu1dGvzgsDUz26NlsyIkOPc",
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                "model": "MiniMax-Text-01",
-                "messages": [
-                    {"role": "system", "content": "You are an A-Level CIE exam question generator. Generate questions in both English and Chinese. Always return valid JSON."},
-                    {"role": "user", "content": prompt}
-                ]
-            })
-        });
-        
-        if(response.ok) {
-            var result = await response.json();
-            var content = result.choices[0].message.content;
-            // 提取JSON
-            var jsonStart = content.indexOf("{");
-            var jsonEnd = content.lastIndexOf("}") + 1;
-            if(jsonStart >= 0 && jsonEnd > jsonStart) {
-                var jsonStr = content.substring(jsonStart, jsonEnd);
-                var data = JSON.parse(jsonStr);
-                return data.questions || [];
-            }
-        }
-    } catch(e) {
-        console.error("Minimax API error:", e);
-    }
-    return null;
-}
+    .then(function(r){return r.json();})
     .then(function(result){
         if(result.success && result.questions && result.questions.length > 0){
             var q = result.questions.map(function(item, idx){
