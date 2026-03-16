@@ -3,7 +3,8 @@
 
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 import PyPDF2
 import io
 import json
@@ -11,6 +12,19 @@ import os
 import httpx
 
 app = FastAPI(title="A-Level Study API")
+
+# 静态文件服务（前端）
+static_dir = os.path.join(os.path.dirname(__file__), '..')
+if os.path.exists(os.path.join(static_dir, 'index.html')):
+    app.mount("/static", StaticFiles(directory=static_dir), name="static")
+
+@app.get("/")
+async def serve_index():
+    """Serve the frontend index.html"""
+    index_path = os.path.join(os.path.dirname(__file__), '..', 'index.html')
+    if os.path.exists(index_path):
+        return FileResponse(index_path)
+    return {"message": "A-Level Study API is running", "version": "1.0"}
 
 # CORS 设置
 app.add_middleware(
