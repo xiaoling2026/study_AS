@@ -1070,8 +1070,9 @@ function generateQuestions() {
             var html = "";
             for(var i=0;i<q.length;i++){
                 html += '<div class="card p-4 mb-4"><div class="flex items-center gap-2 mb-2"><span class="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded">AI生成</span></div>';
-                html += '<p class="font-medium mb-2">'+(i+1)+'. '+q[i].question+'</p>';
-                if(q[i].questionEn) html += '<p class="text-gray-500 text-sm mb-2">'+q[i].questionEn+'</p>';
+                // 英文为主
+                html += '<p class="font-medium mb-2">'+(i+1)+'. '+(q[i].questionEn || q[i].question)+'</p>';
+                if(q[i].question && q[i].questionEn) html += '<p class="text-gray-500 text-sm mb-2">'+q[i].question+'</p>';
                 for(var j=0;j<q[i].options.length;j++){
                     html += '<button class="option-btn w-full p-3 text-left bg-white border border-gray-200 rounded-xl transition mb-2" data-question="'+i+'" data-option="'+j+'" onclick="selectPracticeOption('+i+','+j+')"><span class="text-gray-600 font-medium">'+String.fromCharCode(65+j)+'.</span> '+q[i].options[j]+'</button>';
                 }
@@ -1099,8 +1100,9 @@ function useLocalQuestionBank(subject, topic, difficulty, count) {
     var q = filtered.slice().sort(function(){return Math.random()-0.5}).slice(0,Math.min(count,filtered.length));
     var html = '';
     for(var i=0;i<q.length;i++){
-        html += '<div class="card p-4 mb-4"><p class="font-medium mb-2">'+(i+1)+'. '+q[i].question+'</p>';
-        if(q[i].questionEn) html += '<p class="text-gray-500 text-sm mb-2">'+q[i].questionEn+'</p>';
+        // 英文为主
+        html += '<div class="card p-4 mb-4"><p class="font-medium mb-2">'+(i+1)+'. '+(q[i].questionEn || q[i].question)+'</p>';
+        if(q[i].question && q[i].questionEn) html += '<p class="text-gray-500 text-sm mb-2">'+q[i].question+'</p>';
         for(var j=0;j<q[i].options.length;j++){
             html += '<label class="block"><input type="radio" name="q'+q[i].id+'" value="'+j+'"> '+q[i].options[j]+'</label>';
         }
@@ -1194,7 +1196,12 @@ function updateTopicFilter() {
     }
 </script>
 <script>
-var practiceQuestionBank, currentPracticeQuestions=[], practiceAnswers={};
+// 注意：practiceQuestionBank 在另一个 script 块中定义
+var currentPracticeQuestions=[], practiceAnswers={};
+</script>
+<script>
+// 这个 script 块的内容似乎不完整，跳过执行
+if(false){
     var subject = document.getElementById("subjectFilter").value;
     var topic = document.getElementById("topicFilter").value;
     var count = parseInt(document.getElementById("questionCount").value);
