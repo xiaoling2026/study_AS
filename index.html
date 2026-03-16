@@ -987,6 +987,9 @@
         .subject-active { background: #007AFF !important; color: white !important; }
         .topic-card { transition: all 0.2s; cursor: pointer; }
         .topic-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+        /* MathJax inline display */
+        mjx-container { display: inline !important; }
+        mjx-container svg { display: inline !important; vertical-align: middle !important; }
     </style>
 <script>
 function generateQuestions() {
@@ -1401,6 +1404,9 @@ MathJax = {
   },
   svg: {
     fontCache: 'global'
+  },
+  options: {
+    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
   }
 };
 </script>
