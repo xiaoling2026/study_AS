@@ -987,7 +987,7 @@ function generateQuestions() {
     
     // 如果选择真题库
     if (source === 'pastpaper') {
-        var filtered = PRACTICE_QUESTION_BANK || [];
+        var filtered = (typeof PAST_PAPER_BANK !== 'undefined') ? PAST_PAPER_BANK : [];
         
         // 按科目筛选
         if (subject) {
@@ -1006,7 +1006,7 @@ function generateQuestions() {
         
         // 如果筛选后没有题目，使用全部真题
         if (filtered.length === 0) {
-            filtered = PRACTICE_QUESTION_BANK || [];
+            filtered = (typeof PAST_PAPER_BANK !== 'undefined') ? PAST_PAPER_BANK : [];
         }
         
         // 随机选取
@@ -1022,8 +1022,9 @@ function generateQuestions() {
             html += '<div class="card p-4 mb-4">';
             html += '<div class="flex items-center gap-2 mb-2"><span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded">' + (q.source || 'CIE') + '</span>';
             html += '<span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">' + q.topic + '</span></div>';
-            html += '<p class="font-medium mb-2">' + (i+1) + '. ' + q.question + '</p>';
-            if (q.questionEn) html += '<p class="text-gray-500 text-sm mb-3">' + q.questionEn + '</p>';
+            // 英文为主，中文为辅
+            html += '<p class="font-medium mb-2">' + (i+1) + '. ' + (q.questionEn || q.question) + '</p>';
+            if (q.question && q.questionEn) html += '<p class="text-gray-500 text-sm mb-3">' + q.question + '</p>';
             for (var j = 0; j < q.options.length; j++) {
                 html += '<button class="option-btn w-full p-3 text-left bg-white border border-gray-200 rounded-xl transition mb-2" data-question="' + i + '" data-option="' + j + '" onclick="selectPracticeOption(' + i + ',' + j + ')"><span class="text-gray-600 font-medium">' + String.fromCharCode(65+j) + '.</span> ' + q.options[j] + '</button>';
             }
