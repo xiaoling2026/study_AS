@@ -7,6 +7,28 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>A-Level CIE Study Master v71</title>
+    <!-- MathJax for LaTeX math rendering - Load early -->
+    <script>
+    window.MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        svg: {
+            fontCache: 'global'
+        },
+        options: {
+            skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        },
+        startup: {
+            ready: function() {
+                console.log('MathJax loaded successfully');
+                MathJax.startup.defaultReady();
+            }
+        }
+    };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="js/data/questions.js?v=2" charset="UTF-8"></script>
     <script>
@@ -1395,22 +1417,6 @@ function submitPracticeAnswers() {
     document.getElementById("practiceQuestions").innerHTML = html;
 }
 </script>
-<!-- MathJax for LaTeX math rendering -->
-<script>
-MathJax = {
-  tex: {
-    inlineMath: [['$', '$'], ['\\(', '\\)']],
-    displayMath: [['$$', '$$'], ['\\[', '\\]']]
-  },
-  svg: {
-    fontCache: 'global'
-  },
-  options: {
-    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-  }
-};
-</script>
-<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
     <!-- 登录页 -->
