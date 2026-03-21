@@ -1,0 +1,56 @@
+{
+  "math-integration": {
+    "id": "math-integration",
+    "name": "Integration 积分",
+    "subject": "math",
+    "sections": [
+      {
+        "title": "📖 Core Concepts 核心概念",
+        "content": "<div class=\"bg-blue-50\">Integration is the process of finding the antiderivative of a function. It is the reverse process of differentiation. The integral of a function f(x) is denoted as ∫f(x)dx.</div><div class=\"bg-green-50\">The Fundamental Theorem of Calculus states that if f is continuous on [a, b] and F is an antiderivative of f on [a, b], then ∫[a to b] f(x)dx = F(b) - F(a).</div><div class=\"bg-purple-50\">Indefinite integrals are integrals without upper and lower limits. They represent a family of functions differing by a constant. For example, ∫x^2dx = (1/3)x^3 + C, where C is the constant of integration.</div><div class=\"bg-yellow-50\">Definite integrals are integrals with upper and lower limits. They give a specific number. For example, ∫[1 to 2] x^2dx = (1/3)(2^3 - 1^3) = 7/3.</div> (积分是找到函数的不定积分的过程，它是微分的逆过程。积分的基本定理表明，如果函数f在[a, b]上连续且F是f的不定积分在[a, b]上的一个不定积分，那么∫f(x)dx = F(b) - F(a)。不定积分是没有上下限的积分，它们代表一系列相差一个常数的函数，例如，∫x^2dx = (1/3)x^3 + C，其中C是积分常数。定积分是有上下限的积分，它们给出一个具体数值，例如，∫[1 to 2] x^2dx = (1/3)(2^3 - 1^3) = 7/3。)"
+      },
+      {
+        "title": "🔧 Methods / 解题方法",
+        "content": "<ol><li><p><strong>Integration by Substitution (换元法):</strong> If the integral is of the form ∫f(g(x))g'(x)dx, substitute u = g(x) and du = g'(x)dx. Then ∫f(u)du.</p></li><li><p><strong>Integration by Parts (分部积分法):</strong> For integrals of the form ∫u dv, use the formula ∫u dv = uv - ∫v du. Choose u and dv such that the integral becomes simpler.</p></li><li><p><strong>Integration of Rational Functions (有理函数的积分):</strong> Use partial fractions if the integrand is a rational function. Decompose the rational function into simpler fractions and integrate each term separately.</p></li></ol> (换元法：如果积分形式为∫f(g(x))g'(x)dx，令u = g(x)和du = g'(x)dx，则∫f(u)du。分部积分法：对于积分形式为∫u dv的形式，使用公式∫u dv = uv - ∫v du。选择u和dv使其积分变得更简单。有理函数的积分：如果被积函数是有理函数，使用部分分式法。将有理函数分解成更简单的分数，并分别积分每一项。)"
+      },
+      {
+        "title": "⚠️ Common Mistakes / 常见错误",
+        "content": "<ul><li><p>Forgetting to add the constant of integration when finding an indefinite integral.</p></li><li><p>Choosing the wrong substitution in integration by substitution, leading to a more complicated integral.</p></li><li><p>Misapplying the integration by parts formula, not choosing the right u and dv.</p></li></ul> (忘记在求不定积分时添加积分常数。在换元积分时选择错误的替换变量，导致更复杂的积分。错误应用分部积分公式，没有选择正确的u和dv。)"
+      },
+      {
+        "title": "📝 Worked Examples / 典型例题",
+        "content": "<ol><li><p><strong>Problem:</strong> Find the indefinite integral of ∫(3x^2 + 2x)dx.<br><strong>Solution:</strong> ∫(3x^2 + 2x)dx = 3∫x^2dx + 2∫xdx = 3(1/3)x^3 + 2(1/2)x^2 + C = x^3 + x^2 + C.</p></li><li><p><strong>Problem:</strong> Use integration by parts to find ∫x e^x dx.<br><strong>Solution:</strong> Let u = x and dv = e^x dx, then du = dx and v = e^x. Using the formula, ∫x e^x dx = xe^x - ∫e^x dx = xe^x - e^x + C = e^x(x - 1) + C.</p></li></ol> (问题：求不定积分∫(3x^2 + 2x)dx。解决方案：∫(3x^2 + 2x)dx = 3∫x^2dx + 2∫xdx = 3(1/3)x^3 + 2(1/2)x^2 + C = x^3 + x^2 + C。问题：使用分部积分法求∫x e^x dx。解决方案：令u = x和dv = e^x dx，那么du = dx和v = e^x。使用公式，∫x e^x dx = xe^x - ∫e^x dx = xe^x - e^x + C = e^x(x - 1) + C。)"
+      },
+      {
+        "title": "📺 Learning Resources / 学习资源",
+        "content": "<p><a href=\"https://www.youtube.com/watch?v=example1\" target=\"_blank\">YouTube Video: Integration Techniques</a></p><p><a href=\"https://www.bilibili.com/video/example2\" target=\"_blank\">Bilibili Video: Integration and Its Applications</a></p> (请观看以下视频：<a href=\"https://www.youtube.com/watch?v=example1\" target=\"_blank\">YouTube Video: Integration Techniques</a>；<a href=\"https://www.bilibili.com/video/example2\" target=\"_blank\">Bilibili Video: Integration and Its Applications</a>。)"
+      }
+    ]
+  },
+  "math-vectors": {
+    "id": "math-vectors",
+    "name": "Vectors 向量",
+    "subject": "math",
+    "sections": [
+      {
+        "title": "📖 Core Concepts 核心概念",
+        "content": "<div class=\"bg-blue-50\">A vector is a mathematical object that has both magnitude and direction. It can be represented by a directed line segment, where the length represents the magnitude and the arrowhead indicates the direction.</div><div class=\"bg-green-50\">In two-dimensional space, a vector can be written as $\\vec{v} = \\begin{pmatrix} x \\\\ y \\end{pmatrix}$, where $x$ and $y$ are the components of the vector.</div><div class=\"bg-purple-50\">In three-dimensional space, a vector can be written as $\\vec{v} = \\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix}$, where $x$, $y$, and $z$ are the components of the vector.</div><div class=\"bg-yellow-50\">The magnitude of a vector $\\vec{v} = \\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix}$ is given by $\\|\\vec{v}\\| = \\sqrt{x^2 + y^2 + z^2}$.</div><div>Example: A vector with components $\\begin{pmatrix} 3 \\\\ -4 \\\\ 2 \\end{pmatrix}$ has a magnitude of $\\sqrt{3^2 + (-4)^2 + 2^2} = \\sqrt{29}$.</div>"
+      },
+      {
+        "title": "🔧 Methods / 解题方法",
+        "content": "<ol><li>Adding vectors: To add vectors $\\vec{u} = \\begin{pmatrix} u_1 \\\\ u_2 \\\\ u_3 \\end{pmatrix}$ and $\\vec{v} = \\begin{pmatrix} v_1 \\\\ v_2 \\\\ v_3 \\end{pmatrix}$, simply add the corresponding components: $\\vec{u} + \\vec{v} = \\begin{pmatrix} u_1 + v_1 \\\\ u_2 + v_2 \\\\ u_3 + v_3 \\end{pmatrix}$.</li><li>Multiplying vectors by a scalar: To multiply a vector $\\vec{v} = \\begin{pmatrix} v_1 \\\\ v_2 \\\\ v_3 \\end{pmatrix}$ by a scalar $k$, multiply each component by $k$: $k\\vec{v} = \\begin{pmatrix} k v_1 \\\\ k v_2 \\\\ k v_3 \\end{pmatrix}$.</li><li>Subtracting vectors: To subtract vector $\\vec{v}$ from vector $\\vec{u}$, subtract the corresponding components: $\\vec{u} - \\vec{v} = \\begin{pmatrix} u_1 - v_1 \\\\ u_2 - v_2 \\\\ u_3 - v_3 \\end{pmatrix}$.</li></ol><div>Example: Given vectors $\\vec{u} = \\begin{pmatrix} 1 \\\\ 2 \\\\ 3 \\end{pmatrix}$ and $\\vec{v} = \\begin{pmatrix} -1 \\\\ 0 \\\\ 2 \\end{pmatrix}$, the sum is $\\vec{u} + \\vec{v} = \\begin{pmatrix} 0 \\\\ 2 \\\\ 5 \\end{pmatrix}$, and the difference is $\\vec{u} - \\vec{v} = \\begin{pmatrix} 2 \\\\ 2 \\\\ 1 \\end{pmatrix}$.</div>"
+      },
+      {
+        "title": "⚠️ Common Mistakes / 常见错误",
+        "content": "<ul><li>Mistake 1: Confusing vectors with scalars. Remember, vectors have both magnitude and direction, while scalars only have magnitude.</li><li>Mistake 2: Forgetting to square the components when calculating the magnitude of a vector. The magnitude formula is $\\|\\vec{v}\\| = \\sqrt{x^2 + y^2 + z^2}$, not just $\\sqrt{x + y + z}$.</li><li>Mistake 3: Not checking the direction when adding or subtracting vectors. Ensure that the vectors are in the correct direction before performing the operation.</li></ul>"
+      },
+      {
+        "title": "📝 Worked Examples / 典型例题",
+        "content": "<ol><li>Example 1: Given vectors $\\vec{a} = \\begin{pmatrix} 2 \\\\ 3 \\\\ 1 \\end{pmatrix}$ and $\\vec{b} = \\begin{pmatrix} -1 \\\\ 2 \\\\ 3 \\end{pmatrix}$, find $\\vec{a} + \\vec{b}$ and $\\vec{a} - \\vec{b}$.</li><div>Solution: $\\vec{a} + \\vec{b} = \\begin{pmatrix} 2 + (-1) \\\\ 3 + 2 \\\\ 1 + 3 \\end{pmatrix} = \\begin{pmatrix} 1 \\\\ 5 \\\\ 4 \\end{pmatrix}$</div><div>$\\vec{a} - \\vec{b} = \\begin{pmatrix} 2 - (-1) \\\\ 3 - 2 \\\\ 1 - 3 \\end{pmatrix} = \\begin{pmatrix} 3 \\\\ 1 \\\\ -2 \\end{pmatrix}$</div></li><li>Example 2: Calculate the magnitude of the vector $\\vec{v} = \\begin{pmatrix} 4 \\\\ -3 \\\\ 5 \\end{pmatrix}$.</li><div>Solution: $\\|\\vec{v}\\| = \\sqrt{4^2 + (-3)^2 + 5^2} = \\sqrt{16 + 9 + 25} = \\sqrt{50} = 5\\sqrt{2}$</div></li></ol>"
+      },
+      {
+        "title": "📺 Learning Resources / 学习资源",
+        "content": "<p><a href=\"https://www.youtube.com/watch?v=example1\">YouTube Video: Introduction to Vectors</a></p><p><a href=\"https://www.bilibili.com/video/BV1114116766\">Bilibili Video: Understanding Vector Operations</a></p>"
+      }
+    ]
+  }
+}
