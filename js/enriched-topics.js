@@ -829,924 +829,178 @@ where \$n!\$ (n factorial) is the product of all positive integers up to \$n\$. 
     },
     // Mathematics (9709)
     'math-quadratics': {
-        name: 'Quadratics 二次方程',
-        subject: 'math',
-        sections: [
-            {
-                title: '📖 Core Concepts 核心概念',
-                content: `
-                    <div class="space-y-4">
-                        <div class="bg-blue-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-blue-800 mb-2">Standard Form 标准形式</h5>
-                            <p class="text-lg text-center font-mono my-2">$ax^2 + bx + c = 0$ （$a \\neq 0$）</p>
-                            <ul class="text-sm text-blue-700 space-y-1">
-                                <li>• $a$ - coefficient of $x^2$ / 二次项系数</li>
-                                <li>• $b$ - coefficient of $x$ / 一次项系数</li>
-                                <li>• $c$ - constant term / 常数项</li>
-                            </ul>
-                        </div>
-                        
-                        <div class="bg-green-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-green-800 mb-2">Quadratic Formula 求根公式</h5>
-                            <p class="text-lg text-center font-mono my-2">$x = \\frac{-b \\pm \\sqrt{b^2-4ac}}{2a}$</p>
-                            <p class="text-sm text-green-700">Works for all quadratic equations / 适用于所有二次方程</p>
-                        </div>
-                        
-                        <div class="bg-purple-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-purple-800 mb-2">Discriminant Δ = b² - 4ac 判别式</h5>
-                            <table class="w-full text-sm mt-2">
-                                <tr class="border-b">
-                                    <td class="py-2 font-semibold">Δ > 0</td>
-                                    <td class="py-2">Two distinct real roots / 两个不等实根</td>
-                                    <td class="py-2 text-purple-600">$x_1 \\neq x_2$</td>
-                                </tr>
-                                <tr class="border-b">
-                                    <td class="py-2 font-semibold">Δ = 0</td>
-                                    <td class="py-2">One repeated real root / 两个相等实根</td>
-                                    <td class="py-2 text-purple-600">$x_1 = x_2 = -\\frac{b}{2a}$</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-2 font-semibold">Δ < 0</td>
-                                    <td class="py-2">No real roots / 无实根</td>
-                                    <td class="py-2 text-purple-600">$x = \\frac{-b \\pm i\\sqrt{|Δ|}}{2a}$</td>
-                                </tr>
-                            </table>
-                        </div>
-                        
-                        <div class="bg-yellow-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-yellow-800 mb-2">📺 Learning Resources 学习资源</h5>
-                            <div class="space-y-2">
-                                <a href="https://www.youtube.com/results?search_query=cie+math+quadratics" target="_blank" class="flex items-center text-blue-600 hover:underline">
-                                    <span class="mr-2">▶️</span> YouTube - CIE Math Quadratics
-                                </a>
-                                <a href="https://search.bilibili.com/article?keyword=Alevel+math+quadratics" target="_blank" class="flex items-center text-green-600 hover:underline">
-                                    <span class="mr-2">📺</span> Bilibili - A-Level 二次方程
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                `
-            },
-            {
-                title: '🔧 解题方法',
-                content: `
-                    <div class="space-y-4">
-                        <div class="border-l-4 border-blue-500 pl-4">
-                            <h5 class="font-semibold text-gray-800">方法一：因式分解法</h5>
-                            <p class="text-sm text-gray-600 mt-1">适用于可以因式分解的方程</p>
-                            <div class="bg-gray-50 p-3 rounded mt-2">
-                                <p class="font-mono text-sm">$x^2 - 5x + 6 = 0$</p>
-                                <p class="font-mono text-sm">$(x-2)(x-3) = 0$</p>
-                                <p class="font-mono text-sm">$x = 2$ 或 $x = 3$</p>
-                            </div>
-                        </div>
-                        
-                        <div class="border-l-4 border-green-500 pl-4">
-                            <h5 class="font-semibold text-gray-800">方法二：配方法</h5>
-                            <p class="text-sm text-gray-600 mt-1">将方程化为 $(x+p)^2 = q$ 的形式</p>
-                            <div class="bg-gray-50 p-3 rounded mt-2">
-                                <p class="font-mono text-sm">$x^2 + 6x + 5 = 0$</p>
-                                <p class="font-mono text-sm">$x^2 + 6x + 9 - 9 + 5 = 0$</p>
-                                <p class="font-mono text-sm">$(x+3)^2 = 4$</p>
-                                <p class="font-mono text-sm">$x = -3 \\pm 2$</p>
-                            </div>
-                        </div>
-                        
-                        <div class="border-l-4 border-purple-500 pl-4">
-                            <h5 class="font-semibold text-gray-800">方法三：公式法（万能）</h5>
-                            <p class="text-sm text-gray-600 mt-1">所有二次方程都适用</p>
-                            <div class="bg-gray-50 p-3 rounded mt-2">
-                                <p class="text-sm">直接代入求根公式，注意先计算判别式</p>
-                            </div>
-                        </div>
-                    </div>
-                `
-            },
-            {
-                title: '⚠️ 常见错误',
-                content: `
-                    <div class="space-y-3">
-                        <div class="flex items-start space-x-3 bg-red-50 p-3 rounded">
-                            <span class="text-red-500 font-bold">❌</span>
-                            <div>
-                                <p class="font-semibold text-red-800">忘记检查 a ≠ 0</p>
-                                <p class="text-sm text-red-600">如果 a = 0，方程就变成一次方程了</p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-start space-x-3 bg-red-50 p-3 rounded">
-                            <span class="text-red-500 font-bold">❌</span>
-                            <div>
-                                <p class="font-semibold text-red-800">判别式计算错误</p>
-                                <p class="text-sm text-red-600">注意是 $b^2 - 4ac$，不是 $b^2 + 4ac$</p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-start space-x-3 bg-red-50 p-3 rounded">
-                            <span class="text-red-500 font-bold">❌</span>
-                            <div>
-                                <p class="font-semibold text-red-800">符号错误</p>
-                                <p class="text-sm text-red-600">求根公式中是 $-b$，如果 b 是负数要注意</p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-start space-x-3 bg-red-50 p-3 rounded">
-                            <span class="text-red-500 font-bold">❌</span>
-                            <div>
-                                <p class="font-semibold text-red-800">忘记除以 2a</p>
-                                <p class="text-sm text-red-600">最后一定要除以 $2a$，不是 $2$</p>
-                            </div>
-                        </div>
-                    </div>
-                `
-            },
-            {
-                title: '📝 典型例题',
-                content: `
-                    <div class="space-y-4">
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-gray-800 mb-2">例题 1：基础求解</h5>
-                            <p class="font-mono mb-2">解方程：$2x^2 - 7x + 3 = 0$</p>
-                            <div class="text-sm text-gray-700 space-y-1">
-                                <p><strong>解：</strong></p>
-                                <p>$a = 2, b = -7, c = 3$</p>
-                                <p>$Δ = (-7)^2 - 4 \\times 2 \\times 3 = 49 - 24 = 25$</p>
-                                <p>$x = \\frac{7 \\pm \\sqrt{25}}{4} = \\frac{7 \\pm 5}{4}$</p>
-                                <p>$x_1 = \\frac{12}{4} = 3, \\quad x_2 = \\frac{2}{4} = \\frac{1}{2}$</p>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-gray-800 mb-2">例题 2：判断根的情况</h5>
-                            <p class="font-mono mb-2">不解方程，判断 $3x^2 - 2x + 1 = 0$ 的根的情况</p>
-                            <div class="text-sm text-gray-700 space-y-1">
-                                <p><strong>解：</strong></p>
-                                <p>$Δ = (-2)^2 - 4 \\times 3 \\times 1 = 4 - 12 = -8 < 0$</p>
-                                <p>∴ 方程无实根（有两个共轭复数根）</p>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-gray-800 mb-2">例题 3：含参数方程</h5>
-                            <p class="font-mono mb-2">若 $x^2 + kx + 4 = 0$ 有两个相等实根，求 $k$</p>
-                            <div class="text-sm text-gray-700 space-y-1">
-                                <p><strong>解：</strong></p>
-                                <p>有两个相等实根 → $Δ = 0$</p>
-                                <p>$k^2 - 4 \\times 1 \\times 4 = 0$</p>
-                                <p>$k^2 = 16$</p>
-                                <p>$k = \\pm 4$</p>
-                            </div>
-                        </div>
-                    </div>
-                `
-            },
-            {
-                title: '🎯 实战练习',
-                content: `
-                    <div class="space-y-4">
-                        <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-                            <h5 class="font-semibold text-yellow-800 mb-3">快速检测</h5>
-                            <div class="space-y-3">
-                                <div class="flex justify-between items-center">
-                                    <span>1. $x^2 - 5x + 6 = 0$ 的根是？</span>
-                                    <button onclick="showAnswer('q1')" class="text-blue-600 text-sm hover:underline">查看答案</button>
-                                </div>
-                                <p id="q1" class="hidden text-green-700 text-sm">$x = 2$ 或 $x = 3$</p>
-                                
-                                <div class="flex justify-between items-center">
-                                    <span>2. $x^2 + 4x + 4 = 0$ 有几个根？</span>
-                                    <button onclick="showAnswer('q2')" class="text-blue-600 text-sm hover:underline">查看答案</button>
-                                </div>
-                                <p id="q2" class="hidden text-green-700 text-sm">1个（重根），$x = -2$</p>
-                                
-                                <div class="flex justify-between items-center">
-                                    <span>3. $2x^2 - 3x + 5 = 0$ 有实根吗？</span>
-                                    <button onclick="showAnswer('q3')" class="text-blue-600 text-sm hover:underline">查看答案</button>
-                                </div>
-                                <p id="q3" class="hidden text-green-700 text-sm">无实根（$Δ = 9 - 40 = -31 < 0$）</p>
-                            </div>
-                        </div>
-                        
-                        <div class="text-center">
-                            <button onclick="practiceThisTopic('math-quadratics', 'math')" 
-                                class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">
-                                📝 进入练习页面
-                            </button>
-                        </div>
-                    </div>
-                `
-            }
-        ]
-    },
-    
-    'math-functions': {
-        name: 'Functions 函数',
-        subject: 'math',
-        sections: [
-            {
-                title: '📖 核心概念',
-                content: `
-                    <div class="space-y-4">
-                        <div class="bg-blue-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-blue-800 mb-2">函数定义</h5>
-                            <p class="text-gray-700">函数是一种特殊的对应关系，每个输入值对应唯一的输出值。</p>
-                            <p class="text-center font-mono text-lg my-2">$f: x \\mapsto f(x)$</p>
-                            <p class="text-sm text-blue-700">读作："f 把 x 映射到 f(x)"</p>
-                        </div>
-                        
-                        <div class="grid md:grid-cols-2 gap-4">
-                            <div class="bg-green-50 p-4 rounded-lg">
-                                <h5 class="font-semibold text-green-800 mb-2">定义域 Domain</h5>
-                                <p class="text-sm text-gray-700">自变量 $x$ 的取值范围</p>
-                                <p class="text-sm text-green-700 mt-1">例：$f(x) = \\sqrt{x}$ 的定义域是 $x \\geq 0$</p>
-                            </div>
-                            
-                            <div class="bg-purple-50 p-4 rounded-lg">
-                                <h5 class="font-semibold text-purple-800 mb-2">值域 Range</h5>
-                                <p class="text-sm text-gray-700">函数值 $f(x)$ 的取值范围</p>
-                                <p class="text-sm text-purple-700 mt-1">例：$f(x) = x^2$ 的值域是 $f(x) \\geq 0$</p>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-yellow-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-yellow-800 mb-2">反函数 Inverse Function</h5>
-                            <p class="text-sm text-gray-700 mb-2">如果 $f(a) = b$，那么 $f^{-1}(b) = a$</p>
-                            <p class="text-sm text-yellow-700">求法：令 $y = f(x)$，解出 $x$，交换 $x$ 和 $y$</p>
-                        </div>
-                    </div>
-                `
-            },
-            {
-                title: '🔧 复合函数',
-                content: `
-                    <div class="space-y-4">
-                        <div class="bg-blue-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-blue-800 mb-2">定义</h5>
-                            <p class="text-gray-700">复合函数是将一个函数的输出作为另一个函数的输入。</p>
-                            <p class="text-center font-mono text-lg my-2">$(f \\circ g)(x) = f(g(x))$</p>
-                            <p class="text-sm text-blue-700">先算 $g(x)$，再把结果代入 $f$</p>
-                        </div>
-                        
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-gray-800 mb-2">例题</h5>
-                            <p class="font-mono mb-2">已知 $f(x) = 2x + 1$，$g(x) = x^2$，求 $f(g(2))$</p>
-                            <div class="text-sm text-gray-700 space-y-1">
-                                <p><strong>解：</strong></p>
-                                <p>第一步：计算 $g(2) = 2^2 = 4$</p>
-                                <p>第二步：计算 $f(4) = 2 \\times 4 + 1 = 9$</p>
-                                <p>∴ $f(g(2)) = 9$</p>
-                            </div>
-                        </div>
-                    </div>
-                `
-            }
-        ]
-    },
-    
-    'math-coordinate': {
-        name: 'Coordinate Geometry 坐标几何',
-        subject: 'math',
-        sections: [
-            {
-                title: '📖 核心公式',
-                content: `
-                    <div class="space-y-4">
-                        <div class="bg-blue-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-blue-800 mb-2">两点间距离公式</h5>
-                            <p class="text-center font-mono text-lg my-2">$d = \\sqrt{(x_2-x_1)^2 + (y_2-y_1)^2}$</p>
-                            <p class="text-sm text-blue-700">勾股定理的应用</p>
-                        </div>
-                        
-                        <div class="bg-green-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-green-800 mb-2">中点公式</h5>
-                            <p class="text-center font-mono text-lg my-2">$M = \\left(\\frac{x_1+x_2}{2}, \\frac{y_1+y_2}{2}\\right)$</p>
-                            <p class="text-sm text-green-700">两点坐标的平均值</p>
-                        </div>
-                        
-                        <div class="bg-purple-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-purple-800 mb-2">直线方程</h5>
-                            <table class="w-full text-sm">
-                                <tr class="border-b">
-                                    <td class="py-2 font-semibold">斜截式</td>
-                                    <td class="py-2 font-mono">$y = mx + c$</td>
-                                    <td class="py-2">$m$为斜率，$c$为y截距</td>
-                                </tr>
-                                <tr class="border-b">
-                                    <td class="py-2 font-semibold">点斜式</td>
-                                    <td class="py-2 font-mono">$y - y_1 = m(x - x_1)$</td>
-                                    <td class="py-2">过点$(x_1, y_1)$，斜率为$m$</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-2 font-semibold">一般式</td>
-                                    <td class="py-2 font-mono">$ax + by + c = 0$</td>
-                                    <td class="py-2">斜率 $m = -\\frac{a}{b}$</td>
-                                </tr>
-                            </table>
-                        </div>
-                        
-                        <div class="bg-yellow-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-yellow-800 mb-2">斜率与位置关系</h5>
-                            <ul class="text-sm space-y-2">
-                                <li><strong>斜率公式：</strong>$m = \\frac{y_2-y_1}{x_2-x_1}$</li>
-                                <li><strong>平行：</strong>$m_1 = m_2$</li>
-                                <li><strong>垂直：</strong>$m_1 \\times m_2 = -1$</li>
-                            </ul>
-                        </div>
-                    </div>
-                `
-            },
-            {
-                title: '📝 典型例题',
-                content: `
-                    <div class="space-y-4">
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-gray-800 mb-2">例题 1：求距离和中点</h5>
-                            <p class="font-mono mb-2">已知 $A(1, 2)$，$B(5, 6)$，求 $AB$ 的长度和中点</p>
-                            <div class="text-sm text-gray-700 space-y-1">
-                                <p><strong>解：</strong></p>
-                                <p>距离：$d = \\sqrt{(5-1)^2 + (6-2)^2} = \\sqrt{16+16} = \\sqrt{32} = 4\\sqrt{2}$</p>
-                                <p>中点：$M = \\left(\\frac{1+5}{2}, \\frac{2+6}{2}\\right) = (3, 4)$</p>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-gray-800 mb-2">例题 2：求直线方程</h5>
-                            <p class="font-mono mb-2">求过点 $(2, 3)$ 且斜率为 $2$ 的直线方程</p>
-                            <div class="text-sm text-gray-700 space-y-1">
-                                <p><strong>解：</strong></p>
-                                <p>使用点斜式：$y - 3 = 2(x - 2)$</p>
-                                <p>化简：$y = 2x - 4 + 3 = 2x - 1$</p>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-gray-800 mb-2">例题 3：判断位置关系</h5>
-                            <p class="font-mono mb-2">判断直线 $y = 2x + 1$ 和 $y = -\\frac{1}{2}x + 3$ 的关系</p>
-                            <div class="text-sm text-gray-700 space-y-1">
-                                <p><strong>解：</strong></p>
-                                <p>$m_1 = 2$，$m_2 = -\\frac{1}{2}$</p>
-                                <p>$m_1 \\times m_2 = 2 \\times (-\\frac{1}{2}) = -1$</p>
-                                <p>∴ 两直线垂直</p>
-                            </div>
-                        </div>
-                    </div>
-                `
-            },
-            {
-                title: '⚠️ 常见错误',
-                content: `
-                    <div class="space-y-3">
-                        <div class="flex items-start space-x-3 bg-red-50 p-3 rounded">
-                            <span class="text-red-500 font-bold">❌</span>
-                            <div>
-                                <p class="font-semibold text-red-800">距离公式忘记开平方</p>
-                                <p class="text-sm text-red-600">$d = (x_2-x_1)^2 + (y_2-y_1)^2$ 是错误的，必须开平方</p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-start space-x-3 bg-red-50 p-3 rounded">
-                            <span class="text-red-500 font-bold">❌</span>
-                            <div>
-                                <p class="font-semibold text-red-800">斜率计算顺序错误</p>
-                                <p class="text-sm text-red-600">$m = \\frac{y_2-y_1}{x_2-x_1}$，不是 $\\frac{x_2-x_1}{y_2-y_1}$</p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-start space-x-3 bg-red-50 p-3 rounded">
-                            <span class="text-red-500 font-bold">❌</span>
-                            <div>
-                                <p class="font-semibold text-red-800">垂直条件记错</p>
-                                <p class="text-sm text-red-600">垂直是 $m_1 \\times m_2 = -1$，不是 $m_1 = -m_2$</p>
-                            </div>
-                        </div>
-                    </div>
-                `
-            }
-        ]
-    },
-    
-    'math-trigonometry': {
-        name: 'Trigonometry 三角函数',
-        subject: 'math',
-        sections: [
-            {
-                title: '📖 基本定义',
-                content: `
-                    <div class="space-y-4">
-                        <div class="bg-blue-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-blue-800 mb-2">直角三角形定义</h5>
-                            <div class="grid grid-cols-3 gap-4 text-center">
-                                <div class="bg-white p-3 rounded">
-                                    <p class="font-mono text-lg">$\\sin\\theta = \\frac{对边}{斜边}$</p>
-                                </div>
-                                <div class="bg-white p-3 rounded">
-                                    <p class="font-mono text-lg">$\\cos\\theta = \\frac{邻边}{斜边}$</p>
-                                </div>
-                                <div class="bg-white p-3 rounded">
-                                    <p class="font-mono text-lg">$\\tan\\theta = \\frac{对边}{邻边}$</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-green-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-green-800 mb-2">特殊角值（必须记住）</h5>
-                            <table class="w-full text-sm text-center">
-                                <tr class="border-b">
-                                    <th class="py-2">角度</th>
-                                    <th class="py-2">$0°$</th>
-                                    <th class="py-2">$30°$</th>
-                                    <th class="py-2">$45°$</th>
-                                    <th class="py-2">$60°$</th>
-                                    <th class="py-2">$90°$</th>
-                                </tr>
-                                <tr class="border-b">
-                                    <td class="py-2 font-semibold">$\\sin$</td>
-                                    <td class="py-2">$0$</td>
-                                    <td class="py-2">$\\frac{1}{2}$</td>
-                                    <td class="py-2">$\\frac{\\sqrt{2}}{2}$</td>
-                                    <td class="py-2">$\\frac{\\sqrt{3}}{2}$</td>
-                                    <td class="py-2">$1$</td>
-                                </tr>
-                                <tr class="border-b">
-                                    <td class="py-2 font-semibold">$\\cos$</td>
-                                    <td class="py-2">$1$</td>
-                                    <td class="py-2">$\\frac{\\sqrt{3}}{2}$</td>
-                                    <td class="py-2">$\\frac{\\sqrt{2}}{2}$</td>
-                                    <td class="py-2">$\\frac{1}{2}$</td>
-                                    <td class="py-2">$0$</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-2 font-semibold">$\\tan$</td>
-                                    <td class="py-2">$0$</td>
-                                    <td class="py-2">$\\frac{\\sqrt{3}}{3}$</td>
-                                    <td class="py-2">$1$</td>
-                                    <td class="py-2">$\\sqrt{3}$</td>
-                                    <td class="py-2">无定义</td>
-                                </tr>
-                            </table>
-                        </div>
-                        
-                        <div class="bg-purple-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-purple-800 mb-2">基本恒等式</h5>
-                            <div class="space-y-2 text-center">
-                                <p class="font-mono text-lg">$\\sin^2\\theta + \\cos^2\\theta = 1$</p>
-                                <p class="font-mono text-lg">$\\tan\\theta = \\frac{\\sin\\theta}{\\cos\\theta}$</p>
-                                <p class="font-mono text-lg">$1 + \\tan^2\\theta = \\sec^2\\theta$</p>
-                            </div>
-                        </div>
-                    </div>
-                `
-            },
-            {
-                title: '📝 典型例题',
-                content: `
-                    <div class="space-y-4">
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-gray-800 mb-2">例题 1：求三角函数值</h5>
-                            <p class="font-mono mb-2">已知 $\\sin\\theta = \\frac{3}{5}$，且 $\\theta$ 为锐角，求 $\\cos\\theta$ 和 $\\tan\\theta$</p>
-                            <div class="text-sm text-gray-700 space-y-1">
-                                <p><strong>解：</strong></p>
-                                <p>由 $\\sin^2\\theta + \\cos^2\\theta = 1$</p>
-                                <p>$\\cos^2\\theta = 1 - (\\frac{3}{5})^2 = 1 - \\frac{9}{25} = \\frac{16}{25}$</p>
-                                <p>$\\cos\\theta = \\frac{4}{5}$（锐角取正值）</p>
-                                <p>$\\tan\\theta = \\frac{\\sin\\theta}{\\cos\\theta} = \\frac{3/5}{4/5} = \\frac{3}{4}$</p>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-gray-800 mb-2">例题 2：解三角方程</h5>
-                            <p class="font-mono mb-2">解方程 $\\sin x = \\frac{\\sqrt{3}}{2}$，$0° \\leq x \\leq 360°$</p>
-                            <div class="text-sm text-gray-700 space-y-1">
-                                <p><strong>解：</strong></p>
-                                <p>参考特殊角值表，$\\sin 60° = \\frac{\\sqrt{3}}{2}$</p>
-                                <p>由对称性，$\\sin(180°-60°) = \\sin 60° = \\frac{\\sqrt{3}}{2}$</p>
-                                <p>∴ $x = 60°$ 或 $x = 120°$</p>
-                            </div>
-                        </div>
-                    </div>
-                `
-            }
-        ]
-    },
-    
-    'math-differentiation': {
-        name: 'Differentiation 微分',
-        subject: 'math',
-        sections: [
-            {
-                title: '📖 基本公式',
-                content: `
-                    <div class="space-y-4">
-                        <div class="bg-blue-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-blue-800 mb-2">幂函数</h5>
-                            <p class="text-center font-mono text-lg my-2">$\\frac{d}{dx}(x^n) = nx^{n-1}$</p>
-                            <p class="text-sm text-blue-700">例：$\\frac{d}{dx}(x^3) = 3x^2$</p>
-                        </div>
-                        
-                        <div class="bg-green-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-green-800 mb-2">常数和系数</h5>
-                            <div class="space-y-2 text-center">
-                                <p class="font-mono">$\\frac{d}{dx}(c) = 0$（$c$为常数）</p>
-                                <p class="font-mono">$\\frac{d}{dx}(cf(x)) = c\\frac{d}{dx}(f(x))$</p>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-purple-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-purple-800 mb-2">和差积商法则</h5>
-                            <table class="w-full text-sm">
-                                <tr class="border-b">
-                                    <td class="py-2 font-semibold">和差法则</td>
-                                    <td class="py-2 font-mono">$(f ± g)' = f' ± g'$</td>
-                                </tr>
-                                <tr class="border-b">
-                                    <td class="py-2 font-semibold">积法则</td>
-                                    <td class="py-2 font-mono">$(fg)' = f'g + fg'$</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-2 font-semibold">商法则</td>
-                                    <td class="py-2 font-mono">$(\\frac{f}{g})' = \\frac{f'g - fg'}{g^2}$</td>
-                                </tr>
-                            </table>
-                        </div>
-                        
-                        <div class="bg-yellow-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-yellow-800 mb-2">链式法则（复合函数）</h5>
-                            <p class="text-center font-mono text-lg my-2">$\\frac{dy}{dx} = \\frac{dy}{du} \\times \\frac{du}{dx}$</p>
-                            <p class="text-sm text-yellow-700">例：求 $(2x+1)^5$ 的导数</p>
-                            <p class="text-sm text-yellow-700">令 $u = 2x+1$，则 $y = u^5$</p>
-                            <p class="text-sm text-yellow-700">$\\frac{dy}{dx} = 5u^4 \\times 2 = 10(2x+1)^4$</p>
-                        </div>
-                    </div>
-                `
-            },
-            {
-                title: '📝 典型例题',
-                content: `
-                    <div class="space-y-4">
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-gray-800 mb-2">例题 1：基本求导</h5>
-                            <p class="font-mono mb-2">求 $y = 3x^4 - 2x^3 + 5x - 7$ 的导数</p>
-                            <div class="text-sm text-gray-700 space-y-1">
-                                <p><strong>解：</strong></p>
-                                <p>$\\frac{dy}{dx} = 3 \\times 4x^3 - 2 \\times 3x^2 + 5 - 0$</p>
-                                <p>$= 12x^3 - 6x^2 + 5$</p>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-gray-800 mb-2">例题 2：链式法则</h5>
-                            <p class="font-mono mb-2">求 $y = (3x^2 + 1)^4$ 的导数</p>
-                            <div class="text-sm text-gray-700 space-y-1">
-                                <p><strong>解：</strong></p>
-                                <p>令 $u = 3x^2 + 1$，则 $y = u^4$</p>
-                                <p>$\\frac{du}{dx} = 6x$，$\\frac{dy}{du} = 4u^3$</p>
-                                <p>$\\frac{dy}{dx} = 4u^3 \\times 6x = 24x(3x^2+1)^3$</p>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-gray-800 mb-2">例题 3：求切线方程</h5>
-                            <p class="font-mono mb-2">求曲线 $y = x^2$ 在点 $(2, 4)$ 处的切线方程</p>
-                            <div class="text-sm text-gray-700 space-y-1">
-                                <p><strong>解：</strong></p>
-                                <p>$\\frac{dy}{dx} = 2x$</p>
-                                <p>在 $x = 2$ 处，斜率 $m = 2 \\times 2 = 4$</p>
-                                <p>切线方程：$y - 4 = 4(x - 2)$</p>
-                                <p>化简：$y = 4x - 4$</p>
-                            </div>
-                        </div>
-                    </div>
-                `
-            }
-        ]
-    },
-    
-    'physics-kinematics': {
-        name: 'Kinematics 运动学',
-        subject: 'physics',
-        sections: [
-            {
-                title: '📖 核心公式',
-                content: `
-                    <div class="space-y-4">
-                        <div class="bg-blue-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-blue-800 mb-2">匀加速直线运动公式（SUVAT）</h5>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="bg-white p-3 rounded text-center">
-                                    <p class="font-mono">$v = u + at$</p>
-                                    <p class="text-xs text-gray-600">求末速度</p>
-                                </div>
-                                <div class="bg-white p-3 rounded text-center">
-                                    <p class="font-mono">$s = \\frac{(u+v)t}{2}$</p>
-                                    <p class="text-xs text-gray-600">平均速度公式</p>
-                                </div>
-                                <div class="bg-white p-3 rounded text-center">
-                                    <p class="font-mono">$s = ut + \\frac{1}{2}at^2$</p>
-                                    <p class="text-xs text-gray-600">无末速度</p>
-                                </div>
-                                <div class="bg-white p-3 rounded text-center">
-                                    <p class="font-mono">$v^2 = u^2 + 2as$</p>
-                                    <p class="text-xs text-gray-600">无时间</p>
-                                </div>
-                            </div>
-                            <p class="text-sm text-blue-700 mt-3 text-center">$s$=位移, $u$=初速度, $v$=末速度, $a$=加速度, $t$=时间</p>
-                        </div>
-                        
-                        <div class="bg-green-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-green-800 mb-2">自由落体（$g = 9.8 \\text{ m/s}^2$）</h5>
-                            <ul class="text-sm space-y-2">
-                                <li>• 初速度 $u = 0$（从静止开始）</li>
-                                <li>• 加速度 $a = g$（向下）</li>
-                                <li>• 上升时 $a = -g$（减速）</li>
-                            </ul>
-                        </div>
-                        
-                        <div class="bg-yellow-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-yellow-800 mb-2">图像分析</h5>
-                            <table class="w-full text-sm">
-                                <tr class="border-b">
-                                    <td class="py-2 font-semibold">$s-t$ 图</td>
-                                    <td class="py-2">斜率 = 速度</td>
-                                </tr>
-                                <tr class="border-b">
-                                    <td class="py-2 font-semibold">$v-t$ 图</td>
-                                    <td class="py-2">斜率 = 加速度，面积 = 位移</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-2 font-semibold">$a-t$ 图</td>
-                                    <td class="py-2">面积 = 速度变化</td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                `
-            },
-            {
-                title: '📝 典型例题',
-                content: `
-                    <div class="space-y-4">
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-gray-800 mb-2">例题 1：基本运动计算</h5>
-                            <p class="font-mono mb-2">汽车从静止开始以 $2 \\text{ m/s}^2$ 加速，求 5 秒后的速度和位移</p>
-                            <div class="text-sm text-gray-700 space-y-1">
-                                <p><strong>已知：</strong>$u = 0$，$a = 2 \\text{ m/s}^2$，$t = 5 \\text{ s}$</p>
-                                <p><strong>求速度：</strong>$v = u + at = 0 + 2 \\times 5 = 10 \\text{ m/s}$</p>
-                                <p><strong>求位移：</strong>$s = ut + \\frac{1}{2}at^2 = 0 + \\frac{1}{2} \\times 2 \\times 25 = 25 \\text{ m}$</p>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-gray-800 mb-2">例题 2：自由落体</h5>
-                            <p class="font-mono mb-2">从 20m 高处自由落下的物体，落地时的速度是多少？</p>
-                            <div class="text-sm text-gray-700 space-y-1">
-                                <p><strong>已知：</strong>$u = 0$，$s = 20 \\text{ m}$，$a = g = 9.8 \\text{ m/s}^2$</p>
-                                <p><strong>解：</strong>使用 $v^2 = u^2 + 2as$</p>
-                                <p>$v^2 = 0 + 2 \\times 9.8 \\times 20 = 392$</p>
-                                <p>$v = \\sqrt{392} \\approx 19.8 \\text{ m/s}$</p>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-gray-800 mb-2">例题 3：竖直上抛</h5>
-                            <p class="font-mono mb-2">以 $20 \\text{ m/s}$ 初速度竖直上抛的物体，最大高度是多少？</p>
-                            <div class="text-sm text-gray-700 space-y-1">
-                                <p><strong>已知：</strong>$u = 20 \\text{ m/s}$，$v = 0$（最高点），$a = -g = -9.8 \\text{ m/s}^2$</p>
-                                <p><strong>解：</strong>使用 $v^2 = u^2 + 2as$</p>
-                                <p>$0 = 400 + 2 \\times (-9.8) \\times s$</p>
-                                <p>$s = \\frac{400}{19.6} \\approx 20.4 \\text{ m}$</p>
-                            </div>
-                        </div>
-                    </div>
-                `
-            },
-            {
-                title: '⚠️ 常见错误',
-                content: `
-                    <div class="space-y-3">
-                        <div class="flex items-start space-x-3 bg-red-50 p-3 rounded">
-                            <span class="text-red-500 font-bold">❌</span>
-                            <div>
-                                <p class="font-semibold text-red-800">符号错误</p>
-                                <p class="text-sm text-red-600">上升时加速度为 $-g$（负值），不要忽略负号</p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-start space-x-3 bg-red-50 p-3 rounded">
-                            <span class="text-red-500 font-bold">❌</span>
-                            <div>
-                                <p class="font-semibold text-red-800">单位混淆</p>
-                                <p class="text-sm text-red-600">速度用 m/s，时间用 s，位移用 m，确保单位统一</p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-start space-x-3 bg-red-50 p-3 rounded">
-                            <span class="text-red-500 font-bold">❌</span>
-                            <div>
-                                <p class="font-semibold text-red-800">自由落体初速度</p>
-                                <p class="text-sm text-red-600">"自由"落下意味着 $u = 0$，不是其他值</p>
-                            </div>
-                        </div>
-                    </div>
-                `
-            }
-        ]
-    },
-    
-    'physics-dynamics': {
-        name: 'Dynamics 动力学',
-        subject: 'physics',
-        sections: [
-            {
-                title: '📖 牛顿定律',
-                content: `
-                    <div class="space-y-4">
-                        <div class="bg-blue-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-blue-800 mb-2">牛顿第一定律（惯性定律）</h5>
-                            <p class="text-gray-700">物体保持静止或匀速直线运动，除非受到合外力的作用。</p>
-                            <p class="text-sm text-blue-700 mt-2">惯性只与质量有关：质量越大，惯性越大</p>
-                        </div>
-                        
-                        <div class="bg-green-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-green-800 mb-2">牛顿第二定律</h5>
-                            <p class="text-center font-mono text-xl my-3">$F = ma$</p>
-                            <p class="text-sm text-green-700">$F$=合外力(N)，$m$=质量(kg)，$a$=加速度(m/s²)</p>
-                            <p class="text-sm text-green-700 mt-2">力的方向与加速度方向相同</p>
-                        </div>
-                        
-                        <div class="bg-purple-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-purple-800 mb-2">牛顿第三定律</h5>
-                            <p class="text-gray-700">作用力与反作用力大小相等、方向相反、作用在不同物体上。</p>
-                            <p class="text-sm text-purple-700 mt-2">例：人推墙，墙也推人；人站在地面，地面支持人</p>
-                        </div>
-                        
-                        <div class="bg-yellow-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-yellow-800 mb-2">常见力的类型</h5>
-                            <table class="w-full text-sm">
-                                <tr class="border-b">
-                                    <td class="py-2 font-semibold">重力 $W$</td>
-                                    <td class="py-2">$W = mg$（$g = 9.8 \\text{ N/kg}$）</td>
-                                </tr>
-                                <tr class="border-b">
-                                    <td class="py-2 font-semibold">支持力 $N$</td>
-                                    <td class="py-2">垂直于接触面向上</td>
-                                </tr>
-                                <tr class="border-b">
-                                    <td class="py-2 font-semibold">摩擦力 $f$</td>
-                                    <td class="py-2">$f = \\mu N$，阻碍相对运动</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-2 font-semibold">张力 $T$</td>
-                                    <td class="py-2">沿绳子方向，拉物体</td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                `
-            },
-            {
-                title: '📝 典型例题',
-                content: `
-                    <div class="space-y-4">
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-gray-800 mb-2">例题 1：基本受力分析</h5>
-                            <p class="font-mono mb-2">质量为 5kg 的物体在光滑水平面上受到 10N 水平拉力，求加速度</p>
-                            <div class="text-sm text-gray-700 space-y-1">
-                                <p><strong>解：</strong></p>
-                                <p>光滑水平面 → 无摩擦力</p>
-                                <p>合外力 $F = 10 \\text{ N}$</p>
-                                <p>由 $F = ma$：$a = \\frac{F}{m} = \\frac{10}{5} = 2 \\text{ m/s}^2$</p>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-gray-800 mb-2">例题 2：考虑摩擦力</h5>
-                            <p class="font-mono mb-2">质量为 10kg 的物体在粗糙水平面上，摩擦系数为 0.3，受到 50N 水平拉力，求加速度</p>
-                            <div class="text-sm text-gray-700 space-y-1">
-                                <p><strong>解：</strong></p>
-                                <p>支持力 $N = mg = 10 \\times 9.8 = 98 \\text{ N}$</p>
-                                <p>摩擦力 $f = \\mu N = 0.3 \\times 98 = 29.4 \\text{ N}$</p>
-                                <p>合外力 $F_{net} = 50 - 29.4 = 20.6 \\text{ N}$</p>
-                                <p>加速度 $a = \\frac{20.6}{10} = 2.06 \\text{ m/s}^2$</p>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <h5 class="font-semibold text-gray-800 mb-2">例题 3：斜面问题</h5>
-                            <p class="font-mono mb-2">质量为 2kg 的物体沿倾角为 $30°$ 的光滑斜面下滑，求加速度</p>
-                            <div class="text-sm text-gray-700 space-y-1">
-                                <p><strong>解：</strong></p>
-                                <p>重力沿斜面向下的分量：$F = mg\\sin\\theta$</p>
-                                <p>$F = 2 \\times 9.8 \\times \\sin 30° = 2 \\times 9.8 \\times 0.5 = 9.8 \\text{ N}$</p>
-                                <p>由 $F = ma$：$a = \\frac{9.8}{2} = 4.9 \\text{ m/s}^2$</p>
-                                <p>（注意：与质量无关！$a = g\\sin\\theta$）</p>
-                            </div>
-                        </div>
-                    </div>
-                `
-            }
-        ]
-    }
-};
-
-// 显示答案的辅助函数
-var showAnswer = function(id) {
-    const el = document.getElementById(id);
-    if (el) {
-        el.classList.toggle('hidden');
-    }
-}
-
-// 获取丰富知识点内容的函数
-var getEnrichedTopicContent = function(topicId) {
-    const topic = enrichedTopicData[topicId];
-    if (!topic) return null;
-    
-    let html = `<h2 class="text-2xl font-bold text-gray-800 mb-6">${topic.name}</h2>`;
-    
-    // 标签页导航
-    html += `<div class="flex flex-wrap gap-2 mb-6 border-b">`;
-    topic.sections.forEach((section, index) => {
-        html += `
-            <button onclick="switchTopicTab('${topicId}', ${index})" 
-                id="tab-${topicId}-${index}"
-                class="topic-tab px-4 py-2 text-sm font-medium transition ${index === 0 ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-700'}">
-                ${section.title}
-            </button>
-        `;
-    });
-    html += `</div>`;
-    
-    // 内容区域
-    html += `<div class="topic-content-area">`;
-    topic.sections.forEach((section, index) => {
-        html += `
-            <div id="content-${topicId}-${index}" class="topic-section ${index === 0 ? '' : 'hidden'}">
-                ${section.content}
-            </div>
-        `;
-    });
-    html += `</div>`;
-    
-    // 添加 AI 问答区域
-    html += `
-        <div class="mt-8 pt-6 border-t">
-            <div class="bg-gradient-to-r from-purple-50 to-blue-50 p-6 rounded-xl">
-                <h3 class="text-lg font-bold text-gray-800 mb-4">🤖 AI 答疑助手</h3>
-                <p class="text-sm text-gray-600 mb-4">对这个知识点有疑问？问 AI 老师！</p>
-                <div class="flex gap-2">
-                    <input type="text" id="ai-question-${topicId}" 
-                        placeholder="例如：判别式有什么用？" 
-                        class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <button onclick="askAIAboutTopic('${topicId}', '${topic.name}')" 
-                        class="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
-                        提问
-                    </button>
-                </div>
-                <div id="ai-answer-${topicId}" class="mt-4 hidden">
-                    <div class="bg-white p-4 rounded-lg border">
-                        <p class="text-sm text-gray-500 mb-2">AI 老师回答：</p>
-                        <div id="ai-answer-content-${topicId}" class="text-gray-800"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="mt-6">
-            <button onclick="practiceThisTopic('${topicId}', '${topic.subject}')" 
-                class="w-full py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition">
-                📝 练习此知识点
-            </button>
-        </div>
-    `;
-    
-    return html;
-}
-
-// 切换标签页
-var switchTopicTab = function(topicId, index) {
-    // 更新标签样式
-    document.querySelectorAll(`[id^="tab-${topicId}-"]`).forEach((tab, i) => {
-        if (i === index) {
-            tab.classList.add('text-blue-600', 'border-b-2', 'border-blue-600');
-            tab.classList.remove('text-gray-500');
-        } else {
-            tab.classList.remove('text-blue-600', 'border-b-2', 'border-blue-600');
-            tab.classList.add('text-gray-500');
+    name: 'Quadratics 二次方程',
+    subject: 'math',
+    sections: [
+        {
+            title: '📖 Core Concepts / 核心概念',
+            content: `<div class="bg-blue-50"><strong>Quadratic Equation (二次方程)</strong>: An equation of the form $ax^2 + bx + c = 0$ where $a \neq 0$.</div><div class="bg-green-50"><strong>Quadratic Formula (求根公式)</strong>: $x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$</div><div class="bg-purple-50"><strong>Discriminant (判别式)</strong>: $\Delta = b^2 - 4ac$ determines the nature of roots:<br>• $\Delta > 0$: Two distinct real roots<br>• $\Delta = 0$: One repeated real root<br>• $\Delta < 0$: No real roots (complex roots)</div><div class="bg-yellow-50"><strong>Methods of Solution (解法)</strong>:<br>1. Factorization (因式分解)<br>2. Completing the square (配方法)<br>3. Quadratic formula (公式法)</div>`
+        },
+        {
+            title: '🔧 Methods / 解题方法',
+            content: `<p><strong>Method 1: Factorization</strong></p><p>Express $ax^2 + bx + c$ as $(px + q)(rx + s) = 0$</p><p>Example: $x^2 - 5x + 6 = (x-2)(x-3) = 0$, so $x = 2$ or $x = 3$</p><p><strong>Method 2: Completing the Square</strong></p><p>Rewrite in the form $(x + p)^2 = q$</p><p>Example: $x^2 + 6x + 5 = 0$ becomes $(x+3)^2 - 4 = 0$</p><p><strong>Method 3: Quadratic Formula</strong></p><p>Direct substitution: $x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$</p><p>Always works for any quadratic equation.</p>`
+        },
+        {
+            title: '⚠️ Common Mistakes / 常见错误',
+            content: `<ul><li><strong>Forgetting to check discriminant</strong> before stating the nature of roots</li><li><strong>Sign errors</strong> when applying the quadratic formula (especially with negative $b$)</li><li><strong>Not simplifying</strong> final answers (e.g., leaving $\sqrt{8}$ instead of $2\sqrt{2}$)</li><li><strong>Missing solutions</strong> when factorizing (always check both factors equal zero)</li></ul>`
+        },
+        {
+            title: '📝 Worked Examples / 典型例题',
+            content: `<p><strong>Example 1:</strong> Solve $x^2 - 5x + 6 = 0$</p><p>Solution: Factorize: $(x-2)(x-3) = 0$, therefore $x = 2$ or $x = 3$</p><p><strong>Example 2:</strong> Solve $2x^2 + 4x - 3 = 0$ using formula</p><p>Solution: $a=2, b=4, c=-3$<br>$x = \frac{-4 \pm \sqrt{16 + 24}}{4} = \frac{-4 \pm \sqrt{40}}{4} = \frac{-2 \pm \sqrt{10}}{2}$</p><p><strong>Example 3:</strong> Find the discriminant of $3x^2 - 2x + 5 = 0$ and state the nature of roots</p><p>Solution: $\Delta = (-2)^2 - 4(3)(5) = 4 - 60 = -56 < 0$, so no real roots.</p>`
+        },
+        {
+            title: '📺 Learning Resources / 学习资源',
+            content: `<p><a href="https://www.youtube.com/watch?v=IKyUuvulI7E" target="_blank">YouTube - Solving Quadratic Equations</a></p><p><a href="https://www.bilibili.com/video/BV1x4411e7hV" target="_blank">Bilibili - 二次方程详解</a></p>`
         }
-    });
-    
-    // 切换内容
-    document.querySelectorAll(`[id^="content-${topicId}-"]`).forEach((content, i) => {
-        if (i === index) {
-            content.classList.remove('hidden');
-        } else {
-            content.classList.add('hidden');
+    ]
+},'math-functions': {
+    name: 'Functions 函数',
+    subject: 'math',
+    sections: [
+        {
+            title: '📖 Core Concepts / 核心概念',
+            content: `<div class="bg-blue-50"><strong>Function (函数)</strong>: A relation that assigns to each element $x$ in the domain exactly one element $y$ in the range. Written as $y = f(x)$ or $f: x \mapsto y$.</div><div class="bg-green-50"><strong>Domain (定义域)</strong>: The set of all possible input values ($x$ values) for which the function is defined.</div><div class="bg-purple-50"><strong>Range (值域)</strong>: The set of all possible output values ($y$ values) that the function can produce.</div><div class="bg-yellow-50"><strong>Key Function Types (函数类型)</strong>:<br>• Linear: $f(x) = ax + b$<br>• Quadratic: $f(x) = ax^2 + bx + c$<br>• Exponential: $f(x) = a^x$<br>• Logarithmic: $f(x) = \log_a x$</div>`
+        },
+        {
+            title: '🔧 Methods / 解题方法',
+            content: `<p><strong>Finding Domain</strong></p><p>• Polynomial: All real numbers ($x \in \mathbb{R}$)</p><p>• Fraction: Denominator $\neq 0$</p><p>• Square root: Expression inside $\geq 0$</p><p>• Logarithm: Argument $> 0$</p><p><strong>Finding Range</strong></p><p>• Sketch the graph and identify $y$ values</p><p>• For quadratic: Complete the square or use vertex</p><p>• For rational: Find horizontal asymptotes</p><p><strong>Composite Functions</strong></p><p>$(f \circ g)(x) = f(g(x))$</p><p>Apply $g$ first, then $f$ to the result.</p><p><strong>Inverse Functions</strong></p><p>$f^{-1}(x)$ reverses the operation of $f(x)$</p><p>To find: Swap $x$ and $y$, then solve for $y$</p>`
+        },
+        {
+            title: '⚠️ Common Mistakes / 常见错误',
+            content: `<ul><li><strong>Confusing $f^{-1}(x)$ with $[f(x)]^{-1}$</strong> - The first is the inverse function, the second is the reciprocal</li><li><strong>Wrong order in composite functions</strong> - $f(g(x))$ means apply $g$ first, not $f$</li><li><strong>Forgetting domain restrictions</strong> - Always check what values of $x$ are allowed</li><li><strong>Assuming all functions have inverses</strong> - Only one-to-one functions have inverses (pass horizontal line test)</li></ul>`
+        },
+        {
+            title: '📝 Worked Examples / 典型例题',
+            content: `<p><strong>Example 1:</strong> Find the domain of $f(x) = \sqrt{x-3}$</p><p>Solution: Need $x - 3 \geq 0$, so $x \geq 3$. Domain: $[3, \infty)$</p><p><strong>Example 2:</strong> If $f(x) = 2x + 1$ and $g(x) = x^2$, find $f(g(2))$</p><p>Solution: $g(2) = 4$, then $f(4) = 2(4) + 1 = 9$</p><p><strong>Example 3:</strong> Find the inverse of $f(x) = 3x - 2$</p><p>Solution: Let $y = 3x - 2$. Swap: $x = 3y - 2$. Solve: $y = \frac{x+2}{3}$. So $f^{-1}(x) = \frac{x+2}{3}$</p>`
+        },
+        {
+            title: '📺 Learning Resources / 学习资源',
+            content: `<p><a href="https://www.youtube.com/watch?v=kvGsIo1TmsM" target="_blank">YouTube - Functions and Domain/Range</a></p><p><a href="https://www.bilibili.com/video/BV1ZK4y1R7fE" target="_blank">Bilibili - 函数基础教程</a></p>`
         }
-    });
-    
-    // 重新渲染数学公式
-    renderMathJax();
-}
-
-// Auto-generated topics (will be populated by generate-topics.py)
-// Topics will be merged here automatically
+    ]
+},'math-coordinate': {
+    name: 'Coordinate Geometry 坐标几何',
+    subject: 'math',
+    sections: [
+        {
+            title: '📖 Core Concepts / 核心概念',
+            content: `<div class="bg-blue-50"><strong>Distance Formula (距离公式)</strong>: The distance between $(x_1, y_1)$ and $(x_2, y_2)$ is $d = \sqrt{(x_2-x_1)^2 + (y_2-y_1)^2}$</div><div class="bg-green-50"><strong>Midpoint Formula (中点公式)</strong>: The midpoint of $(x_1, y_1)$ and $(x_2, y_2)$ is $(\frac{x_1+x_2}{2}, \frac{y_1+y_2}{2})$</div><div class="bg-purple-50"><strong>Gradient/Slope (斜率)</strong>: $m = \frac{y_2-y_1}{x_2-x_1}$ represents the steepness of a line</div><div class="bg-yellow-50"><strong>Line Equations (直线方程)</strong>:<br>• Slope-intercept: $y = mx + c$<br>• Point-slope: $y - y_1 = m(x - x_1)$<br>• General: $ax + by + c = 0$</div>`
+        },
+        {
+            title: '🔧 Methods / 解题方法',
+            content: `<p><strong>Finding Line Equation</strong></p><p>Given gradient $m$ and point $(x_1, y_1)$: Use $y - y_1 = m(x - x_1)$</p><p>Given two points: First find gradient, then use point-slope form</p><p><strong>Parallel and Perpendicular Lines</strong></p><p>• Parallel: Same gradient ($m_1 = m_2$)</p><p>• Perpendicular: Product of gradients = -1 ($m_1 \times m_2 = -1$)</p><p><strong>Finding Intersection</strong></p><p>Solve simultaneous equations of the two lines</p><p><strong>Perpendicular Bisector</strong></p><p>Passes through midpoint with negative reciprocal gradient</p>`
+        },
+        {
+            title: '⚠️ Common Mistakes / 常见错误',
+            content: `<ul><li><strong>Sign errors in distance formula</strong> - Remember $(x_2-x_1)^2 = (x_1-x_2)^2$, so order doesn't matter for distance</li><li><strong>Confusing parallel and perpendicular conditions</strong> - Parallel = same slope, Perpendicular = negative reciprocal</li><li><strong>Forgetting to simplify gradients</strong> - Always reduce fractions to lowest terms</li><li><strong>Not checking if lines are parallel before finding intersection</strong> - Parallel lines never intersect (unless coincident)</li></ul>`
+        },
+        {
+            title: '📝 Worked Examples / 典型例题',
+            content: `<p><strong>Example 1:</strong> Find the distance between $A(1, 2)$ and $B(4, 6)$</p><p>Solution: $d = \sqrt{(4-1)^2 + (6-2)^2} = \sqrt{9 + 16} = \sqrt{25} = 5$</p><p><strong>Example 2:</strong> Find the equation of the line through $(2, 3)$ with gradient $-2$</p><p>Solution: $y - 3 = -2(x - 2)$, so $y = -2x + 7$</p><p><strong>Example 3:</strong> Show that lines $y = 2x + 1$ and $y = -\frac{1}{2}x + 3$ are perpendicular</p><p>Solution: $m_1 = 2$, $m_2 = -\frac{1}{2}$. Product: $2 \times (-\frac{1}{2}) = -1$. Therefore perpendicular.</p>`
+        },
+        {
+            title: '📺 Learning Resources / 学习资源',
+            content: `<p><a href="https://www.youtube.com/watch?v=0JjHhVM9zlI" target="_blank">YouTube - Coordinate Geometry Basics</a></p><p><a href="https://www.bilibili.com/video/BV1b4411e7hN" target="_blank">Bilibili - 坐标几何详解</a></p>`
+        }
+    ]
+},'math-trigonometry': {
+    name: 'Trigonometry 三角函数',
+    subject: 'math',
+    sections: [
+        {
+            title: '📖 Core Concepts / 核心概念',
+            content: `<div class="bg-blue-50"><strong>Basic Ratios (基本比值)</strong>: For a right-angled triangle:<br>$\sin \theta = \frac{\text{opposite}}{\text{hypotenuse}}$, $\cos \theta = \frac{\text{adjacent}}{\text{hypotenuse}}$, $\tan \theta = \frac{\text{opposite}}{\text{adjacent}}$</div><div class="bg-green-50"><strong>Special Angles (特殊角)</strong>:<br>$\sin 30° = \frac{1}{2}$, $\cos 30° = \frac{\sqrt{3}}{2}$, $\tan 30° = \frac{1}{\sqrt{3}}$<br>$\sin 45° = \frac{1}{\sqrt{2}}$, $\cos 45° = \frac{1}{\sqrt{2}}$, $\tan 45° = 1$<br>$\sin 60° = \frac{\sqrt{3}}{2}$, $\cos 60° = \frac{1}{2}$, $\tan 60° = \sqrt{3}$</div><div class="bg-purple-50"><strong>Fundamental Identity (基本恒等式)</strong>: $\sin^2 \theta + \cos^2 \theta = 1$</div><div class="bg-yellow-50"><strong>Radians (弧度)</strong>: $180° = \pi$ radians, $360° = 2\pi$ radians</div>`
+        },
+        {
+            title: '🔧 Methods / 解题方法',
+            content: `<p><strong>Solving Right-Angled Triangles</strong></p><p>Use SOH CAH TOA to find missing sides or angles</p><p><strong>Sine Rule (正弦定理)</strong></p><p>$\frac{a}{\sin A} = \frac{b}{\sin B} = \frac{c}{\sin C}$ (for any triangle)</p><p>Use when given: two angles and one side, or two sides and non-included angle</p><p><strong>Cosine Rule (余弦定理)</strong></p><p>$a^2 = b^2 + c^2 - 2bc \cos A$</p><p>Use when given: three sides, or two sides and included angle</p><p><strong>Area of Triangle</strong></p><p>$\text{Area} = \frac{1}{2}ab \sin C$</p>`
+        },
+        {
+            title: '⚠️ Common Mistakes / 常见错误',
+            content: `<ul><li><strong>Calculator in wrong mode</strong> - Ensure calculator is in DEGREES or RADIANS as required</li><li><strong>Sign errors with sine/cosine</strong> - Remember: sine positive in 1st and 2nd quadrants, cosine positive in 1st and 4th</li><li><strong>Using wrong formula</strong> - Sine rule needs opposite pairs, cosine rule for included angles</li><li><strong>Forgetting ambiguous case</strong> - When using sine rule with two sides and non-included angle, there may be two solutions</li></ul>`
+        },
+        {
+            title: '📝 Worked Examples / 典型例题',
+            content: `<p><strong>Example 1:</strong> Find $x$ in a right triangle where opposite = 3, hypotenuse = 5</p><p>Solution: $\sin \theta = \frac{3}{5} = 0.6$, so $\theta = \sin^{-1}(0.6) = 36.9°$</p><p><strong>Example 2:</strong> In triangle ABC, $a = 5$, $b = 7$, $A = 40°$. Find angle B.</p><p>Solution: Using sine rule: $\frac{5}{\sin 40°} = \frac{7}{\sin B}$<br>$\sin B = \frac{7 \times \sin 40°}{5} = 0.899$, so $B = 64.1°$ or $115.9°$ (ambiguous case)</p><p><strong>Example 3:</strong> Find the area of triangle with sides 6, 8 and included angle 30°</p><p>Solution: Area = $\frac{1}{2} \times 6 \times 8 \times \sin 30° = 12$</p>`
+        },
+        {
+            title: '📺 Learning Resources / 学习资源',
+            content: `<p><a href="https://www.youtube.com/watch?v=Jsiy4TxgIME" target="_blank">YouTube - Trigonometry Basics</a></p><p><a href="https://www.bilibili.com/video/BV1aZ411h7uY" target="_blank">Bilibili - 三角函数基础</a></p>`
+        }
+    ]
+},'math-differentiation': {
+    name: 'Differentiation 微分',
+    subject: 'math',
+    sections: [
+        {
+            title: '📖 Core Concepts / 核心概念',
+            content: `<div class="bg-blue-50"><strong>Derivative (导数)</strong>: The rate of change of a function. $f'(x) = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h}$ represents the gradient of the tangent at point $x$.</div><div class="bg-green-50"><strong>Basic Rules (基本法则)</strong>:<br>• Power rule: $rac{d}{dx}(x^n) = nx^{n-1}$<br>• Constant: $rac{d}{dx}(c) = 0$<br>• Constant multiple: $rac{d}{dx}[cf(x)] = cf'(x)$<br>• Sum/difference: $rac{d}{dx}[f(x) \pm g(x)] = f'(x) \pm g'(x)$</div><div class="bg-purple-50"><strong>Chain Rule (链式法则)</strong>: $rac{d}{dx}[f(g(x))] = f'(g(x)) \cdot g'(x)$ for composite functions</div><div class="bg-yellow-50"><strong>Product and Quotient Rules</strong>:<br>• Product: $rac{d}{dx}[uv] = u'v + uv'$<br>• Quotient: $rac{d}{dx}[\frac{u}{v}] = \frac{u'v - uv'}{v^2}$</div>`
+        },
+        {
+            title: '🔧 Methods / 解题方法',
+            content: `<p><strong>Finding the Gradient of a Curve</strong></p><p>Differentiate the function and substitute the $x$-coordinate</p><p><strong>Finding Stationary Points</strong></p><p>Solve $f'(x) = 0$ to find where gradient is zero (max, min, or points of inflection)</p><p><strong>Determining Nature of Stationary Points</strong></p><p>• Second derivative test: $f''(x) > 0$ → minimum, $f''(x) < 0$ → maximum</p><p>• First derivative test: Check sign change of $f'(x)$ around the point</p><p><strong>Equation of Tangent/Normal</strong></p><p>• Tangent: Use gradient $f'(a)$ at point $(a, f(a))$</p><p>• Normal: Gradient is $-\frac{1}{f'(a)}$ (negative reciprocal)</p>`
+        },
+        {
+            title: '⚠️ Common Mistakes / 常见错误',
+            content: `<ul><li><strong>Forgetting the chain rule</strong> - Always check if the function is composite (function of a function)</li><li><strong>Sign errors with quotient rule</strong> - Remember: $(u'v - uv')$, not $(uv' - u'v)$</li><li><strong>Confusing stationary points</strong> - $f'(x) = 0$ gives stationary points, but you need further tests to classify them</li><li><strong>Arithmetic errors with negative indices</strong> - Remember $\frac{1}{x} = x^{-1}$ and $\frac{1}{x^2} = x^{-2}$</li></ul>`
+        },
+        {
+            title: '📝 Worked Examples / 典型例题',
+            content: `<p><strong>Example 1:</strong> Differentiate $f(x) = 3x^4 - 2x^2 + 5x - 1$</p><p>Solution: $f'(x) = 12x^3 - 4x + 5$</p><p><strong>Example 2:</strong> Find the gradient of $y = (2x + 1)^3$ at $x = 1$</p><p>Solution: Using chain rule: $rac{dy}{dx} = 3(2x+1)^2 \times 2 = 6(2x+1)^2$<br>At $x = 1$: $rac{dy}{dx} = 6(3)^2 = 54$</p><p><strong>Example 3:</strong> Find and classify stationary points of $y = x^3 - 3x^2$</p><p>Solution: $rac{dy}{dx} = 3x^2 - 6x = 0$ → $x = 0$ or $x = 2$<br>$\frac{d^2y}{dx^2} = 6x - 6$<br>At $x = 0$: $\frac{d^2y}{dx^2} = -6 < 0$ → maximum<br>At $x = 2$: $\frac{d^2y}{dx^2} = 6 > 0$ → minimum</p>`
+        },
+        {
+            title: '📺 Learning Resources / 学习资源',
+            content: `<p><a href="https://www.youtube.com/watch?v=ANyVpMS3HL4" target="_blank">YouTube - Differentiation Basics</a></p><p><a href="https://www.bilibili.com/video/BV1At411d7VJ" target="_blank">Bilibili - 微分基础教程</a></p>`
+        }
+    ]
+},'physics-kinematics': {
+    name: 'Kinematics 运动学',
+    subject: 'physics',
+    sections: [
+        {
+            title: '📖 Core Concepts / 核心概念',
+            content: `<div class="bg-blue-50"><strong>Definitions (定义)</strong>:<br>• Displacement ($s$): Distance in a specific direction (vector)<br>• Velocity ($v$): Rate of change of displacement ($v = \frac{ds}{dt}$)<br>• Acceleration ($a$): Rate of change of velocity ($a = \frac{dv}{dt}$)</div><div class="bg-green-50"><strong>SUVAT Equations (运动学方程)</strong> - For constant acceleration:<br>• $v = u + at$<br>• $s = ut + \frac{1}{2}at^2$<br>• $v^2 = u^2 + 2as$<br>• $s = \frac{(u+v)}{2}t$</div><div class="bg-purple-50"><strong>Graphs (图像)</strong>:<br>• Displacement-time: Gradient = velocity<br>• Velocity-time: Gradient = acceleration, Area = displacement</div><div class="bg-yellow-50"><strong>Free Fall (自由落体)</strong>: Acceleration due to gravity $g = 9.8$ m/s² (downward)</div>`
+        },
+        {
+            title: '🔧 Methods / 解题方法',
+            content: `<p><strong>Using SUVAT Equations</strong></p><p>1. Identify known quantities (usually 3 of: $s, u, v, a, t$)</p><p>2. Identify unknown quantity to find</p><p>3. Choose equation that connects knowns to unknown</p><p>4. Substitute values and solve</p><p><strong>Projectile Motion</strong></p><p>• Horizontal: Constant velocity ($a = 0$)</p><p>• Vertical: Constant acceleration ($a = g$ downward)</p><p>• Treat horizontal and vertical motions separately</p><p><strong>Graph Analysis</strong></p><p>• Gradient of s-t graph gives instantaneous velocity</p><p>• Area under v-t graph gives displacement</p><p>• Gradient of v-t graph gives acceleration</p>`
+        },
+        {
+            title: '⚠️ Common Mistakes / 常见错误',
+            content: `<ul><li><strong>Sign conventions</strong> - Always define positive direction and stick to it (usually upward or rightward positive)</li><li><strong>Confusing distance and displacement</strong> - Distance is scalar (total path), displacement is vector (change in position)</li><li><strong>Forgetting initial velocity</strong> - $u$ is velocity at $t = 0$, not necessarily zero</li><li><strong>Using SUVAT for non-constant acceleration</strong> - These equations only work when $a$ is constant</li></ul>`
+        },
+        {
+            title: '📝 Worked Examples / 典型例题',
+            content: `<p><strong>Example 1:</strong> A car accelerates from rest at $2$ m/s² for $5$ s. Find final velocity and distance traveled.</p><p>Solution: $u = 0, a = 2, t = 5$<br>$v = u + at = 0 + 2(5) = 10$ m/s<br>$s = ut + \frac{1}{2}at^2 = 0 + \frac{1}{2}(2)(25) = 25$ m</p><p><strong>Example 2:</strong> A ball is thrown upward at $20$ m/s. Find maximum height. ($g = 10$ m/s²)</p><p>Solution: At max height, $v = 0$<br>$v^2 = u^2 + 2as$<br>$0 = 400 + 2(-10)s$<br>$s = 20$ m</p><p><strong>Example 3:</strong> From a velocity-time graph, object accelerates at constant $3$ m/s² for $4$ s from rest. Find displacement.</p><p>Solution: Area under graph = $\frac{1}{2} \times 4 \times 12 = 24$ m</p>`
+        },
+        {
+            title: '📺 Learning Resources / 学习资源',
+            content: `<p><a href="https://www.youtube.com/watch?v=ZL5xFPpI8cU" target="_blank">YouTube - Kinematics Equations</a></p><p><a href="https://www.bilibili.com/video/BV1b4411e7hN" target="_blank">Bilibili - 运动学基础</a></p>`
+        }
+    ]
+},'physics-dynamics': {
+    name: 'Dynamics 动力学',
+    subject: 'physics',
+    sections: [
+        {
+            title: '📖 Core Concepts / 核心概念',
+            content: `<div class="bg-blue-50"><strong>Newton's Laws (牛顿定律)</strong>:<br>• 1st Law: Object remains at rest or constant velocity unless acted upon by resultant force<br>• 2nd Law: $F = ma$ (Resultant force = mass × acceleration)<br>• 3rd Law: Action and reaction forces are equal and opposite</div><div class="bg-green-50"><strong>Mass and Weight (质量与重量)</strong>:<br>• Mass ($m$): Amount of matter (kg) - scalar, constant everywhere<br>• Weight ($W$): Force due to gravity ($W = mg$) - vector, varies with $g$</div><div class="bg-purple-50"><strong>Momentum (动量)</strong>: $p = mv$ (mass × velocity). Vector quantity in direction of velocity.</div><div class="bg-yellow-50"><strong>Conservation of Momentum (动量守恒)</strong>: Total momentum before collision = Total momentum after collision (in closed system)</div>`
+        },
+        {
+            title: '🔧 Methods / 解题方法',
+            content: `<p><strong>Using F = ma</strong></p><p>1. Draw free-body diagram showing all forces</p><p>2. Resolve forces in direction of motion (and perpendicular if needed)</p><p>3. Find resultant force: $F_{net} = \sum F_{forward} - \sum F_{backward}$</p><p>4. Apply $F_{net} = ma$ to find acceleration</p><p><strong>Connected Particles</strong></p><p>• Treat as system: Total force = Total mass × acceleration</p><p>• Or separately: Write equation for each mass and solve simultaneously</p><p><strong>Collision Problems</strong></p><p>• Apply conservation of momentum: $m_1u_1 + m_2u_2 = m_1v_1 + m_2v_2$</p><p>• For elastic collisions: Kinetic energy also conserved</p><p>• For inelastic collisions: Objects stick together, common final velocity</p>`
+        },
+        {
+            title: '⚠️ Common Mistakes / 常见错误',
+            content: `<ul><li><strong>Confusing mass and weight</strong> - Mass is constant (kg), weight depends on gravity (N)</li><li><strong>Forgetting direction in momentum</strong> - Momentum is vector; assign positive direction and use signs consistently</li><li><strong>Missing forces in free-body diagrams</strong> - Always include weight, normal reaction, friction, tension as appropriate</li><li><strong>Sign errors with Newton's 3rd law pairs</strong> - Forces act on DIFFERENT bodies, so don't cancel out when analyzing one object</li></ul>`
+        },
+        {
+            title: '📝 Worked Examples / 典型例题',
+            content: `<p><strong>Example 1:</strong> A 5 kg block is pulled by 20 N force on smooth surface. Find acceleration.</p><p>Solution: $F = ma$ → $20 = 5a$ → $a = 4$ m/s²</p><p><strong>Example 2:</strong> Two balls collide: 2 kg moving at 3 m/s hits stationary 3 kg ball. They stick together. Find common velocity.</p><p>Solution: Conservation of momentum:<br>$2(3) + 3(0) = (2+3)v$<br>$6 = 5v$ → $v = 1.2$ m/s</p><p><strong>Example 3:</strong> A 10 kg object on rough surface ($\mu = 0.3$) is pulled by 50 N. Find acceleration. ($g = 10$ m/s²)</p><p>Solution: Friction $= \mu N = 0.3(100) = 30$ N<br>Resultant force $= 50 - 30 = 20$ N<br>$a = \frac{F}{m} = \frac{20}{10} = 2$ m/s²</p>`
+        },
+        {
+            title: '📺 Learning Resources / 学习资源',
+            content: `<p><a href="https://www.youtube.com/watch?v=kkfP2Qw3n4c" target="_blank">YouTube - Newton's Laws of Motion</a></p><p><a href="https://www.bilibili.com/video/BV1x4411e7hV" target="_blank">Bilibili - 牛顿运动定律</a></p>`
+        }
+    ]
+},
