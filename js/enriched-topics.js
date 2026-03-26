@@ -1003,4 +1003,4 @@ where \$n!\$ (n factorial) is the product of all positive integers up to \$n\$. 
             content: `<p><a href="https://www.youtube.com/watch?v=kkfP2Qw3n4c" target="_blank">YouTube - Newton's Laws of Motion</a></p><p><a href="https://www.bilibili.com/video/BV1x4411e7hV" target="_blank">Bilibili - 牛顿运动定律</a></p>`
         }
     ]
-},
+},};
