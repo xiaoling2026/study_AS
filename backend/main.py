@@ -16,7 +16,7 @@ app = FastAPI(title="A-Level Study API")
 # 静态文件服务（前端）
 static_dir = os.path.join(os.path.dirname(__file__), '..')
 if os.path.exists(os.path.join(static_dir, 'index.html')):
-    app.mount("/static", StaticFiles(directory=static_dir), name="static")
+    app.mount("/", StaticFiles(directory=static_dir, html=True), name="root")
 
 @app.get("/")
 async def serve_index():
@@ -840,7 +840,9 @@ async def analyze_image(request: dict):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    import os
+    port = int(os.getenv("PORT", "8000"))
+    uvicorn.run(app, host="0.0.0.0", port=port)
 
 
 @app.post("/switch-ai")

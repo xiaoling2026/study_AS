@@ -30,8 +30,8 @@
     </script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" onerror="this.src='https://unpkg.com/mathjax@3/es5/tex-svg.js'"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="/static/js/enriched-topics.js?v=2" charset="UTF-8"></script>
-    <script src="/static/js/data/questions.js?v=2" charset="UTF-8"></script>
+    <script src="/js/enriched-topics.js?v=2" charset="UTF-8"></script>
+    <script src="/js/data/questions.js?v=2" charset="UTF-8"></script>
     <script>
         // MathJax 渲染辅助函数
         function renderMathJax(element) {
@@ -531,7 +531,7 @@ if(false){
     document.getElementById("practiceQuestions").innerHTML = '<div class="text-center p-8"><p class="text-gray-500">🤖 AI正在生成题目...</p></div>';
     
     // 调用后端API生成题目
-    fetch("http://localhost:8000/generate-questions", {
+    fetch("//generate-questions", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({topic: topic || subject, difficulty: document.getElementById("difficultyFilter").value || "medium", count: count})
@@ -1030,7 +1030,7 @@ if (localStorage.getItem('studyProgress')) {
             formData.append('file', file);
             
             try {
-                const response = await fetch('http://localhost:8000/upload-pdf', {
+                const response = await fetch('//upload-pdf', {
                     method: 'POST',
                     body: formData
                 });
@@ -1139,7 +1139,7 @@ if (localStorage.getItem('studyProgress')) {
             }
             
             try {
-                const response = await fetch('http://localhost:8000/analyze', {
+                const response = await fetch('//analyze', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
@@ -1188,7 +1188,7 @@ if (localStorage.getItem('studyProgress')) {
                 appendAnalysisResult(i, q, null, 'analyzing');
                 
                 try {
-                    const response = await fetch('http://localhost:8000/analyze', {
+                    const response = await fetch('//analyze', {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({
@@ -1296,7 +1296,7 @@ if (localStorage.getItem('studyProgress')) {
             currentFileId = fileId;
             showProgress('正在识别题目...', 50, '步骤 2/3: AI识别题目');
             try {
-                const response = await fetch('http://localhost:8000/extract-questions', {
+                const response = await fetch('//extract-questions', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({file_id: fileId})
@@ -1390,7 +1390,7 @@ if (localStorage.getItem('studyProgress')) {
         // AI 分析图片
         async function analyzeImageWithAI(fileId) {
             try {
-                const response = await fetch('http://localhost:8000/analyze-image', {
+                const response = await fetch('//analyze-image', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({file_id: fileId})
@@ -1462,7 +1462,7 @@ if (localStorage.getItem('studyProgress')) {
             btn.textContent = '分析中...';
             
             try {
-                const response = await fetch('http://localhost:8000/analyze', {
+                const response = await fetch('//analyze', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
