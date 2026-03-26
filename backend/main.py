@@ -48,6 +48,10 @@ LOCAL_MODEL_ENABLED = os.path.exists(LOCAL_MODEL_PATH)
 KIMI_API_KEY = "sk-BzEYb4esUAq3qVdURq6swV7EYpEOwJsrvZm9QdvO1DnNCfDr"
 KIMI_BASE_URL = "https://api.moonshot.cn"
 
+# Mify/MiMo API Key
+MIFY_API_KEY = "sk-IojdAVZlzQTK7LOm6JwN3GdL8w1prG0bjt06QoWO1v6hbt4E"
+MIFY_BASE_URL = "https://mify.mioffice.cn/gateway"
+
 # Minimax API Key (备选)
 MINIMAX_API_KEY = "sk-cp-PiUMYB55KWSYbZNBBAFYKgmuQX7fwUIruTewGiUWZT4cvkHq4cGcq7Lclpkjeton5SG0wAtl7eEwbIujzwP8ZR8uhzbe92u0Vu1dGvzgsDUz26NlsyIkOPc"
 MINIMAX_BASE_URL = "https://api.minimax.chat"
