@@ -1004,3 +1004,23 @@ where \$n!\$ (n factorial) is the product of all positive integers up to \$n\$. 
         }
     ]
 },};
+
+// 根据 topicId 获取格式化的知识点内容
+function getEnrichedTopicContent(topicId) {
+    var topic = enrichedTopicData[topicId];
+    if (!topic || !topic.sections) return null;
+    
+    var html = '';
+    for (var i = 0; i < topic.sections.length; i++) {
+        var section = topic.sections[i];
+        html += '<div class="mb-6">';
+        if (section.title) {
+            html += '<h3 class="text-lg font-bold text-gray-800 mb-2">' + section.title + '</h3>';
+        }
+        if (section.content) {
+            html += section.content;
+        }
+        html += '</div>';
+    }
+    return html;
+}
