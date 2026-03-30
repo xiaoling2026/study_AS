@@ -1,5 +1,8 @@
 # A-Level Study App Backend
-# 依赖：fastapi, uvicorn, python-multipart, PyPDF2, httpx
+# 依赖：fastapi, uvicorn, python-multipart, PyPDF2, httpx, python-dotenv
+
+from dotenv import load_dotenv
+load_dotenv()  # 加载 .env 文件
 
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -18,14 +21,6 @@ static_dir = os.path.join(os.path.dirname(__file__), '..')
 if os.path.exists(os.path.join(static_dir, 'index.html')):
     app.mount("/", StaticFiles(directory=static_dir, html=True), name="root")
 
-@app.get("/")
-async def serve_index():
-    """Serve the frontend index.html"""
-    index_path = os.path.join(os.path.dirname(__file__), '..', 'index.html')
-    if os.path.exists(index_path):
-        return FileResponse(index_path)
-    return {"message": "A-Level Study API is running", "version": "1.0"}
-
 # CORS 设置
 app.add_middleware(
     CORSMiddleware,
@@ -38,27 +33,24 @@ app.add_middleware(
 # ============ 配置区 ============
 # 当前使用的 AI: "local", "kimi", "minimax", "auto"
 # "auto" = 优先本地模型，失败时自动切换到 API
-AI_PROVIDER = "auto"
+AI_PROVIDER = os.getenv("AI_PROVIDER", "auto")
 
 # 本地模型配置
 LOCAL_MODEL_PATH = os.path.join(os.path.dirname(__file__), '..', 'models', 'qwen', 'qwen2.5-7b-instruct-q4_0.gguf')
 LOCAL_MODEL_ENABLED = os.path.exists(LOCAL_MODEL_PATH)
 
-# Kimi API Key (主力)
-KIMI_API_KEY = "sk-BzEYb4esUAq3qVdURq6swV7EYpEOwJsrvZm9QdvO1DnNCfDr"
-KIMI_BASE_URL = "https://api.moonshot.cn"
+# API Keys - 从环境变量读取，不再硬编码
+KIMI_API_KEY = os.getenv("KIMI_API_KEY", "")
+KIMI_BASE_URL = os.getenv("KIMI_BASE_URL", "https://api.moonshot.cn")
 
-# Mify/MiMo API Key
-MIFY_API_KEY = "sk-IojdAVZlzQTK7LOm6JwN3GdL8w1prG0bjt06QoWO1v6hbt4E"
-MIFY_BASE_URL = "https://mify.mioffice.cn/gateway"
+MIFY_API_KEY = os.getenv("MIFY_API_KEY", "")
+MIFY_BASE_URL = os.getenv("MIFY_BASE_URL", "https://mify.mioffice.cn/gateway")
 
-# Minimax API Key (备选)
-MINIMAX_API_KEY = "sk-cp-PiUMYB55KWSYbZNBBAFYKgmuQX7fwUIruTewGiUWZT4cvkHq4cGcq7Lclpkjeton5SG0wAtl7eEwbIujzwP8ZR8uhzbe92u0Vu1dGvzgsDUz26NlsyIkOPc"
-MINIMAX_BASE_URL = "https://api.minimax.chat"
+MINIMAX_API_KEY = os.getenv("MINIMAX_API_KEY", "")
+MINIMAX_BASE_URL = os.getenv("MINIMAX_BASE_URL", "https://api.minimax.chat")
 
-# Xiaomi mimo 模型 (内测)
-MIMO_API_KEY = "sk-c0hlfl3h5tw4yhgz71igfyjgatc8zmv296kvpqd91vmw4kvf"
-MIMO_BASE_URL = "https://api.xiaomimimo.com/v1"  # 外网地址
+MIMO_API_KEY = os.getenv("MIMO_API_KEY", "")
+MIMO_BASE_URL = os.getenv("MIMO_BASE_URL", "https://api.xiaomimimo.com/v1")
 # =================================
 
 # 本地模型实例（延迟加载）
@@ -325,47 +317,6 @@ async def extract_from_images(request: dict):
         return {"success": False, "error": str(e)}
     
     return {"success": False, "error": "分析失败"}
-    
-    if not combined.strip():
-        return {"success": False, "error": "未找到内容"}
-    
-    # 使用 AI 提取多个题目
-    prompt = f"""从以下内容中识别出所有题目和对应的学生答案。
-可能包含多个题目，请逐一识别。
-
-内容：
-{combined}
-
-请以JSON数组格式返回，每个元素包含question(题目)和answer(学生答案)：
-[
-    {{"question": "题目1内容", "answer": "答案1内容"}},
-    {{"question": "题目2内容", "answer": "答案2内容"}}
-]
-
-只返回JSON数组。"""
-
-    try:
-        async with httpx.AsyncClient(timeout=90.0) as client:
-            response = await client.post(
-                f"{KIMI_BASE_URL}/v1/chat/completions",
-                headers={"Authorization": f"Bearer {KIMI_API_KEY}", "Content-Type": "application/json"},
-                json={"model": "kimi-k2.5", "messages": [{"role": "system", "content": "你是一个题目识别助手。"}, {"role": "user", "content": prompt}]}
-            )
-            
-            if response.status_code == 200:
-                result = response.json()
-                content = result.get("choices", [{}])[0].get("message", {}).get("content", "[]")
-                
-                import re
-                json_match = re.search(r'\[.*\]', content, re.DOTALL)
-                if json_match:
-                    questions = json.loads(json_match.group())
-                    return {"success": True, "questions": questions}
-    except Exception as e:
-        pass
-    
-    # 失败则返回原始文本作为单个题目
-    return {"success": True, "questions": [{"question": combined, "answer": ""}]}
 
 @app.post("/analyze")
 async def analyze_answers(request: dict):
